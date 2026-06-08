@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Generated database (rebuild with build_gold_layer.py)
+data/database/*.db
+
+# OS
+.DS_Store

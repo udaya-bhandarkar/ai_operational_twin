@@ -1,0 +1,2138 @@
+[
+  {
+    "timestamp": "2026-06-07T20:01:35.859148Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 283.18,
+      "material_intake_kg": 46.96,
+      "material_output_kg": 45.84,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:37.364643Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.87,
+      "material_intake_kg": 48.21,
+      "material_output_kg": 46.23,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:38.868164Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 306.47,
+      "material_intake_kg": 46.74,
+      "material_output_kg": 44.71,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:40.371002Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 300.28,
+      "material_intake_kg": 48.08,
+      "material_output_kg": 45.92,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:41.875502Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 302.92,
+      "material_intake_kg": 47.42,
+      "material_output_kg": 46.5,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:43.378778Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 295.33,
+      "material_intake_kg": 49.26,
+      "material_output_kg": 47.38,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:44.884002Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 288.32,
+      "material_intake_kg": 49.8,
+      "material_output_kg": 48.14,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:46.389368Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.68,
+      "material_intake_kg": 46.8,
+      "material_output_kg": 45.65,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:47.892996Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 287.3,
+      "material_intake_kg": 49.11,
+      "material_output_kg": 47.78,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:49.397065Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 307.96,
+      "material_intake_kg": 47.9,
+      "material_output_kg": 46.69,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:50.902402Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 296.6,
+      "material_intake_kg": 46.8,
+      "material_output_kg": 44.53,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:52.404090Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 285.95,
+      "material_intake_kg": 45.49,
+      "material_output_kg": 44.09,
+      "efficiency_ratio": 0.969
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:53.907068Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 307.7,
+      "material_intake_kg": 45.52,
+      "material_output_kg": 45.02,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:55.412471Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 281.54,
+      "material_intake_kg": 47.36,
+      "material_output_kg": 45.05,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:56.917319Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 296.08,
+      "material_intake_kg": 49.42,
+      "material_output_kg": 48.38,
+      "efficiency_ratio": 0.979
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:58.421909Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 298.53,
+      "material_intake_kg": 46.8,
+      "material_output_kg": 45.56,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:01:59.926606Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 295.79,
+      "material_intake_kg": 47.22,
+      "material_output_kg": 46.03,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:01.427138Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.79,
+      "material_intake_kg": 46.95,
+      "material_output_kg": 46.26,
+      "efficiency_ratio": 0.985
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:02.929693Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 291.53,
+      "material_intake_kg": 49.73,
+      "material_output_kg": 48.25,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:04.433911Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.7,
+      "material_intake_kg": 48.82,
+      "material_output_kg": 46.7,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:05.938565Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 303.32,
+      "material_intake_kg": 49.07,
+      "material_output_kg": 47.99,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:07.441751Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 287.02,
+      "material_intake_kg": 45.63,
+      "material_output_kg": 45.01,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:08.943456Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 305.63,
+      "material_intake_kg": 49.56,
+      "material_output_kg": 47.6,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:10.447965Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 307.31,
+      "material_intake_kg": 45.84,
+      "material_output_kg": 45.2,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:11.953385Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 305.56,
+      "material_intake_kg": 46.68,
+      "material_output_kg": 44.89,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:13.458363Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 300.53,
+      "material_intake_kg": 46.95,
+      "material_output_kg": 45.48,
+      "efficiency_ratio": 0.969
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:14.963681Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 280.78,
+      "material_intake_kg": 46.72,
+      "material_output_kg": 45.99,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:16.466404Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 289.97,
+      "material_intake_kg": 47.46,
+      "material_output_kg": 45.14,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:17.971816Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 298.16,
+      "material_intake_kg": 49.27,
+      "material_output_kg": 48.0,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:19.474975Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.76,
+      "material_intake_kg": 46.15,
+      "material_output_kg": 43.95,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:20.976981Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 303.05,
+      "material_intake_kg": 45.11,
+      "material_output_kg": 43.19,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:22.482349Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 289.07,
+      "material_intake_kg": 46.37,
+      "material_output_kg": 45.62,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:23.984453Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.45,
+      "material_intake_kg": 46.4,
+      "material_output_kg": 45.84,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:25.487635Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 528.92,
+      "material_intake_kg": 45.22,
+      "material_output_kg": 29.38,
+      "efficiency_ratio": 0.65
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:26.991450Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 475.3,
+      "material_intake_kg": 46.5,
+      "material_output_kg": 32.72,
+      "efficiency_ratio": 0.704
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:28.493701Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.08,
+      "material_intake_kg": 46.95,
+      "material_output_kg": 44.93,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:29.996703Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 307.96,
+      "material_intake_kg": 46.78,
+      "material_output_kg": 44.6,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:31.497711Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 549.56,
+      "material_intake_kg": 48.46,
+      "material_output_kg": 32.0,
+      "efficiency_ratio": 0.66
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:33.003173Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.74,
+      "material_intake_kg": 46.66,
+      "material_output_kg": 46.05,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:34.508225Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 308.62,
+      "material_intake_kg": 48.29,
+      "material_output_kg": 47.49,
+      "efficiency_ratio": 0.983
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:36.010667Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 283.23,
+      "material_intake_kg": 47.36,
+      "material_output_kg": 46.16,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:37.516077Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 304.03,
+      "material_intake_kg": 49.95,
+      "material_output_kg": 47.87,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:39.021404Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 285.79,
+      "material_intake_kg": 49.72,
+      "material_output_kg": 48.94,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:40.524878Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 280.53,
+      "material_intake_kg": 46.97,
+      "material_output_kg": 46.12,
+      "efficiency_ratio": 0.982
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:42.026825Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 305.58,
+      "material_intake_kg": 48.56,
+      "material_output_kg": 46.39,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:43.532053Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 308.74,
+      "material_intake_kg": 48.55,
+      "material_output_kg": 46.39,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:45.037230Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.94,
+      "material_intake_kg": 48.3,
+      "material_output_kg": 46.02,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:46.541573Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.57,
+      "material_intake_kg": 45.94,
+      "material_output_kg": 45.06,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:48.046135Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 305.77,
+      "material_intake_kg": 45.52,
+      "material_output_kg": 44.77,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:49.551456Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 306.85,
+      "material_intake_kg": 46.03,
+      "material_output_kg": 45.09,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:51.053259Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 494.2,
+      "material_intake_kg": 46.51,
+      "material_output_kg": 27.96,
+      "efficiency_ratio": 0.601
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:52.558152Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 281.14,
+      "material_intake_kg": 45.02,
+      "material_output_kg": 42.83,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:54.063481Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 297.32,
+      "material_intake_kg": 46.52,
+      "material_output_kg": 45.35,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:55.568821Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 305.74,
+      "material_intake_kg": 46.42,
+      "material_output_kg": 44.3,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:57.074241Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 300.67,
+      "material_intake_kg": 47.59,
+      "material_output_kg": 46.52,
+      "efficiency_ratio": 0.977
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:02:58.577631Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 298.26,
+      "material_intake_kg": 45.54,
+      "material_output_kg": 43.45,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:00.082047Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 283.01,
+      "material_intake_kg": 45.44,
+      "material_output_kg": 43.53,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:01.585083Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 517.98,
+      "material_intake_kg": 49.46,
+      "material_output_kg": 35.65,
+      "efficiency_ratio": 0.721
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:03.088705Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.96,
+      "material_intake_kg": 48.59,
+      "material_output_kg": 46.23,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:04.591472Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 281.24,
+      "material_intake_kg": 49.22,
+      "material_output_kg": 46.93,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:06.095807Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 284.79,
+      "material_intake_kg": 47.94,
+      "material_output_kg": 45.7,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:07.596992Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 283.39,
+      "material_intake_kg": 46.59,
+      "material_output_kg": 44.78,
+      "efficiency_ratio": 0.961
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:09.097824Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 487.96,
+      "material_intake_kg": 47.36,
+      "material_output_kg": 32.76,
+      "efficiency_ratio": 0.692
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:10.603028Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.99,
+      "material_intake_kg": 46.46,
+      "material_output_kg": 45.48,
+      "efficiency_ratio": 0.979
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:12.108040Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 302.93,
+      "material_intake_kg": 48.45,
+      "material_output_kg": 46.42,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:13.612527Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 286.76,
+      "material_intake_kg": 46.28,
+      "material_output_kg": 45.08,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:15.115676Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 292.32,
+      "material_intake_kg": 49.75,
+      "material_output_kg": 47.77,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:16.620953Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 287.63,
+      "material_intake_kg": 48.46,
+      "material_output_kg": 46.67,
+      "efficiency_ratio": 0.963
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:18.124679Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 285.56,
+      "material_intake_kg": 47.84,
+      "material_output_kg": 46.71,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:19.630013Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.88,
+      "material_intake_kg": 46.75,
+      "material_output_kg": 44.98,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:21.130548Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 300.33,
+      "material_intake_kg": 45.59,
+      "material_output_kg": 44.06,
+      "efficiency_ratio": 0.966
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:22.635859Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.18,
+      "material_intake_kg": 45.72,
+      "material_output_kg": 44.41,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:24.141098Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 302.65,
+      "material_intake_kg": 48.04,
+      "material_output_kg": 47.42,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:25.646257Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 510.56,
+      "material_intake_kg": 45.75,
+      "material_output_kg": 31.69,
+      "efficiency_ratio": 0.693
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:27.151605Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 291.81,
+      "material_intake_kg": 49.2,
+      "material_output_kg": 48.62,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:28.656358Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 301.25,
+      "material_intake_kg": 48.25,
+      "material_output_kg": 47.54,
+      "efficiency_ratio": 0.985
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:30.161585Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 301.77,
+      "material_intake_kg": 47.62,
+      "material_output_kg": 45.92,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:31.663907Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 283.19,
+      "material_intake_kg": 48.48,
+      "material_output_kg": 46.82,
+      "efficiency_ratio": 0.966
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:33.166593Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 280.22,
+      "material_intake_kg": 49.42,
+      "material_output_kg": 48.78,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:34.671399Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 286.53,
+      "material_intake_kg": 45.85,
+      "material_output_kg": 44.43,
+      "efficiency_ratio": 0.969
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:36.175164Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.34,
+      "material_intake_kg": 47.81,
+      "material_output_kg": 45.59,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:37.677966Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 285.88,
+      "material_intake_kg": 46.13,
+      "material_output_kg": 44.52,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:39.183267Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 289.04,
+      "material_intake_kg": 47.14,
+      "material_output_kg": 45.59,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:40.688439Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 302.56,
+      "material_intake_kg": 49.43,
+      "material_output_kg": 47.37,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:42.191335Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 296.53,
+      "material_intake_kg": 49.86,
+      "material_output_kg": 47.69,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:43.695929Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 290.98,
+      "material_intake_kg": 49.83,
+      "material_output_kg": 47.64,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:45.197142Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 307.41,
+      "material_intake_kg": 49.45,
+      "material_output_kg": 47.15,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:46.702423Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 286.77,
+      "material_intake_kg": 48.65,
+      "material_output_kg": 47.2,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:48.204510Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.58,
+      "material_intake_kg": 48.23,
+      "material_output_kg": 45.85,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:49.709900Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 307.63,
+      "material_intake_kg": 49.69,
+      "material_output_kg": 49.13,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:51.215268Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 291.25,
+      "material_intake_kg": 49.41,
+      "material_output_kg": 48.78,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:52.716706Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 281.36,
+      "material_intake_kg": 46.25,
+      "material_output_kg": 45.12,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:54.221993Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 284.64,
+      "material_intake_kg": 46.13,
+      "material_output_kg": 44.48,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:55.727177Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 293.47,
+      "material_intake_kg": 49.04,
+      "material_output_kg": 46.97,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:57.228590Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 294.06,
+      "material_intake_kg": 45.76,
+      "material_output_kg": 44.56,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:03:58.733122Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 309.19,
+      "material_intake_kg": 46.97,
+      "material_output_kg": 46.22,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:00.235970Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 300.62,
+      "material_intake_kg": 46.43,
+      "material_output_kg": 45.11,
+      "efficiency_ratio": 0.972
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:01.741313Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 302.5,
+      "material_intake_kg": 47.08,
+      "material_output_kg": 46.48,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:03.246112Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.3,
+      "material_intake_kg": 45.87,
+      "material_output_kg": 43.91,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:04.747593Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 293.45,
+      "material_intake_kg": 49.52,
+      "material_output_kg": 48.95,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:06.249079Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 282.08,
+      "material_intake_kg": 45.36,
+      "material_output_kg": 44.46,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:07.753529Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.11,
+      "material_intake_kg": 45.44,
+      "material_output_kg": 43.54,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:09.255294Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 293.18,
+      "material_intake_kg": 47.39,
+      "material_output_kg": 46.75,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:10.757878Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 298.1,
+      "material_intake_kg": 47.61,
+      "material_output_kg": 46.32,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:12.263221Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 496.46,
+      "material_intake_kg": 45.92,
+      "material_output_kg": 33.98,
+      "efficiency_ratio": 0.74
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:13.768547Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.26,
+      "material_intake_kg": 45.26,
+      "material_output_kg": 44.37,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:15.269723Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 286.35,
+      "material_intake_kg": 47.9,
+      "material_output_kg": 45.98,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:16.774473Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 280.69,
+      "material_intake_kg": 47.61,
+      "material_output_kg": 45.91,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:18.278575Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 284.65,
+      "material_intake_kg": 45.93,
+      "material_output_kg": 45.06,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:19.781227Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 281.77,
+      "material_intake_kg": 48.46,
+      "material_output_kg": 47.78,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:21.284005Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 291.09,
+      "material_intake_kg": 46.29,
+      "material_output_kg": 45.69,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:22.786947Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 282.84,
+      "material_intake_kg": 49.75,
+      "material_output_kg": 48.1,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:24.291247Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.04,
+      "material_intake_kg": 49.75,
+      "material_output_kg": 48.79,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:25.796673Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 281.82,
+      "material_intake_kg": 45.63,
+      "material_output_kg": 43.55,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:27.297938Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 302.73,
+      "material_intake_kg": 46.2,
+      "material_output_kg": 45.46,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:28.800594Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.3,
+      "material_intake_kg": 49.34,
+      "material_output_kg": 48.64,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:30.305913Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 297.08,
+      "material_intake_kg": 47.95,
+      "material_output_kg": 45.57,
+      "efficiency_ratio": 0.95
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:31.810451Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 280.82,
+      "material_intake_kg": 48.53,
+      "material_output_kg": 47.16,
+      "efficiency_ratio": 0.972
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:33.315777Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 299.47,
+      "material_intake_kg": 45.28,
+      "material_output_kg": 43.68,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:34.821111Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.57,
+      "material_intake_kg": 45.64,
+      "material_output_kg": 44.84,
+      "efficiency_ratio": 0.983
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:36.322133Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 299.84,
+      "material_intake_kg": 46.07,
+      "material_output_kg": 45.03,
+      "efficiency_ratio": 0.977
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:37.824457Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 287.39,
+      "material_intake_kg": 45.5,
+      "material_output_kg": 43.74,
+      "efficiency_ratio": 0.961
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:39.329809Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 306.83,
+      "material_intake_kg": 45.57,
+      "material_output_kg": 44.67,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:40.832843Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 306.92,
+      "material_intake_kg": 48.3,
+      "material_output_kg": 46.95,
+      "efficiency_ratio": 0.972
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:42.338160Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 281.82,
+      "material_intake_kg": 48.6,
+      "material_output_kg": 47.5,
+      "efficiency_ratio": 0.977
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:43.841029Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 307.03,
+      "material_intake_kg": 49.41,
+      "material_output_kg": 48.23,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:45.344697Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 302.9,
+      "material_intake_kg": 48.41,
+      "material_output_kg": 47.89,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:46.850026Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 549.23,
+      "material_intake_kg": 45.43,
+      "material_output_kg": 32.29,
+      "efficiency_ratio": 0.711
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:48.354364Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 306.01,
+      "material_intake_kg": 46.03,
+      "material_output_kg": 44.11,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:49.857544Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 293.18,
+      "material_intake_kg": 49.52,
+      "material_output_kg": 49.03,
+      "efficiency_ratio": 0.99
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:51.362744Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 470.46,
+      "material_intake_kg": 47.21,
+      "material_output_kg": 35.33,
+      "efficiency_ratio": 0.748
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:52.864537Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 299.95,
+      "material_intake_kg": 46.16,
+      "material_output_kg": 44.11,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:54.369332Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 534.67,
+      "material_intake_kg": 45.39,
+      "material_output_kg": 28.49,
+      "efficiency_ratio": 0.628
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:55.874307Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.03,
+      "material_intake_kg": 46.93,
+      "material_output_kg": 45.97,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:57.379671Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.35,
+      "material_intake_kg": 48.21,
+      "material_output_kg": 45.98,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:04:58.885063Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 304.11,
+      "material_intake_kg": 49.31,
+      "material_output_kg": 47.84,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:00.390404Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 298.16,
+      "material_intake_kg": 46.87,
+      "material_output_kg": 44.82,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:01.890970Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 304.5,
+      "material_intake_kg": 45.57,
+      "material_output_kg": 44.25,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:03.393765Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 298.08,
+      "material_intake_kg": 46.45,
+      "material_output_kg": 45.08,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:04.894452Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 515.17,
+      "material_intake_kg": 45.77,
+      "material_output_kg": 28.46,
+      "efficiency_ratio": 0.622
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:06.399769Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.84,
+      "material_intake_kg": 48.06,
+      "material_output_kg": 46.49,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:07.901613Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 536.03,
+      "material_intake_kg": 45.89,
+      "material_output_kg": 29.92,
+      "efficiency_ratio": 0.652
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:09.403014Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.77,
+      "material_intake_kg": 46.89,
+      "material_output_kg": 45.09,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:10.907760Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 283.02,
+      "material_intake_kg": 46.77,
+      "material_output_kg": 44.88,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:12.413101Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.51,
+      "material_intake_kg": 46.61,
+      "material_output_kg": 44.38,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:13.918429Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 293.99,
+      "material_intake_kg": 47.16,
+      "material_output_kg": 45.95,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:15.423750Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 293.44,
+      "material_intake_kg": 46.09,
+      "material_output_kg": 44.02,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:16.924269Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 297.23,
+      "material_intake_kg": 46.93,
+      "material_output_kg": 44.7,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:18.428684Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 527.69,
+      "material_intake_kg": 49.07,
+      "material_output_kg": 30.75,
+      "efficiency_ratio": 0.627
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:19.933988Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.91,
+      "material_intake_kg": 45.54,
+      "material_output_kg": 43.51,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:21.438277Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 298.79,
+      "material_intake_kg": 48.51,
+      "material_output_kg": 46.23,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:22.941149Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 464.82,
+      "material_intake_kg": 45.84,
+      "material_output_kg": 31.03,
+      "efficiency_ratio": 0.677
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:24.446508Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.29,
+      "material_intake_kg": 45.44,
+      "material_output_kg": 44.3,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:25.946868Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 302.51,
+      "material_intake_kg": 48.52,
+      "material_output_kg": 47.07,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:27.452169Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 301.55,
+      "material_intake_kg": 45.48,
+      "material_output_kg": 43.3,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:28.957521Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 309.11,
+      "material_intake_kg": 45.98,
+      "material_output_kg": 44.47,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:30.461527Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 293.74,
+      "material_intake_kg": 48.7,
+      "material_output_kg": 46.84,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:31.966035Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 308.58,
+      "material_intake_kg": 48.31,
+      "material_output_kg": 47.33,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:33.470032Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 290.67,
+      "material_intake_kg": 48.36,
+      "material_output_kg": 47.36,
+      "efficiency_ratio": 0.979
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:34.975356Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 283.35,
+      "material_intake_kg": 46.36,
+      "material_output_kg": 44.96,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:36.478460Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 304.54,
+      "material_intake_kg": 46.2,
+      "material_output_kg": 45.51,
+      "efficiency_ratio": 0.985
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:37.983782Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 306.4,
+      "material_intake_kg": 48.9,
+      "material_output_kg": 48.2,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:39.486696Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.17,
+      "material_intake_kg": 49.53,
+      "material_output_kg": 47.29,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:40.989114Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 281.09,
+      "material_intake_kg": 47.73,
+      "material_output_kg": 46.0,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:42.494417Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 280.92,
+      "material_intake_kg": 48.91,
+      "material_output_kg": 47.73,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:43.999026Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 280.53,
+      "material_intake_kg": 48.0,
+      "material_output_kg": 46.75,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:45.500135Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 285.49,
+      "material_intake_kg": 49.55,
+      "material_output_kg": 48.88,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:47.003791Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 303.47,
+      "material_intake_kg": 49.93,
+      "material_output_kg": 48.69,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:48.504854Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.61,
+      "material_intake_kg": 48.97,
+      "material_output_kg": 47.8,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:50.009969Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 514.08,
+      "material_intake_kg": 45.74,
+      "material_output_kg": 29.4,
+      "efficiency_ratio": 0.643
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:51.515396Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 296.61,
+      "material_intake_kg": 46.37,
+      "material_output_kg": 45.33,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:53.020712Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 307.03,
+      "material_intake_kg": 47.27,
+      "material_output_kg": 44.93,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:54.524114Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 308.96,
+      "material_intake_kg": 49.09,
+      "material_output_kg": 47.71,
+      "efficiency_ratio": 0.972
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:56.027311Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.44,
+      "material_intake_kg": 47.28,
+      "material_output_kg": 46.0,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:57.531887Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 298.19,
+      "material_intake_kg": 46.27,
+      "material_output_kg": 44.66,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:05:59.037043Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 294.55,
+      "material_intake_kg": 48.61,
+      "material_output_kg": 47.97,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:06:00.540735Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 303.25,
+      "material_intake_kg": 49.36,
+      "material_output_kg": 48.02,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-07T20:06:02.045974Z",
+    "event_type": "machine_telemetry",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 286.9,
+      "material_intake_kg": 47.47,
+      "material_output_kg": 45.49,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  }
+]
