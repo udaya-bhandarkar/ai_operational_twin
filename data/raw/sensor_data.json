@@ -1,445 +1,2289 @@
 [
   {
-    "timestamp": "2026-06-08T10:12:51.786325Z",
+    "timestamp": "2026-06-11T16:54:13.081358Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
     "machine_id": "SPINNING_LINE_01",
     "metrics": {
-      "power_consumption_kw": 307.95,
-      "material_intake_kg": 49.61,
-      "material_output_kg": 47.83,
-      "efficiency_ratio": 0.964
+      "power_consumption_kw": 300.47,
+      "water_consumption_liters": 22.45,
+      "material_intake_kg": 47.0,
+      "material_output_kg": 46.1,
+      "efficiency_ratio": 0.981
     },
     "status": "CRITICAL_POWER_WASTE"
   },
   {
-    "timestamp": "2026-06-08T10:12:53.291836Z",
+    "timestamp": "2026-06-11T16:54:14.586803Z",
     "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 296.17,
-      "material_intake_kg": 48.44,
-      "material_output_kg": 47.85,
-      "efficiency_ratio": 0.988
+      "power_consumption_kw": 493.17,
+      "water_consumption_liters": 48.94,
+      "material_intake_kg": 47.06,
+      "material_output_kg": 29.59,
+      "efficiency_ratio": 0.629
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:16.088915Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 287.06,
+      "water_consumption_liters": 22.02,
+      "material_intake_kg": 45.6,
+      "material_output_kg": 43.49,
+      "efficiency_ratio": 0.954
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:12:54.794726Z",
+    "timestamp": "2026-06-11T16:54:17.592012Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 308.58,
+      "water_consumption_liters": 19.75,
+      "material_intake_kg": 49.87,
+      "material_output_kg": 48.78,
+      "efficiency_ratio": 0.978
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:19.097328Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 291.81,
+      "water_consumption_liters": 22.67,
+      "material_intake_kg": 49.2,
+      "material_output_kg": 46.9,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:20.602649Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
     "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 284.19,
-      "material_intake_kg": 48.82,
-      "material_output_kg": 48.2,
+      "power_consumption_kw": 284.34,
+      "water_consumption_liters": 17.55,
+      "material_intake_kg": 45.52,
+      "material_output_kg": 44.36,
+      "efficiency_ratio": 0.974
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:22.105761Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 309.99,
+      "water_consumption_liters": 17.59,
+      "material_intake_kg": 45.71,
+      "material_output_kg": 44.64,
+      "efficiency_ratio": 0.977
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:23.609885Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.55,
+      "water_consumption_liters": 19.23,
+      "material_intake_kg": 46.3,
+      "material_output_kg": 44.11,
+      "efficiency_ratio": 0.953
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:25.110420Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 289.77,
+      "water_consumption_liters": 21.82,
+      "material_intake_kg": 46.34,
+      "material_output_kg": 45.85,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:26.611788Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 288.88,
+      "water_consumption_liters": 18.4,
+      "material_intake_kg": 45.7,
+      "material_output_kg": 44.88,
+      "efficiency_ratio": 0.982
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:28.117119Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 293.76,
+      "water_consumption_liters": 20.37,
+      "material_intake_kg": 47.51,
+      "material_output_kg": 46.91,
       "efficiency_ratio": 0.987
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:12:56.298530Z",
+    "timestamp": "2026-06-11T16:54:29.622225Z",
     "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 300.2,
-      "material_intake_kg": 45.57,
-      "material_output_kg": 44.75,
-      "efficiency_ratio": 0.982
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:12:57.802145Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 305.23,
-      "material_intake_kg": 49.29,
-      "material_output_kg": 47.47,
+      "power_consumption_kw": 307.08,
+      "water_consumption_liters": 22.47,
+      "material_intake_kg": 49.95,
+      "material_output_kg": 48.12,
       "efficiency_ratio": 0.963
     },
     "status": "CRITICAL_POWER_WASTE"
   },
   {
-    "timestamp": "2026-06-08T10:12:59.305943Z",
+    "timestamp": "2026-06-11T16:54:31.127441Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
     "machine_id": "PET_SHREDDER_01",
     "metrics": {
-      "power_consumption_kw": 285.77,
-      "material_intake_kg": 48.84,
-      "material_output_kg": 48.25,
-      "efficiency_ratio": 0.988
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:00.811150Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 307.06,
-      "material_intake_kg": 47.79,
-      "material_output_kg": 46.55,
-      "efficiency_ratio": 0.974
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:02.315080Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 302.41,
-      "material_intake_kg": 48.1,
-      "material_output_kg": 47.22,
+      "power_consumption_kw": 307.47,
+      "water_consumption_liters": 16.49,
+      "material_intake_kg": 47.33,
+      "material_output_kg": 46.45,
       "efficiency_ratio": 0.982
     },
     "status": "CRITICAL_POWER_WASTE"
   },
   {
-    "timestamp": "2026-06-08T10:13:03.816132Z",
+    "timestamp": "2026-06-11T16:54:32.632745Z",
     "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 280.48,
-      "material_intake_kg": 49.93,
-      "material_output_kg": 48.56,
-      "efficiency_ratio": 0.973
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:05.321327Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 282.86,
-      "material_intake_kg": 49.85,
-      "material_output_kg": 48.42,
-      "efficiency_ratio": 0.972
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:06.821658Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 474.78,
-      "material_intake_kg": 49.86,
-      "material_output_kg": 32.11,
-      "efficiency_ratio": 0.644
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:08.322611Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 309.68,
-      "material_intake_kg": 45.49,
-      "material_output_kg": 44.11,
-      "efficiency_ratio": 0.97
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:09.824047Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 280.04,
-      "material_intake_kg": 46.59,
-      "material_output_kg": 45.15,
-      "efficiency_ratio": 0.969
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:11.324987Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 287.33,
-      "material_intake_kg": 46.5,
-      "material_output_kg": 45.51,
-      "efficiency_ratio": 0.979
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:12.830249Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 284.62,
-      "material_intake_kg": 46.25,
-      "material_output_kg": 45.44,
-      "efficiency_ratio": 0.982
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:14.330628Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 302.17,
-      "material_intake_kg": 49.17,
-      "material_output_kg": 47.17,
-      "efficiency_ratio": 0.959
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:15.836050Z",
-    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
     "machine_id": "PET_SHREDDER_01",
     "metrics": {
-      "power_consumption_kw": 289.71,
-      "material_intake_kg": 45.41,
-      "material_output_kg": 43.78,
-      "efficiency_ratio": 0.964
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:17.338911Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 519.64,
-      "material_intake_kg": 49.23,
-      "material_output_kg": 36.21,
-      "efficiency_ratio": 0.736
+      "power_consumption_kw": 306.09,
+      "water_consumption_liters": 16.59,
+      "material_intake_kg": 47.68,
+      "material_output_kg": 47.08,
+      "efficiency_ratio": 0.987
     },
     "status": "CRITICAL_POWER_WASTE"
   },
   {
-    "timestamp": "2026-06-08T10:13:18.839906Z",
+    "timestamp": "2026-06-11T16:54:34.137944Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
     "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 303.46,
-      "material_intake_kg": 48.21,
-      "material_output_kg": 46.35,
-      "efficiency_ratio": 0.962
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:20.345071Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 300.83,
-      "material_intake_kg": 47.74,
-      "material_output_kg": 46.09,
-      "efficiency_ratio": 0.965
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:21.848841Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 299.31,
-      "material_intake_kg": 47.28,
-      "material_output_kg": 45.32,
-      "efficiency_ratio": 0.959
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:23.353896Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 309.22,
-      "material_intake_kg": 46.45,
-      "material_output_kg": 44.84,
-      "efficiency_ratio": 0.965
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:24.858441Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 289.24,
-      "material_intake_kg": 48.78,
-      "material_output_kg": 48.23,
-      "efficiency_ratio": 0.989
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:26.363008Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "EXTRUDER_UNIT_01",
-    "metrics": {
-      "power_consumption_kw": 283.77,
-      "material_intake_kg": 45.88,
-      "material_output_kg": 44.51,
-      "efficiency_ratio": 0.97
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:27.868364Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 285.99,
+      "power_consumption_kw": 296.23,
+      "water_consumption_liters": 19.78,
       "material_intake_kg": 45.28,
-      "material_output_kg": 44.65,
-      "efficiency_ratio": 0.986
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:29.372017Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 307.45,
-      "material_intake_kg": 49.75,
-      "material_output_kg": 48.0,
-      "efficiency_ratio": 0.965
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:30.873440Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 299.74,
-      "material_intake_kg": 45.49,
-      "material_output_kg": 44.52,
-      "efficiency_ratio": 0.979
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:32.374951Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 309.05,
-      "material_intake_kg": 48.77,
-      "material_output_kg": 46.86,
-      "efficiency_ratio": 0.961
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:33.875905Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 307.26,
-      "material_intake_kg": 46.64,
-      "material_output_kg": 44.43,
-      "efficiency_ratio": 0.953
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:35.381092Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "SPINNING_LINE_01",
-    "metrics": {
-      "power_consumption_kw": 293.33,
-      "material_intake_kg": 47.12,
-      "material_output_kg": 46.59,
-      "efficiency_ratio": 0.989
-    },
-    "status": "NORMAL"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:36.886299Z",
-    "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 286.02,
-      "material_intake_kg": 45.59,
-      "material_output_kg": 44.12,
+      "material_output_kg": 43.84,
       "efficiency_ratio": 0.968
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:13:38.388378Z",
+    "timestamp": "2026-06-11T16:54:35.640925Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.27,
+      "water_consumption_liters": 19.97,
+      "material_intake_kg": 45.9,
+      "material_output_kg": 44.65,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:37.143293Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 471.1,
+      "water_consumption_liters": 50.49,
+      "material_intake_kg": 45.56,
+      "material_output_kg": 30.52,
+      "efficiency_ratio": 0.67
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:38.648647Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
     "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 286.94,
-      "material_intake_kg": 47.37,
-      "material_output_kg": 45.73,
+      "power_consumption_kw": 300.26,
+      "water_consumption_liters": 23.11,
+      "material_intake_kg": 46.34,
+      "material_output_kg": 45.4,
+      "efficiency_ratio": 0.98
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:40.153973Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 283.22,
+      "water_consumption_liters": 21.83,
+      "material_intake_kg": 46.18,
+      "material_output_kg": 44.15,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:41.655831Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.73,
+      "water_consumption_liters": 17.2,
+      "material_intake_kg": 45.09,
+      "material_output_kg": 43.27,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:43.161494Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.8,
+      "water_consumption_liters": 24.54,
+      "material_intake_kg": 49.0,
+      "material_output_kg": 47.04,
+      "efficiency_ratio": 0.96
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:44.666919Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.02,
+      "water_consumption_liters": 21.99,
+      "material_intake_kg": 47.32,
+      "material_output_kg": 46.29,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:46.169858Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.03,
+      "water_consumption_liters": 23.94,
+      "material_intake_kg": 48.03,
+      "material_output_kg": 45.88,
+      "efficiency_ratio": 0.955
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:47.675141Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 290.26,
+      "water_consumption_liters": 22.13,
+      "material_intake_kg": 45.53,
+      "material_output_kg": 43.33,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:49.180024Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 526.97,
+      "water_consumption_liters": 52.52,
+      "material_intake_kg": 48.51,
+      "material_output_kg": 30.46,
+      "efficiency_ratio": 0.628
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:50.681665Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 304.13,
+      "water_consumption_liters": 22.83,
+      "material_intake_kg": 46.55,
+      "material_output_kg": 44.88,
+      "efficiency_ratio": 0.964
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:52.186027Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 285.5,
+      "water_consumption_liters": 24.17,
+      "material_intake_kg": 48.23,
+      "material_output_kg": 47.33,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:53.689004Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 280.97,
+      "water_consumption_liters": 21.56,
+      "material_intake_kg": 49.3,
+      "material_output_kg": 47.24,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:55.192265Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 292.0,
+      "water_consumption_liters": 23.03,
+      "material_intake_kg": 47.31,
+      "material_output_kg": 46.5,
+      "efficiency_ratio": 0.983
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:56.697284Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 306.79,
+      "water_consumption_liters": 24.16,
+      "material_intake_kg": 48.06,
+      "material_output_kg": 45.98,
+      "efficiency_ratio": 0.957
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:58.200144Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 455.53,
+      "water_consumption_liters": 41.58,
+      "material_intake_kg": 49.28,
+      "material_output_kg": 34.1,
+      "efficiency_ratio": 0.692
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:54:59.703893Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 294.97,
+      "water_consumption_liters": 19.77,
+      "material_intake_kg": 46.77,
+      "material_output_kg": 45.25,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:01.209171Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 300.95,
+      "water_consumption_liters": 15.74,
+      "material_intake_kg": 46.36,
+      "material_output_kg": 44.54,
+      "efficiency_ratio": 0.961
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:02.714576Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 287.74,
+      "water_consumption_liters": 23.03,
+      "material_intake_kg": 47.81,
+      "material_output_kg": 45.64,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:04.219906Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 545.24,
+      "water_consumption_liters": 59.29,
+      "material_intake_kg": 46.66,
+      "material_output_kg": 28.33,
+      "efficiency_ratio": 0.607
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:05.724601Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 295.86,
+      "water_consumption_liters": 19.16,
+      "material_intake_kg": 49.58,
+      "material_output_kg": 48.95,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:07.225653Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 293.62,
+      "water_consumption_liters": 16.15,
+      "material_intake_kg": 48.09,
+      "material_output_kg": 47.02,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:08.726997Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 294.07,
+      "water_consumption_liters": 20.54,
+      "material_intake_kg": 49.38,
+      "material_output_kg": 48.39,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:10.232267Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 305.38,
+      "water_consumption_liters": 21.43,
+      "material_intake_kg": 49.28,
+      "material_output_kg": 48.53,
+      "efficiency_ratio": 0.985
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:11.734897Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 298.36,
+      "water_consumption_liters": 18.92,
+      "material_intake_kg": 47.92,
+      "material_output_kg": 46.73,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:13.235454Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 467.0,
+      "water_consumption_liters": 49.53,
+      "material_intake_kg": 48.44,
+      "material_output_kg": 30.29,
+      "efficiency_ratio": 0.625
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:14.740878Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 293.93,
+      "water_consumption_liters": 15.06,
+      "material_intake_kg": 48.4,
+      "material_output_kg": 47.48,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:16.246246Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 296.84,
+      "water_consumption_liters": 21.37,
+      "material_intake_kg": 45.18,
+      "material_output_kg": 43.48,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:17.751635Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.79,
+      "water_consumption_liters": 24.07,
+      "material_intake_kg": 46.04,
+      "material_output_kg": 44.56,
+      "efficiency_ratio": 0.968
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:19.255622Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.38,
+      "water_consumption_liters": 24.96,
+      "material_intake_kg": 45.1,
+      "material_output_kg": 43.88,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:20.760993Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 280.62,
+      "water_consumption_liters": 20.85,
+      "material_intake_kg": 45.65,
+      "material_output_kg": 43.38,
+      "efficiency_ratio": 0.95
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:22.265098Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 280.06,
+      "water_consumption_liters": 22.44,
+      "material_intake_kg": 47.84,
+      "material_output_kg": 47.08,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:23.767900Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 303.28,
+      "water_consumption_liters": 18.18,
+      "material_intake_kg": 48.29,
+      "material_output_kg": 45.99,
+      "efficiency_ratio": 0.952
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:25.271423Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 305.47,
+      "water_consumption_liters": 19.13,
+      "material_intake_kg": 49.07,
+      "material_output_kg": 48.0,
+      "efficiency_ratio": 0.978
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:26.776757Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.01,
+      "water_consumption_liters": 15.82,
+      "material_intake_kg": 45.32,
+      "material_output_kg": 43.5,
+      "efficiency_ratio": 0.96
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:28.280015Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 299.54,
+      "water_consumption_liters": 15.34,
+      "material_intake_kg": 45.72,
+      "material_output_kg": 44.16,
       "efficiency_ratio": 0.966
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:13:39.891554Z",
+    "timestamp": "2026-06-11T16:55:29.784136Z",
     "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
-    "metrics": {
-      "power_consumption_kw": 306.9,
-      "material_intake_kg": 49.59,
-      "material_output_kg": 47.7,
-      "efficiency_ratio": 0.962
-    },
-    "status": "CRITICAL_POWER_WASTE"
-  },
-  {
-    "timestamp": "2026-06-08T10:13:41.396459Z",
-    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
     "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 289.51,
-      "material_intake_kg": 47.9,
-      "material_output_kg": 46.46,
-      "efficiency_ratio": 0.97
+      "power_consumption_kw": 282.19,
+      "water_consumption_liters": 23.08,
+      "material_intake_kg": 46.8,
+      "material_output_kg": 45.03,
+      "efficiency_ratio": 0.962
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:13:42.900113Z",
+    "timestamp": "2026-06-11T16:55:31.287997Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 302.38,
+      "water_consumption_liters": 23.93,
+      "material_intake_kg": 48.77,
+      "material_output_kg": 46.55,
+      "efficiency_ratio": 0.954
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:32.792325Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 302.79,
+      "water_consumption_liters": 18.21,
+      "material_intake_kg": 49.77,
+      "material_output_kg": 48.04,
+      "efficiency_ratio": 0.965
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:34.296239Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 291.19,
+      "water_consumption_liters": 15.51,
+      "material_intake_kg": 47.82,
+      "material_output_kg": 46.45,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:35.801547Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 304.63,
+      "water_consumption_liters": 15.02,
+      "material_intake_kg": 49.7,
+      "material_output_kg": 47.98,
+      "efficiency_ratio": 0.965
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:37.304664Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
     "machine_id": "PET_SHREDDER_01",
     "metrics": {
-      "power_consumption_kw": 295.78,
-      "material_intake_kg": 48.16,
-      "material_output_kg": 45.92,
+      "power_consumption_kw": 459.41,
+      "water_consumption_liters": 57.02,
+      "material_intake_kg": 46.32,
+      "material_output_kg": 33.44,
+      "efficiency_ratio": 0.722
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:38.809256Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 287.52,
+      "water_consumption_liters": 22.21,
+      "material_intake_kg": 49.84,
+      "material_output_kg": 47.78,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:40.313924Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 517.62,
+      "water_consumption_liters": 42.64,
+      "material_intake_kg": 48.68,
+      "material_output_kg": 30.92,
+      "efficiency_ratio": 0.635
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:41.819258Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 457.03,
+      "water_consumption_liters": 48.61,
+      "material_intake_kg": 47.66,
+      "material_output_kg": 29.34,
+      "efficiency_ratio": 0.616
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:43.320528Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 303.71,
+      "water_consumption_liters": 21.78,
+      "material_intake_kg": 49.93,
+      "material_output_kg": 48.52,
+      "efficiency_ratio": 0.972
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:44.823171Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.44,
+      "water_consumption_liters": 23.7,
+      "material_intake_kg": 49.11,
+      "material_output_kg": 47.47,
+      "efficiency_ratio": 0.967
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:46.328109Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 305.47,
+      "water_consumption_liters": 22.01,
+      "material_intake_kg": 47.55,
+      "material_output_kg": 45.56,
+      "efficiency_ratio": 0.958
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:47.832628Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 300.09,
+      "water_consumption_liters": 24.49,
+      "material_intake_kg": 47.82,
+      "material_output_kg": 45.89,
+      "efficiency_ratio": 0.96
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:49.337356Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.45,
+      "water_consumption_liters": 17.64,
+      "material_intake_kg": 49.54,
+      "material_output_kg": 47.24,
+      "efficiency_ratio": 0.954
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:50.838972Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 283.05,
+      "water_consumption_liters": 22.31,
+      "material_intake_kg": 48.5,
+      "material_output_kg": 48.02,
+      "efficiency_ratio": 0.99
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:52.342265Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.85,
+      "water_consumption_liters": 15.17,
+      "material_intake_kg": 46.92,
+      "material_output_kg": 45.57,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:53.842933Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 305.71,
+      "water_consumption_liters": 22.0,
+      "material_intake_kg": 48.27,
+      "material_output_kg": 46.8,
+      "efficiency_ratio": 0.969
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:55.348252Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 301.59,
+      "water_consumption_liters": 21.61,
+      "material_intake_kg": 46.12,
+      "material_output_kg": 44.9,
+      "efficiency_ratio": 0.974
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:56.850274Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 305.41,
+      "water_consumption_liters": 19.19,
+      "material_intake_kg": 47.97,
+      "material_output_kg": 47.46,
+      "efficiency_ratio": 0.989
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:58.355635Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 289.9,
+      "water_consumption_liters": 16.29,
+      "material_intake_kg": 47.41,
+      "material_output_kg": 45.34,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:55:59.861005Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 466.61,
+      "water_consumption_liters": 51.12,
+      "material_intake_kg": 46.1,
+      "material_output_kg": 30.07,
+      "efficiency_ratio": 0.652
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:01.364930Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.85,
+      "water_consumption_liters": 18.69,
+      "material_intake_kg": 48.39,
+      "material_output_kg": 46.35,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:02.870262Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 292.0,
+      "water_consumption_liters": 21.78,
+      "material_intake_kg": 49.24,
+      "material_output_kg": 47.22,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:04.375618Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 307.76,
+      "water_consumption_liters": 16.03,
+      "material_intake_kg": 46.96,
+      "material_output_kg": 44.92,
+      "efficiency_ratio": 0.957
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:05.880284Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 281.18,
+      "water_consumption_liters": 20.21,
+      "material_intake_kg": 49.74,
+      "material_output_kg": 47.83,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:07.385628Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 299.34,
+      "water_consumption_liters": 24.68,
+      "material_intake_kg": 49.19,
+      "material_output_kg": 47.37,
+      "efficiency_ratio": 0.963
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:08.889312Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 292.19,
+      "water_consumption_liters": 22.4,
+      "material_intake_kg": 47.65,
+      "material_output_kg": 46.03,
+      "efficiency_ratio": 0.966
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:10.394675Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 307.28,
+      "water_consumption_liters": 21.92,
+      "material_intake_kg": 45.92,
+      "material_output_kg": 45.2,
+      "efficiency_ratio": 0.984
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:11.899996Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 291.12,
+      "water_consumption_liters": 21.72,
+      "material_intake_kg": 47.14,
+      "material_output_kg": 44.88,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:13.405337Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.67,
+      "water_consumption_liters": 17.47,
+      "material_intake_kg": 47.37,
+      "material_output_kg": 45.48,
+      "efficiency_ratio": 0.96
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:14.909558Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 309.08,
+      "water_consumption_liters": 17.69,
+      "material_intake_kg": 46.18,
+      "material_output_kg": 44.29,
+      "efficiency_ratio": 0.959
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:16.412936Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 300.42,
+      "water_consumption_liters": 23.41,
+      "material_intake_kg": 46.18,
+      "material_output_kg": 45.68,
+      "efficiency_ratio": 0.989
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:17.918277Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 290.88,
+      "water_consumption_liters": 20.3,
+      "material_intake_kg": 46.14,
+      "material_output_kg": 45.34,
+      "efficiency_ratio": 0.983
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:19.422352Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 289.48,
+      "water_consumption_liters": 18.1,
+      "material_intake_kg": 48.74,
+      "material_output_kg": 46.41,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:20.925680Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 291.96,
+      "water_consumption_liters": 19.02,
+      "material_intake_kg": 45.94,
+      "material_output_kg": 45.34,
+      "efficiency_ratio": 0.987
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:22.429609Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 498.38,
+      "water_consumption_liters": 48.23,
+      "material_intake_kg": 47.36,
+      "material_output_kg": 29.21,
+      "efficiency_ratio": 0.617
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:23.935021Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 290.27,
+      "water_consumption_liters": 24.84,
+      "material_intake_kg": 49.31,
+      "material_output_kg": 47.55,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:25.440392Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.42,
+      "water_consumption_liters": 21.45,
+      "material_intake_kg": 45.85,
+      "material_output_kg": 43.89,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:26.943549Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 541.79,
+      "water_consumption_liters": 49.77,
+      "material_intake_kg": 45.97,
+      "material_output_kg": 32.69,
+      "efficiency_ratio": 0.711
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:28.448899Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 304.77,
+      "water_consumption_liters": 16.08,
+      "material_intake_kg": 49.69,
+      "material_output_kg": 48.68,
+      "efficiency_ratio": 0.98
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:29.949549Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 288.56,
+      "water_consumption_liters": 23.88,
+      "material_intake_kg": 45.62,
+      "material_output_kg": 44.52,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:31.454616Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 306.34,
+      "water_consumption_liters": 17.82,
+      "material_intake_kg": 45.93,
+      "material_output_kg": 44.15,
+      "efficiency_ratio": 0.961
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:32.957617Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 294.78,
+      "water_consumption_liters": 20.88,
+      "material_intake_kg": 45.82,
+      "material_output_kg": 43.95,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:34.463005Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 305.91,
+      "water_consumption_liters": 23.57,
+      "material_intake_kg": 45.28,
+      "material_output_kg": 43.74,
+      "efficiency_ratio": 0.966
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:35.967566Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 308.66,
+      "water_consumption_liters": 21.23,
+      "material_intake_kg": 45.98,
+      "material_output_kg": 44.7,
+      "efficiency_ratio": 0.972
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:37.472347Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 299.76,
+      "water_consumption_liters": 24.18,
+      "material_intake_kg": 45.57,
+      "material_output_kg": 45.07,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:38.977900Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 295.86,
+      "water_consumption_liters": 23.78,
+      "material_intake_kg": 45.26,
+      "material_output_kg": 43.84,
+      "efficiency_ratio": 0.969
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:40.483325Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 287.43,
+      "water_consumption_liters": 21.01,
+      "material_intake_kg": 48.92,
+      "material_output_kg": 46.59,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:41.987915Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 283.91,
+      "water_consumption_liters": 21.32,
+      "material_intake_kg": 46.57,
+      "material_output_kg": 45.39,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:43.490977Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 462.6,
+      "water_consumption_liters": 50.02,
+      "material_intake_kg": 49.3,
+      "material_output_kg": 34.92,
+      "efficiency_ratio": 0.708
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:44.995487Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 284.01,
+      "water_consumption_liters": 16.7,
+      "material_intake_kg": 49.34,
+      "material_output_kg": 47.29,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:46.499202Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.32,
+      "water_consumption_liters": 17.88,
+      "material_intake_kg": 45.91,
+      "material_output_kg": 43.99,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:48.004539Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 289.64,
+      "water_consumption_liters": 20.61,
+      "material_intake_kg": 48.3,
+      "material_output_kg": 46.77,
+      "efficiency_ratio": 0.968
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:49.509866Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 296.36,
+      "water_consumption_liters": 22.74,
+      "material_intake_kg": 46.09,
+      "material_output_kg": 44.98,
+      "efficiency_ratio": 0.976
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:51.010985Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 299.33,
+      "water_consumption_liters": 16.03,
+      "material_intake_kg": 45.39,
+      "material_output_kg": 43.34,
+      "efficiency_ratio": 0.955
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:52.514914Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 301.66,
+      "water_consumption_liters": 17.22,
+      "material_intake_kg": 45.79,
+      "material_output_kg": 45.02,
+      "efficiency_ratio": 0.983
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:54.019153Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 308.02,
+      "water_consumption_liters": 23.09,
+      "material_intake_kg": 45.63,
+      "material_output_kg": 44.4,
+      "efficiency_ratio": 0.973
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:55.521366Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 307.37,
+      "water_consumption_liters": 19.79,
+      "material_intake_kg": 45.18,
+      "material_output_kg": 44.26,
+      "efficiency_ratio": 0.98
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:57.022291Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 301.82,
+      "water_consumption_liters": 24.28,
+      "material_intake_kg": 47.51,
+      "material_output_kg": 46.2,
+      "efficiency_ratio": 0.973
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:56:58.525962Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 482.07,
+      "water_consumption_liters": 56.28,
+      "material_intake_kg": 48.5,
+      "material_output_kg": 31.99,
+      "efficiency_ratio": 0.66
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:00.028271Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 293.57,
+      "water_consumption_liters": 20.24,
+      "material_intake_kg": 45.98,
+      "material_output_kg": 44.47,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:01.532417Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 299.44,
+      "water_consumption_liters": 22.23,
+      "material_intake_kg": 45.05,
+      "material_output_kg": 43.41,
+      "efficiency_ratio": 0.964
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:03.037888Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 296.1,
+      "water_consumption_liters": 16.9,
+      "material_intake_kg": 48.02,
+      "material_output_kg": 45.71,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:04.541096Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 450.87,
+      "water_consumption_liters": 47.46,
+      "material_intake_kg": 45.29,
+      "material_output_kg": 29.81,
+      "efficiency_ratio": 0.658
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:06.044636Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 284.47,
+      "water_consumption_liters": 23.12,
+      "material_intake_kg": 48.08,
+      "material_output_kg": 46.17,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:07.548620Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 295.41,
+      "water_consumption_liters": 15.44,
+      "material_intake_kg": 46.62,
+      "material_output_kg": 45.64,
+      "efficiency_ratio": 0.979
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:09.051550Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 282.98,
+      "water_consumption_liters": 22.45,
+      "material_intake_kg": 47.11,
+      "material_output_kg": 46.27,
+      "efficiency_ratio": 0.982
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:10.555717Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 475.89,
+      "water_consumption_liters": 55.29,
+      "material_intake_kg": 46.11,
+      "material_output_kg": 28.62,
+      "efficiency_ratio": 0.621
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:12.061093Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 298.96,
+      "water_consumption_liters": 17.68,
+      "material_intake_kg": 46.76,
+      "material_output_kg": 46.27,
+      "efficiency_ratio": 0.99
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:13.565065Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.1,
+      "water_consumption_liters": 20.05,
+      "material_intake_kg": 49.18,
+      "material_output_kg": 47.18,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:15.066859Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.82,
+      "water_consumption_liters": 19.15,
+      "material_intake_kg": 49.17,
+      "material_output_kg": 47.09,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:16.570972Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 292.48,
+      "water_consumption_liters": 19.62,
+      "material_intake_kg": 45.2,
+      "material_output_kg": 43.42,
+      "efficiency_ratio": 0.961
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:18.076273Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 304.34,
+      "water_consumption_liters": 19.73,
+      "material_intake_kg": 49.5,
+      "material_output_kg": 48.78,
+      "efficiency_ratio": 0.985
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:19.581639Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.2,
+      "water_consumption_liters": 22.13,
+      "material_intake_kg": 47.06,
+      "material_output_kg": 45.35,
+      "efficiency_ratio": 0.964
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:21.085872Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 304.49,
+      "water_consumption_liters": 21.31,
+      "material_intake_kg": 46.32,
+      "material_output_kg": 45.7,
+      "efficiency_ratio": 0.987
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:22.588965Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 297.9,
+      "water_consumption_liters": 15.75,
+      "material_intake_kg": 47.54,
+      "material_output_kg": 45.99,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:24.094392Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 292.77,
+      "water_consumption_liters": 20.03,
+      "material_intake_kg": 47.26,
+      "material_output_kg": 45.29,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:25.596837Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 290.11,
+      "water_consumption_liters": 23.74,
+      "material_intake_kg": 45.04,
+      "material_output_kg": 42.9,
       "efficiency_ratio": 0.953
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:13:44.402170Z",
+    "timestamp": "2026-06-11T16:57:27.099346Z",
     "event_type": "machine_telemetry",
-    "machine_id": "PET_SHREDDER_01",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 282.84,
-      "material_intake_kg": 46.11,
-      "material_output_kg": 44.86,
-      "efficiency_ratio": 0.973
+      "power_consumption_kw": 457.68,
+      "water_consumption_liters": 47.12,
+      "material_intake_kg": 47.85,
+      "material_output_kg": 35.17,
+      "efficiency_ratio": 0.735
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:28.604703Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 300.72,
+      "water_consumption_liters": 17.23,
+      "material_intake_kg": 49.3,
+      "material_output_kg": 48.78,
+      "efficiency_ratio": 0.989
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:30.107225Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 286.76,
+      "water_consumption_liters": 20.16,
+      "material_intake_kg": 45.24,
+      "material_output_kg": 43.19,
+      "efficiency_ratio": 0.955
     },
     "status": "NORMAL"
   },
   {
-    "timestamp": "2026-06-08T10:13:45.903359Z",
+    "timestamp": "2026-06-11T16:57:31.612535Z",
     "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
     "machine_id": "EXTRUDER_UNIT_01",
     "metrics": {
-      "power_consumption_kw": 301.97,
-      "material_intake_kg": 47.68,
-      "material_output_kg": 46.41,
-      "efficiency_ratio": 0.973
+      "power_consumption_kw": 280.34,
+      "water_consumption_liters": 24.04,
+      "material_intake_kg": 47.55,
+      "material_output_kg": 45.62,
+      "efficiency_ratio": 0.959
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:33.117821Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 511.88,
+      "water_consumption_liters": 51.46,
+      "material_intake_kg": 47.16,
+      "material_output_kg": 31.42,
+      "efficiency_ratio": 0.666
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:34.622400Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 286.12,
+      "water_consumption_liters": 20.77,
+      "material_intake_kg": 47.14,
+      "material_output_kg": 46.58,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:36.125792Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 288.89,
+      "water_consumption_liters": 19.25,
+      "material_intake_kg": 45.94,
+      "material_output_kg": 45.47,
+      "efficiency_ratio": 0.99
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:37.627011Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 288.46,
+      "water_consumption_liters": 23.85,
+      "material_intake_kg": 49.07,
+      "material_output_kg": 46.61,
+      "efficiency_ratio": 0.95
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:39.129275Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "EXTRUDER_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 281.99,
+      "water_consumption_liters": 15.64,
+      "material_intake_kg": 48.36,
+      "material_output_kg": 47.56,
+      "efficiency_ratio": 0.984
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:40.634818Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 308.1,
+      "water_consumption_liters": 22.13,
+      "material_intake_kg": 49.27,
+      "material_output_kg": 46.83,
+      "efficiency_ratio": 0.95
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:42.136190Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 306.61,
+      "water_consumption_liters": 21.51,
+      "material_intake_kg": 49.82,
+      "material_output_kg": 49.17,
+      "efficiency_ratio": 0.987
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:43.641610Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 538.52,
+      "water_consumption_liters": 46.08,
+      "material_intake_kg": 49.95,
+      "material_output_kg": 33.19,
+      "efficiency_ratio": 0.665
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:45.142039Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 280.03,
+      "water_consumption_liters": 16.06,
+      "material_intake_kg": 49.19,
+      "material_output_kg": 48.24,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-06-11T16:57:46.647415Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 300.72,
+      "water_consumption_liters": 19.75,
+      "material_intake_kg": 47.65,
+      "material_output_kg": 46.11,
+      "efficiency_ratio": 0.968
     },
     "status": "CRITICAL_POWER_WASTE"
   }
