@@ -166,7 +166,7 @@
   - interrupt_state — present when paused: ApprovalRequest + context + checkpoint reference
   - run_metadata — start time, config snapshot, cost, latency, token usage so far
 
-  Pluggable backends: StorageBackend ABC with SQLite (dev), Postgres (prod), Memory (tests).
+  Pluggable backends: StorageBackend ABC with DuckDB (dev + prod), Memory (tests).
 
   Resume: load Thread by thread_id + latest checkpoint_id, reconstruct RunContext, re-enter Orchestrator at last completed
   step, restore stream_event_history for replay.
@@ -181,7 +181,7 @@
   3. StateManager.checkpoint() — run safely serialized, interrupt_state written
   4. HITLHandler.notify(request) — sends to approval channel
   5. Execution suspends
-  6. Human acts via CLI (raic approve <id>) or API (POST /approvals/{id}/approve)
+  6. Human acts via CLI or API (POST /approvals/{id}/decide)
   7. HITLHandler.resume(decision) — decision types: Approve, Reject, Modify(new_params)
   8. On Approve/Modify: execute tool, continue
   9. On Reject: return ToolResult(success=False, rejected=True), agent handles gracefully
@@ -230,11 +230,7 @@
   ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
   │ GET    │ /threads/{thread_id}/stream-history │ Full replay of event stream (for QA) │
   ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
-  │ POST   │ /approvals/{approval_id}/approve    │ Approve a pending action             │
-  ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
-  │ POST   │ /approvals/{approval_id}/reject     │ Reject a pending action              │
-  ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
-  │ POST   │ /approvals/{approval_id}/modify     │ Approve with modified params         │
+  │ POST   │ /approvals/{approval_id}/decide     │ Submit decision: approve/reject/modify│
   ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
   │ POST   │ /threads/{thread_id}/resume         │ Resume a paused thread               │
   ├────────┼─────────────────────────────────────┼──────────────────────────────────────┤
@@ -243,6 +239,9 @@
 
   Streaming: Server-Sent Events (SSE). Each RunEvent from contracts/events.py is emitted as a typed SSE event. Frontend
   subscribes to /threads/{thread_id}/events for live updates.
+
+  Approval decision body: {"decision": "approve" | "reject" | "modify", "params": {...}}
+  Modify supplies modified tool params; reject and approve require no params.
 
   Consumer isolation rule: frontend never calls orchestrator/, agents/, or tools/ directly. All access through api/. QA
   tooling inspects threads, checkpoints, and event streams via api/ only.
@@ -300,7 +299,7 @@
   ---
   3. Data Flow (End-to-End)
 
-  User: raic run "research X and save report to output/report.md"
+  User: backend run "research X and save report to output/report.md"
     │
     ▼
   CLI → Orchestrator.create_run(task, config)
@@ -337,7 +336,7 @@
                   └─► [via CLI] "OpsAgent wants to write output/report.md. Approve? [y/n/m]"
     │
     ▼                                    ← execution suspended here
-  User approves: raic approve <id>
+  User approves: backend approve <id>
     │
     ▼
   HITLHandler.resume(Approve)
@@ -362,7 +361,7 @@
   ---
   4. Repository Structure
 
-  raic/
+  backend/
   │
   ├── .github/
   │   └── workflows/
@@ -412,12 +411,11 @@
   │   └── openai/
   │       └── client.py
   │
-  ├── state/                      # Persistence. Imports contracts/ only.
+  ├── state/                      # Persistence. Imports contracts/ only. 
   │   ├── manager.py              # StateManager
   │   └── backends/
   │       ├── base.py             # StorageBackend (ABC)
-  │       ├── sqlite.py
-  │       ├── postgres.py
+  │       ├── duckdb.py           # DuckDB (dev + prod)
   │       └── memory.py           # Tests only
   │
   ├── hitl/                       # Human-in-the-loop. Imports contracts/ and state/.
@@ -436,7 +434,7 @@
   │   ├── routes/
   │   │   ├── runs.py             # POST /runs, GET /runs/{run_id}
   │   │   ├── threads.py          # GET /threads/{id}, /events, /checkpoints, /stream-history
-  │   │   └── approvals.py        # POST /approvals/{id}/approve|reject|modify, GET /pending
+  │   │   └── approvals.py        # POST /approvals/{id}/decide (approve/reject/modify), GET /pending
   │   └── streaming.py            # SSE emitter
   │
   ├── observability/              # Cross-cutting. Imported by all. Imports nothing from system.
@@ -453,12 +451,12 @@
   │       └── prod.yaml
   │
   ├── cli/                        # Local CLI. Imports orchestrator/ and state/.
-  │   ├── main.py                 # Entry point: raic
+  │   ├── main.py                 # Entry point: backend
   │   └── commands/
-  │       ├── run.py              # raic run "<task>"
-  │       ├── eval.py             # raic eval [--suite <name>]
-  │       ├── approve.py          # raic approve <approval_id>
-  │       └── resume.py           # raic resume <thread_id>
+  │       ├── run.py              # backend run "<task>"
+  │       ├── eval.py             # backend eval [--suite <name>]
+  │       ├── approve.py          # backend approve <approval_id>
+  │       └── resume.py           # backend resume <thread_id>
   │
   ├── evals/                      # ← Evaluation pipeline. Imports orchestrator/ directly.
   │   ├── runner.py               # EvalRunner
@@ -508,6 +506,9 @@
   ├── .env.example
   ├── .gitignore
   ├── CLAUDE.md
+  ├── Dockerfile                  # Production image — multi-stage, non-root user
+  ├── docker-compose.yml          # Local dev: app + optional Jaeger for traces
+  ├── .dockerignore
   └── README.md
 
   Dependency rules (enforced by linter):
@@ -531,8 +532,7 @@
 
   Decision: All shared wire-format types live in contracts/. No layer defines its own request/response types.
 
-  Reasoning: Prevents three copies of "what does a ToolResult look like" drifting apart. The API, runtime, and eval pipeline
-  all speak the same language without coupling their implementations. Contracts become the de facto API specification.
+  Reasoning: Prevents three copies of "what does a ToolResult look like" drifting apart. The API, runtime, and eval pipeline. All speak the same language without coupling their implementations. Contracts become the de facto API specification.
 
   Alternatives: Shared types defined in the layer that "owns" them (e.g., ToolResult defined in tools/). All consumers
   import from tools/.
@@ -557,8 +557,7 @@
   ---
   ADR-003: Thread ID and Run ID are distinct, both persisted
 
-  Decision: thread_id identifies a conversation (stable across all runs). run_id identifies a single invocation (new per
-  start and per resume). Both stored on every event, log line, and checkpoint.
+  Decision: thread_id identifies a conversation (stable across all runs). run_id identifies a single invocation (new per start and per resume). Both stored on every event, log line, and checkpoint.
 
   Reasoning: Required for LangGraph Studio compatibility (see Section 8). Required for QA: "show me all runs for thread X"
   vs "show me exactly what happened in run Y". Required for debugging: interrupt, modify, resume creates a new run_id on the
@@ -597,9 +596,7 @@
 
   Decision: Agents never import tool implementations. All tool calls route through ToolRegistry.dispatch().
 
-  Reasoning: Single permission enforcement point. Tools mockable in tests without touching agent code. Permission manifest
-  per agent is auditable and reviewable. Mirrors MCP protocol — future migration to actual MCP servers requires only
-  replacing ToolServer implementations.
+  Reasoning: Single permission enforcement point. Tools mockable in tests without touching agent code. Permission manifest per agent is auditable and reviewable. Mirrors MCP protocol — future migration to actual MCP servers requires only replacing ToolServer implementations.
 
   Tradeoffs: One indirection layer. Worth it for safety, testability, and future compatibility.
 
@@ -609,20 +606,16 @@
   Decision: On approval_required, execution pauses. Checkpoint + interrupt_state written. Resume via
   HITLHandler.resume(decision).
 
-  Reasoning: Approval may take minutes or hours. Blocking a live coroutine is not production-viable. Checkpoint-then-resume
-  supports CLI and async channels (webhook, API) without changing agent code.
+  Reasoning: Approval may take minutes or hours. Blocking a live coroutine is not production-viable. Checkpoint-then-resume supports CLI and async channels (webhook, API) without changing agent code.
 
-  Tradeoffs: Resume requires checkpoint load. Adds one code path per tool execution. Worth it — without this, HITL only
-  works in synchronous CLI sessions.
+  Tradeoffs: Resume requires checkpoint load. Adds one code path per tool execution. Worth it — without this, HITL only works in synchronous CLI sessions.
 
   ---
   ADR-008: Tool permission manifests are per-agent YAML files
 
-  Decision: Each agent directory contains permissions.yaml declaring: allowed tools, approval_required flag per tool,
-  allowed_operations, risk_level.
+  Decision: Each agent directory contains permissions.yaml declaring: allowed tools, approval_required flag per tool, allowed_operations, risk_level.
 
-  Reasoning: Permissions as code — reviewable in PRs, versioned in git, auditable without reading Python. Adding a new tool
-  to an agent is a one-line YAML change, not a code change.
+  Reasoning: Permissions as code — reviewable in PRs, versioned in git, auditable without reading Python. Adding a new tool to an agent is a one-line YAML change, not a code change.
 
   Alternatives: Permissions hardcoded in PermissionsManager, or declared as Python decorators.
 
@@ -634,14 +627,11 @@
   Decision: Evals are separate from unit tests. evals/runner.py drives them. Datasets stored as JSONL under
   evals/datasets/v1/. Dataset version is part of every EvalReport.
 
-  Reasoning: Agent behavior is probabilistic and context-dependent — unit tests cannot cover it. Offline evals with fixed,
-  versioned datasets give reproducible regression signal. Versioning datasets prevents silent dataset drift breaking
-  historical comparisons.
+  Reasoning: Agent behavior is probabilistic and context-dependent — unit tests cannot cover it. Offline evals with fixed, versioned datasets give reproducible regression signal. Versioning datasets prevents silent dataset drift breaking historical comparisons.
 
   Alternatives: Online evals only, using production traffic.
 
-  Tradeoffs: Datasets go stale relative to production. Mitigated by: version tagging, quarterly review process, regression
-  gate in CI.
+  Tradeoffs: Datasets go stale relative to production. Mitigated by: version tagging, quarterly review process, regression gate in CI.
 
   ---
   ADR-010: Monorepo, single deployable
@@ -720,7 +710,7 @@
   Baselines
 
   - Stored as artifacts in CI, not committed to repo
-  - Updated explicitly via raic eval --update-baseline (requires manual approval in CI)
+  - Updated explicitly via backend eval --update-baseline (requires manual approval in CI)
   - Every EvalReport records: dataset version, provider, model, run timestamp
 
   Cost control in evals
@@ -745,13 +735,13 @@
         Covers: orchestrator flow, HITL pause/resume, checkpoint recovery
 
   Stage 3 — Eval regression gate (~5-10min depending on suite)
-    ├── raic eval --tags smoke (subset, mock provider)
+    ├── backend eval --tags smoke (subset, mock provider)
     ├── Compare to stored baseline
     └── Block merge if regression > 5% on any agent
 
   Stage 4 — Staging deploy (after merge to main)
-    ├── Build artifact
-    ├── Deploy to staging environment
+    ├── Build Docker image + push to registry
+    ├── Deploy container to staging environment
     ├── Run scripts/smoke_test.sh (real provider, limited budget)
     └── Block prod promotion on failure
 
@@ -781,7 +771,7 @@
   ┌───────────────────┬─────────────────────┬───────────┬───────────┐
   │      Setting      │         dev         │  staging  │   prod    │
   ├───────────────────┼─────────────────────┼───────────┼───────────┤
-  │ Storage backend   │ SQLite              │ Postgres  │ Postgres  │
+  │ Storage backend   │ DuckDB              │ DuckDB    │ DuckDB    │
   ├───────────────────┼─────────────────────┼───────────┼───────────┤
   │ Provider          │ Mock / Anthropic    │ Anthropic │ Anthropic │
   ├───────────────────┼─────────────────────┼───────────┼───────────┤
@@ -804,8 +794,7 @@
   ---
   8. LangGraph / Agent Chat UI Compatibility Assumptions
 
-  This section documents design decisions made specifically to preserve compatibility with LangGraph-based tooling (e.g.,
-  LangGraph Studio, Agent Chat UIs) and general agent UI patterns.
+  This section documents design decisions made specifically to preserve compatibility with LangGraph-based tooling (e.g., LangGraph Studio, Agent Chat UIs) and general agent UI patterns.
 
   ---
   8.1 Thread and Run Identity
@@ -824,12 +813,9 @@
 
   LangGraph assumption: checkpointers implement get(config), put(config, checkpoint), list(config).
 
-  Architecture decision: our StorageBackend ABC exposes semantically equivalent operations. The interface is not identical
-  to LangGraph's BaseCheckpointSaver, but the operations map directly: get_checkpoint(thread_id, checkpoint_id),
-  put_checkpoint(thread_id, checkpoint), list_checkpoints(thread_id).
+  Architecture decision: our StorageBackend ABC exposes semantically equivalent operations. The interface is not identical to LangGraph's BaseCheckpointSaver, but the operations map directly: get_checkpoint(thread_id, checkpoint_id), put_checkpoint(thread_id, checkpoint), list_checkpoints(thread_id).
 
-  Implication: A LangGraph-compatible saver adapter can be added to state/backends/ without modifying any core logic. This
-  is deferred — but the interface gap is small by design.
+  Implication: A LangGraph-compatible saver adapter can be added to state/backends/ without modifying any core logic. This is deferred — but the interface gap is small by design.
 
   ---
   8.3 Interrupt / Resume Semantics
@@ -839,8 +825,7 @@
   Architecture decision: our HITLHandler.pause() / HITLHandler.resume(ApprovalDecision) is semantically equivalent.
   Execution suspends at a tool boundary. Resume reloads checkpoint and continues.
 
-  Implication: the interrupt/resume pattern is compatible with LangGraph's human-in-the-loop model. A LangGraph UI that
-  expects interrupt_before/interrupt_after semantics can be mapped to our approval_required permission flag.
+  Implication: the interrupt/resume pattern is compatible with LangGraph's human-in-the-loop model. A LangGraph UI that expects interrupt_before/interrupt_after semantics can be mapped to our approval_required permission flag.
 
   ---
   8.4 Streaming Event Shape
@@ -848,18 +833,14 @@
   LangGraph assumption: Agent Chat UIs expect a stream of typed events. Common types: on_chain_start, on_chain_end,
   on_tool_start, on_tool_end, on_chat_model_stream, on_chat_model_end.
 
-  Architecture decision: our contracts/events.py defines typed RunEvent variants. api/streaming.py emits these as SSE
-  events. The type names do not match LangGraph's names verbatim.
+  Architecture decision: our contracts/events.py defines typed RunEvent variants. api/streaming.py emits these as SSE events. The type names do not match LangGraph's names verbatim.
 
-  Implication: a thin adapter in api/streaming.py can remap our event types to LangGraph-compatible names if needed. The
-  event data is already structurally compatible (agent name, step info, tool name, message content, stop reason). This
-  adapter is deferred but the data is present.
+  Implication: a thin adapter in api/streaming.py can remap our event types to LangGraph-compatible names if needed. The event data is already structurally compatible (agent name, step info, tool name, message content, stop reason). This adapter is deferred but the data is present.
 
   ---
   8.5 Persistence Requirements for UI
 
-  LangGraph Studio assumption: the UI can: list threads, inspect thread state, view checkpoint history, replay event
-  streams, trigger resume.
+  LangGraph Studio assumption: the UI can: list threads, inspect thread state, view checkpoint history, replay event streams, trigger resume.
 
   Architecture decision: all of these are exposed via api/:
   - GET /threads/{thread_id} — full thread state
@@ -874,9 +855,7 @@
 
   LangGraph assumption: state must be serializable (JSON). TypedDict-based state schemas.
 
-  Architecture decision: contracts/state.py types are Pydantic models (or dataclasses with __dict__ serialization). All
-  state written to storage backend is JSON-serializable. No unserializable Python objects (no functions, no class instances)
-  stored in checkpoints.
+  Architecture decision: contracts/state.py types are Pydantic models (or dataclasses with __dict__ serialization). All state written to storage backend is JSON-serializable. No unserializable Python objects (no functions, no class instances) stored in checkpoints.
 
   Implication: directly compatible. A LangGraph-style state schema can be adopted at implementation time with no
   architectural changes required.
@@ -884,12 +863,9 @@
   ---
   8.7 What is Not Compatible (and Why)
 
-  - LangGraph graph definition format (nodes, edges, conditional edges): our supervisor/worker routing is implemented in
-  Python logic inside supervisor/router.py, not as a declarative graph. Migration to a LangGraph graph definition is
-  possible but not required — the runtime behavior is equivalent.
-  - LangGraph-specific tool binding format: our provider adapters normalize tool definitions to each provider's native
-  format. LangGraph uses its own tool-binding layer. Integration would require adapting tool definitions at the provider
-  adapter layer, not in agent code.
+  - LangGraph graph definition format (nodes, edges, conditional edges): our supervisor/worker routing is implemented in Python logic inside supervisor/router.py, not as a declarative graph. Migration to a LangGraph graph definition is possible but not required — the runtime behavior is equivalent.
+
+  - LangGraph-specific tool binding format: our provider adapters normalize tool definitions to each provider's native format. LangGraph uses its own tool-binding layer. Integration would require adapting tool definitions at the provider adapter layer, not in agent code.
 
   These gaps are acceptable at this architecture phase. Both can be closed via thin adapters without modifying core logic.
 
@@ -1099,18 +1075,17 @@
   Phase order (each phase leaves system runnable)
 
   Phase 1 — Foundation
-  contracts/ → config/ → observability/logger.py → providers/base.py + anthropic/client.py → state/models.py +
+  Dockerfile + docker-compose.yml → contracts/ → config/ → observability/logger.py → providers/base.py + anthropic/client.py → state/models.py +
   backends/memory.py → agents/base.py
 
   Phase 2 — Core runtime
   tools/base.py + registry.py + permissions.py → hitl/models.py + handler.py + channels/cli.py → orchestrator/context.py +
   runner.py → agents/supervisor/ + agents/research/ → cli/commands/run.py
 
-  At end of Phase 2: raic run "<task>" works end-to-end.
+  At end of Phase 2: backend run "<task>" works end-to-end.
 
   Phase 3 — Persistence and safety
-  state/backends/sqlite.py → cli/commands/resume.py + cli/commands/approve.py → tools/filesystem/server.py + agents/ops/ →
-  full HITL flow with checkpoint/resume
+  state/backends/duckdb.py → cli/commands/resume.py + cli/commands/approve.py → tools/filesystem/server.py + agents/ops/ → full HITL flow with checkpoint/resume
 
   At end of Phase 3: HITL approval works. Runs survive restarts.
 
@@ -1123,7 +1098,146 @@
   evals/runner.py + scorers/ + initial datasets → evals/cases/ → CI eval gate → .github/workflows/
 
   Phase 6 — Production hardening
-  state/backends/postgres.py → providers/openai/client.py → hitl/channels/api.py → staging + prod deploy pipeline
+  providers/openai/client.py → hitl/channels/api.py → staging + prod deploy pipeline
+
+  ---
+  11. Database Schema (DuckDB)
+
+  All persistent state stored in a single DuckDB file (default: ./data/backend.duckdb). DuckDB is embedded — no separate
+  server process. The duckdb.py backend opens the file on startup and holds a single connection.
+
+  Table: threads
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ thread_id        │ TEXT PK       │ Stable conversation ID. Never changes.           │
+  │ created_at       │ TIMESTAMP     │                                                  │
+  │ last_run_id      │ TEXT          │ FK → runs.run_id. Updated on each new run.       │
+  │ status           │ TEXT          │ active | complete | interrupted                  │
+  │ metadata_json    │ JSON          │ User-supplied labels, tags, display name, etc.   │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Table: runs
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ run_id           │ TEXT PK       │                                                  │
+  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
+  │ status           │ TEXT          │ pending | running | complete | failed | interrupted│
+  │ created_at       │ TIMESTAMP     │                                                  │
+  │ completed_at     │ TIMESTAMP     │ NULL until terminal state                        │
+  │ config_json      │ JSON          │ Snapshot of RunContext config at start           │
+  │ cost_usd         │ DECIMAL(10,6) │ Accumulated LLM cost for this run                │
+  │ total_tokens     │ INTEGER       │ input + output tokens                            │
+  │ error            │ TEXT          │ NULL unless status = failed                      │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Table: messages
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ message_id       │ TEXT PK       │                                                  │
+  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
+  │ run_id           │ TEXT FK       │ → runs.run_id (which run produced this message)  │
+  │ role             │ TEXT          │ user | assistant | tool                          │
+  │ content          │ TEXT          │ Raw text or JSON-encoded tool call/result        │
+  │ sequence         │ INTEGER       │ Ordering within the thread (not just the run)    │
+  │ created_at       │ TIMESTAMP     │                                                  │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Table: checkpoints
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ checkpoint_id    │ TEXT PK       │                                                  │
+  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
+  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
+  │ step_id          │ TEXT          │ Which agent step or tool call triggered this      │
+  │ is_interrupt     │ BOOLEAN       │ True when checkpoint holds an interrupt_state     │
+  │ state_json       │ JSON          │ Full serialized Thread + RunContext state         │
+  │ created_at       │ TIMESTAMP     │                                                  │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Table: stream_events
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ event_id         │ TEXT PK       │                                                  │
+  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
+  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
+  │ sequence         │ INTEGER       │ Strict ordering within a run. Used for replay.   │
+  │ event_type       │ TEXT          │ tool_call | agent_result | approval_request |    │
+  │                  │               │ run_complete | stream_chunk | error              │
+  │ event_json       │ JSON          │ Full RunEvent payload (from contracts/events.py) │
+  │ created_at       │ TIMESTAMP     │                                                  │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Table: approvals
+  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
+  │     Column       │     Type      │                    Notes                         │
+  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
+  │ approval_id      │ TEXT PK       │                                                  │
+  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
+  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
+  │ agent_id         │ TEXT          │ Which agent triggered the approval request        │
+  │ tool_name        │ TEXT          │ Which tool requires approval                     │
+  │ status           │ TEXT          │ pending | approved | rejected | modified | timed_out│
+  │ request_json     │ JSON          │ Full ApprovalRequest (tool name, params, context)│
+  │ decision_json    │ JSON          │ Full ApprovalDecision. NULL until decided.        │
+  │ created_at       │ TIMESTAMP     │                                                  │
+  │ decided_at       │ TIMESTAMP     │ NULL until terminal status                       │
+  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  Indexes (DuckDB — partial scans are fast but explicit indexes help on FK lookups):
+  - runs(thread_id)                         — list all runs for a thread
+  - checkpoints(thread_id, run_id)          — checkpoint lookup by run
+  - stream_events(thread_id, run_id, sequence) — ordered event replay
+  - approvals(status) WHERE status='pending' — fast pending-approval queries
+
+  Retention:
+  - stream_events pruned after configurable N days (default: 30)
+  - Non-interrupt checkpoints pruned after run completes (keep only interrupt + final)
+  - Pruning runs as a background task, not on hot path
+
+  ---
+  12. Docker
+
+  Local development
+
+  docker-compose.yml brings up the full local stack with one command.
+
+  Services:
+  - backend — the Python application (volume-mounted source, hot-reload via watchfiles)
+  - jaeger   — optional OpenTelemetry trace UI (image: jaegertracing/all-in-one)
+
+  DuckDB is embedded — no database container. The .duckdb file is bind-mounted to ./data/.
+
+  # start local dev stack
+  docker compose up
+
+  # run evals against local stack
+  docker compose run --rm backend backend eval --tags smoke
+
+  Environment variables (from .env):
+  - ANTHROPIC_API_KEY
+  - BACKEND_ENV=dev
+  - DUCKDB_PATH=/data/backend.duckdb
+  - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317  (optional)
+
+  Production image (Dockerfile)
+
+  - Multi-stage build: build stage installs deps, final stage copies only the venv
+  - Non-root user (UID 1000)
+  - DUCKDB_PATH env var controls database file location (mount a persistent volume)
+  - Health check: GET /health → 200
+
+  CI/CD integration
+
+  The deploy.yml workflow:
+  1. docker build → tag with git SHA
+  2. docker push to registry
+  3. Deploy tagged image to staging
+  4. Run smoke tests against staging container
 
   ---
   Assumptions
@@ -1131,6 +1245,6 @@
   1. Python / asyncio — assumed. Streaming output requires async I/O.
   2. Anthropic as default provider — first adapter implemented. OpenAI is Phase 6.
   3. FastAPI or Starlette for api/ — assumed for SSE support. Not locked in until Phase 4.
-  4. Single-machine deployment — no distributed state. Postgres assumed single-node initially.
+  4. Single-machine deployment — no distributed state. DuckDB used across all environments; single-file database per deployment.
   5. No real-time streaming to end users via WebSocket (yet) — SSE sufficient for Phase 4. WebSocket deferred.
   6. LangGraph compatibility is design-influencing, not a hard dependency — architecture preserves compatibility but does not require LangGraph to be installed or used.
