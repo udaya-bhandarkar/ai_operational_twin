@@ -1106,87 +1106,99 @@
   All persistent state stored in a single DuckDB file (default: ./data/backend.duckdb). DuckDB is embedded — no separate
   server process. The duckdb.py backend opens the file on startup and holds a single connection.
 
-  Table: threads
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ thread_id        │ TEXT PK       │ Stable conversation ID. Never changes.           │
-  │ created_at       │ TIMESTAMP     │                                                  │
-  │ last_run_id      │ TEXT          │ FK → runs.run_id. Updated on each new run.       │
-  │ status           │ TEXT          │ active | complete | interrupted                  │
-  │ metadata_json    │ JSON          │ User-supplied labels, tags, display name, etc.   │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+  TABLE: threads
 
-  Table: runs
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ run_id           │ TEXT PK       │                                                  │
-  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
-  │ status           │ TEXT          │ pending | running | complete | failed | interrupted│
-  │ created_at       │ TIMESTAMP     │                                                  │
-  │ completed_at     │ TIMESTAMP     │ NULL until terminal state                        │
-  │ config_json      │ JSON          │ Snapshot of RunContext config at start           │
-  │ cost_usd         │ DECIMAL(10,6) │ Accumulated LLM cost for this run                │
-  │ total_tokens     │ INTEGER       │ input + output tokens                            │
-  │ error            │ TEXT          │ NULL unless status = failed                      │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+  +---------------+-------------+--------------------------------------------------+
+  | Column        | Type        | Notes                                            |
+  +---------------+-------------+--------------------------------------------------+
+  | thread_id     | TEXT PK     | Stable conversation ID. Never changes.           |
+  | created_at    | TIMESTAMP   |                                                  |
+  | last_run_id   | TEXT        | FK -> runs.run_id. Updated on each new run.      |
+  | status        | TEXT        | active | complete | interrupted                  |
+  | metadata_json | JSON        | User-supplied labels, tags, display name, etc.   |
+  +---------------+-------------+--------------------------------------------------+
 
-  Table: messages
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ message_id       │ TEXT PK       │                                                  │
-  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
-  │ run_id           │ TEXT FK       │ → runs.run_id (which run produced this message)  │
-  │ role             │ TEXT          │ user | assistant | tool                          │
-  │ content          │ TEXT          │ Raw text or JSON-encoded tool call/result        │
-  │ sequence         │ INTEGER       │ Ordering within the thread (not just the run)    │
-  │ created_at       │ TIMESTAMP     │                                                  │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
 
-  Table: checkpoints
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ checkpoint_id    │ TEXT PK       │                                                  │
-  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
-  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
-  │ step_id          │ TEXT          │ Which agent step or tool call triggered this      │
-  │ is_interrupt     │ BOOLEAN       │ True when checkpoint holds an interrupt_state     │
-  │ state_json       │ JSON          │ Full serialized Thread + RunContext state         │
-  │ created_at       │ TIMESTAMP     │                                                  │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+  TABLE: runs
 
-  Table: stream_events
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ event_id         │ TEXT PK       │                                                  │
-  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
-  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
-  │ sequence         │ INTEGER       │ Strict ordering within a run. Used for replay.   │
-  │ event_type       │ TEXT          │ tool_call | agent_result | approval_request |    │
-  │                  │               │ run_complete | stream_chunk | error              │
-  │ event_json       │ JSON          │ Full RunEvent payload (from contracts/events.py) │
-  │ created_at       │ TIMESTAMP     │                                                  │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+  +---------------+---------------+--------------------------------------------------+
+  | Column        | Type          | Notes                                            |
+  +---------------+---------------+--------------------------------------------------+
+  | run_id        | TEXT PK       |                                                  |
+  | thread_id     | TEXT FK       | -> threads.thread_id                             |
+  | status        | TEXT          | pending | running | complete | failed | interrupted |
+  | created_at    | TIMESTAMP     |                                                  |
+  | completed_at  | TIMESTAMP     | NULL until terminal state                        |
+  | config_json   | JSON          | Snapshot of RunContext config at start           |
+  | cost_usd      | DECIMAL(10,6) | Accumulated LLM cost for this run                |
+  | total_tokens  | INTEGER       | Input + output tokens                            |
+  | error         | TEXT          | NULL unless status = failed                      |
+  +---------------+---------------+--------------------------------------------------+
 
-  Table: approvals
-  ┌──────────────────┬───────────────┬──────────────────────────────────────────────────┐
-  │     Column       │     Type      │                    Notes                         │
-  ├──────────────────┼───────────────┼──────────────────────────────────────────────────┤
-  │ approval_id      │ TEXT PK       │                                                  │
-  │ thread_id        │ TEXT FK       │ → threads.thread_id                              │
-  │ run_id           │ TEXT FK       │ → runs.run_id                                    │
-  │ agent_id         │ TEXT          │ Which agent triggered the approval request        │
-  │ tool_name        │ TEXT          │ Which tool requires approval                     │
-  │ status           │ TEXT          │ pending | approved | rejected | modified | timed_out│
-  │ request_json     │ JSON          │ Full ApprovalRequest (tool name, params, context)│
-  │ decision_json    │ JSON          │ Full ApprovalDecision. NULL until decided.        │
-  │ created_at       │ TIMESTAMP     │                                                  │
-  │ decided_at       │ TIMESTAMP     │ NULL until terminal status                       │
-  └──────────────────┴───────────────┴──────────────────────────────────────────────────┘
+
+  TABLE: messages
+
+  +---------------+-------------+--------------------------------------------------+
+  | Column        | Type        | Notes                                            |
+  +---------------+-------------+--------------------------------------------------+
+  | message_id    | TEXT PK     |                                                  |
+  | thread_id     | TEXT FK     | -> threads.thread_id                             |
+  | run_id        | TEXT FK     | -> runs.run_id (which run produced this message) |
+  | role          | TEXT        | user | assistant | tool                          |
+  | content       | TEXT        | Raw text or JSON-encoded tool call/result        |
+  | sequence      | INTEGER     | Ordering within the thread (not just the run)    |
+  | created_at    | TIMESTAMP   |                                                  |
+  +---------------+-------------+--------------------------------------------------+
+
+
+  TABLE: checkpoints
+
+  +---------------+-------------+--------------------------------------------------+
+  | Column        | Type        | Notes                                            |
+  +---------------+-------------+--------------------------------------------------+
+  | checkpoint_id | TEXT PK     |                                                  |
+  | thread_id     | TEXT FK     | -> threads.thread_id                             |
+  | run_id        | TEXT FK     | -> runs.run_id                                   |
+  | step_id       | TEXT        | Agent step or tool call that triggered this      |
+  | is_interrupt  | BOOLEAN     | True when checkpoint holds interrupt_state       |
+  | state_json    | JSON        | Full serialized Thread + RunContext state        |
+  | created_at    | TIMESTAMP   |                                                  |
+  +---------------+-------------+--------------------------------------------------+
+
+
+  TABLE: stream_events
+
+  +---------------+-------------+--------------------------------------------------+
+  | Column        | Type        | Notes                                            |
+  +---------------+-------------+--------------------------------------------------+
+  | event_id      | TEXT PK     |                                                  |
+  | thread_id     | TEXT FK     | -> threads.thread_id                             |
+  | run_id        | TEXT FK     | -> runs.run_id                                   |
+  | sequence      | INTEGER     | Strict ordering within a run. Used for replay.   |
+  | event_type    | TEXT        | tool_call | agent_result | approval_request |   |
+  |               |             | run_complete | stream_chunk | error             |
+  | event_json    | JSON        | Full RunEvent payload                            |
+  | created_at    | TIMESTAMP   | (from contracts/events.py)                       |
+  +---------------+-------------+--------------------------------------------------+
+
+
+  TABLE: approvals
+
+  +---------------+-------------+--------------------------------------------------+
+  | Column        | Type        | Notes                                            |
+  +---------------+-------------+--------------------------------------------------+
+  | approval_id   | TEXT PK     |                                                  |
+  | thread_id     | TEXT FK     | -> threads.thread_id                             |
+  | run_id        | TEXT FK     | -> runs.run_id                                   |
+  | agent_id      | TEXT        | Agent that triggered approval request            |
+  | tool_name     | TEXT        | Tool requiring approval                          |
+  | status        | TEXT        | pending | approved | rejected | modified |      |
+  |               |             | timed_out                                        |
+  | request_json  | JSON        | Full ApprovalRequest (tool, params, context)     |
+  | decision_json | JSON        | Full ApprovalDecision. NULL until decided.       |
+  | created_at    | TIMESTAMP   |                                                  |
+  | decided_at    | TIMESTAMP   | NULL until terminal status                       |
+  +---------------+-------------+--------------------------------------------------+
 
   Indexes (DuckDB — partial scans are fast but explicit indexes help on FK lookups):
   - runs(thread_id)                         — list all runs for a thread
