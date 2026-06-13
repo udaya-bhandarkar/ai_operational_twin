@@ -10,7 +10,6 @@ DB_DIR.mkdir(parents=True, exist_ok=True)
 
 DB_FILE = DB_DIR / "operational_twin.db"
 ERP_FILE = RAW_DATA_DIR / "erp_daily_rates_inr.csv"
-SENSOR_FILE = RAW_DATA_DIR / "sensor_data.json"
 
 def build_operational_twin_db():
     print("Initializing DuckDB Operational Twin Database...")
@@ -22,10 +21,12 @@ def build_operational_twin_db():
         SELECT * FROM read_csv_auto('{str(ERP_FILE)}');
     """)
 
-    print(f"Loading IoT Telemetry Data from: {SENSOR_FILE.name}...")
+    # NEW: Wildcard pattern to ingest all partitioned JSON files instantly
+    sensor_pattern = str(RAW_DATA_DIR / "sensor_data_*.json")
+    print(f"Loading IoT Telemetry Data from partitioned files...")
     conn.execute(f"""
         CREATE OR REPLACE TABLE sensor_telemetry AS 
-        SELECT * FROM read_json_auto('{str(SENSOR_FILE)}');
+        SELECT * FROM read_json_auto('{sensor_pattern}');
     """)
 
     print("Constructing Gold Layer (Financial Impact Analytics)...")
@@ -35,25 +36,21 @@ def build_operational_twin_db():
             s.timestamp,
             CAST(s.timestamp AS DATE) as operation_date,
             
-            -- NEW: Extracted Hierarchy
             s.facility_id,
             s.department_id,
             s.line_id,
             s.machine_id,
             s.status,
             
-            -- Extracted Metrics
             s.metrics.power_consumption_kw AS power_kw,
-            s.metrics.water_consumption_liters AS water_liters, -- NEW
+            s.metrics.water_consumption_liters AS water_liters,
             s.metrics.material_intake_kg AS material_in_kg,
             s.metrics.material_output_kg AS material_out_kg,
-            s.metrics.efficiency_ratio AS efficiency_ratio,     -- NEW
+            s.metrics.efficiency_ratio AS efficiency_ratio,
             
-            -- ERP Rates
             e.electricity_rate_per_kwh_inr AS current_electricity_rate,
-            e.water_rate_per_liter_inr AS current_water_rate,   -- NEW
+            e.water_rate_per_liter_inr AS current_water_rate,
             
-            -- Financial Impact Calculations
             ROUND((s.metrics.power_consumption_kw * e.electricity_rate_per_kwh_inr), 2) AS operational_power_cost_inr,
             ROUND((s.metrics.water_consumption_liters * e.water_rate_per_liter_inr), 2) AS operational_water_cost_inr,
             
@@ -89,9 +86,12 @@ def build_operational_twin_db():
     conn.close()
 
 if __name__ == "__main__":
+    # NEW: Safety check uses glob to search for matching partitioned files
+    sensor_files = list(RAW_DATA_DIR.glob("sensor_data_*.json"))
+    
     if not ERP_FILE.exists():
         print(f"Error: Could not find {ERP_FILE}. Please run erp_batch_gen.py first.")
-    elif not SENSOR_FILE.exists():
-        print(f"Error: Could not find {SENSOR_FILE}. Please run sensor_stream.py first.")
+    elif len(sensor_files) == 0:
+        print(f"Error: Could not find any sensor data files in {RAW_DATA_DIR}. Please run sensor_stream.py first.")
     else:
         build_operational_twin_db()
