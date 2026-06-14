@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-You are helping design a brand-new multi-agent LLM system.
+You are helping design a brand-new multi-agent LLM system using LangChain. 
 
 ## Current phase
 Architecture planning only.
@@ -40,11 +40,9 @@ Design a clean, production-ready architecture for a multi-agent LLM system with:
 
 ## Constraints
 - No implementation code yet
-- No premature framework lock-in
 - No monolithic files
 - No hidden coupling
 - No assumptions about old code unless explicitly stated in the docs
 
 ## Important
-Treat the docs in this repo as the source of truth.
 If something is missing, ask for it or mark it as an assumption.

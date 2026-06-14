@@ -10,6 +10,12 @@ The design should be suitable for future production deployment and long-term mai
 
 ---
 
+## LangChain Architecture Alignment
+
+When proposing or modifying the architecture, treat the current LangChain documentation available through the connected MCP server as the source of truth. Review the relevant documentation before making design decisions. Replace any generic patterns in this document with the recommended production patterns from the latest LangChain ecosystem. If a requirement conflicts with current LangChain best practices, explain the conflict and propose the closest compliant design while preserving the original business requirements. Cite the specific LangChain/LangGraph/LangSmith documentation used to justify each major architectural decision. ## LangChain Architecture Alignment
+
+When proposing or modifying the architecture, treat the current LangChain, LangGraph, and LangSmith documentation available through the connected MCP server as the source of truth. Review the relevant documentation before making design decisions. Replace any generic patterns in this document with the recommended production patterns from the latest LangChain ecosystem, including agent orchestration, state management, persistence, human-in-the-loop workflows, memory, evaluation, observability, and deployment. If a requirement conflicts with current LangChain best practices, explain the conflict and propose the closest compliant design while preserving the original business requirements. Cite the specific LangChain/LangGraph/LangSmith documentation used to justify each major architectural decision.
+
 ## Functional Requirements
 
 ### Agent System
