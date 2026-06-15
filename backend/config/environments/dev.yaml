@@ -1,0 +1,5 @@
+model: anthropic:claude-opus-4-8
+hitl_enabled: true
+eval_budget_usd: 5.0
+checkpointer: memory
+langsmith_tracing: true

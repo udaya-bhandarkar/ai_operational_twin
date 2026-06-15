@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ai-operational-twin-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.2",
+    "langchain>=0.3",
+    "langchain-anthropic>=0.3",
+    "langchain-mcp-adapters>=0.1",
+    "langsmith>=0.1",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "deepagents>=0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "openevals>=0.1",
+]
+groq = [
+    "langchain-groq>=0.2",
+]
+mistral = [
+    "langchain-mistralai>=0.2",
+]
+all-providers = [
+    "langchain-groq>=0.2",
+    "langchain-mistralai>=0.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "evals*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
