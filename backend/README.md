@@ -16,16 +16,18 @@ Multi-agent LLM system built on LangGraph / LangChain / LangSmith.
 
 ```bash
 cd backend
+uv venv
+.venv\Scripts\activate
 
-# Installs all core libraries (langgraph, langchain, langchain-anthropic, deepagents, etc.)
+# Installs all core libraries (langgraph, langchain, langchain-anthropic, etc.)
 pip install -e .
 ```
 
 If you want to use Groq or Mistral instead of Anthropic, install the matching extra on top:
 
 ```bash
-pip install -e ".[groq]"       # adds langchain-groq
-pip install -e ".[mistral]"    # adds langchain-mistralai
+pip install -e ".[groq]"           # adds langchain-groq
+pip install -e ".[mistral]"        # adds langchain-mistralai
 pip install -e ".[all-providers]"  # adds both
 ```
 
@@ -37,7 +39,9 @@ You only need the extra for the provider you set in `BACKEND_MODEL`. The base `p
 cp .env.example .env
 ```
 
-Open `.env` and fill in your keys. Set exactly one provider block:
+Open `.env` and fill in your keys. Set exactly one provider block.
+
+> **Important:** Keep `.env` comments ASCII-only. Unicode characters (arrows `→`, box-drawing `──`) in comments cause a `python-dotenv could not parse statement` warning and may prevent variables from loading correctly. The `.env.example` template is already ASCII-safe.
 
 **Anthropic (default)**
 ```env
@@ -94,7 +98,7 @@ backend/
 │   │   ├── state.py            # SupervisorState (MessagesState + summary + agent_outputs)
 │   │   └── prompts/system.txt
 │   └── research/               # Research specialist: web search and fetch
-│       ├── graph.py            # create_agent (deepagents) + @tool wrapper for supervisor
+│       ├── graph.py            # create_agent (langchain) + @tool wrapper for supervisor
 │       ├── state.py            # ResearchState (placeholder for Phase 2+)
 │       └── prompts/system.txt
 │
@@ -126,9 +130,9 @@ Graph flow:
 START → call_model → [tool calls?] → tools → call_model → ... → END
 ```
 
-**Research agent (deepagents `create_agent`)**
+**Research agent (`create_agent`)**
 
-A specialist that handles web search and information retrieval. Built with deepagents' `create_agent` factory, which supports the middleware stack used in later phases. Wrapped as a `@tool` so the supervisor can call it like any other tool.
+A specialist that handles web search and information retrieval. Built with LangChain's `create_agent` factory, which supports the middleware stack used in later phases. Wrapped as a `@tool` so the supervisor can call it like any other tool.
 
 **Stub web tools**
 
@@ -136,7 +140,7 @@ A specialist that handles web search and information retrieval. Built with deepa
 
 **Retry from day one**
 
-`ModelRetryMiddleware` (deepagents) on the research agent handles rate limits, 5xx errors, and transient failures automatically. The supervisor's model uses LangChain's `.with_retry()` for the same effect. Both are configured in `middleware/retry.py`.
+`ModelRetryMiddleware` on the research agent handles rate limits, 5xx errors, and transient failures automatically. The supervisor's model uses LangChain's `.with_retry()` for the same effect. Both are configured in `middleware/retry.py`.
 
 **Provider-agnostic model init**
 
@@ -203,3 +207,48 @@ mistral:open-mixtral-8x7b        # open weights via Mistral API
 ```
 
 No code changes required.
+
+---
+
+## Architecture notes
+
+**Checkpointer**
+
+`agents/supervisor/graph.py` compiles the graph with no checkpointer (`builder.compile()`). LangGraph API (`langgraph dev` and Agent Server) injects its own persistence layer automatically. Passing `InMemorySaver()` at compile time causes a `ValueError` and prevents the server from starting.
+
+For direct Python use outside LangGraph API (e.g. `hitl/channels/cli.py`), `InMemorySaver` is injected at the call site:
+
+```python
+if graph.checkpointer is None:
+    graph = graph.compile(checkpointer=InMemorySaver())
+```
+
+**Middleware imports**
+
+`create_agent` and all middleware classes come from `langchain`:
+
+```python
+from langchain.agents import create_agent
+from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddleware
+```
+
+---
+
+## Troubleshooting
+
+**`python-dotenv could not parse statement at line N`**
+
+Caused by non-ASCII characters in `.env` comment lines (Unicode arrows `→`, box-drawing `──`). Edit `.env` and replace any such characters with plain ASCII equivalents (`->`, `-`).
+
+**`LangSmith: maximum recursion depth exceeded`**
+
+Caused by `deepagents` (now removed from deps) pulling `langchain-core==1.4.7`, which conflicts with `langsmith`. If you hit this on an existing install, uninstall `deepagents` and reinstall:
+
+```bash
+uv pip uninstall deepagents
+uv pip install -e ".[all-providers]"
+```
+
+**`ValueError: graph includes a custom checkpointer`**
+
+Remove `checkpointer=InMemorySaver()` from `builder.compile()` in `agents/supervisor/graph.py`. LangGraph API manages persistence itself.

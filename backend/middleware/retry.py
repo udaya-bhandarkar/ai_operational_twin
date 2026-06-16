@@ -6,7 +6,7 @@ Phase 1: ModelRetryMiddleware (deepagents) on research agent.
 Phase 2+: ToolRetryMiddleware added for API tools (web_search, web_fetch).
 """
 
-from deepagents import ModelRetryMiddleware
+from langchain.agents.middleware import ModelRetryMiddleware
 
 
 def get_retry_middleware(

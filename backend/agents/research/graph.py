@@ -1,7 +1,6 @@
 import pathlib
 
-from deepagents import create_agent
-from langchain.chat_models import init_chat_model
+from langchain.agents import create_agent
 from langchain.tools import tool
 
 from config.settings import settings
@@ -12,9 +11,8 @@ _system_prompt = (pathlib.Path(__file__).parent / "prompts" / "system.txt").read
 
 
 def _build_agent():
-    model = init_chat_model(settings.backend_model)
     return create_agent(
-        model,
+        model=settings.backend_model,
         tools=[web_search, web_fetch],
         system_prompt=_system_prompt,
         middleware=get_retry_middleware(),

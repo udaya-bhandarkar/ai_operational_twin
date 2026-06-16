@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-operational-twin-backend"
@@ -14,7 +14,6 @@ dependencies = [
     "langsmith>=0.1",
     "pydantic-settings>=2.0",
     "python-dotenv>=1.0",
-    "deepagents>=0.1",
 ]
 
 [project.optional-dependencies]

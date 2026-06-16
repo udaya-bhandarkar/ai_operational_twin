@@ -13,10 +13,15 @@ Usage:
 
 import json
 
+from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
 
 def run_with_hitl(graph, user_message: str, thread_id: str) -> dict:
+    # Compile with InMemorySaver when running outside LangGraph API.
+    # langgraph dev / Agent Server inject their own checkpointer — don't pass one there.
+    if graph.checkpointer is None:
+        graph = graph.compile(checkpointer=InMemorySaver())
     config = {"configurable": {"thread_id": thread_id}}
     current_input: dict | Command = {"messages": [{"role": "user", "content": user_message}]}
 

@@ -1,4 +1,3 @@
-from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -22,4 +21,6 @@ builder.add_conditional_edges(
 )
 builder.add_edge("tools", "call_model")
 
-graph = builder.compile(checkpointer=InMemorySaver())
+# Checkpointer injected automatically by LangGraph API (langgraph dev / Agent Server).
+# For direct Python use (hitl/channels/cli.py), pass checkpointer=InMemorySaver() at call site.
+graph = builder.compile()
