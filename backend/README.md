@@ -10,7 +10,7 @@ Multi-agent LLM system built on LangGraph / LangChain / LangSmith.
 
 - Python 3.11+
 - A supported LLM provider API key (Anthropic, Groq, or Mistral)
-- A LangSmith API key (free tier works; needed for tracing)
+- A LangSmith API key (free tier works)
 
 ### Install
 
@@ -19,19 +19,16 @@ cd backend
 uv venv
 .venv\Scripts\activate
 
-# Installs all core libraries (langgraph, langchain, langchain-anthropic, etc.)
-pip install -e .
+pip install -e ".[all-providers]"
 ```
 
-If you want to use Groq or Mistral instead of Anthropic, install the matching extra on top:
+Or install only the provider you need:
 
 ```bash
-pip install -e ".[groq]"           # adds langchain-groq
-pip install -e ".[mistral]"        # adds langchain-mistralai
-pip install -e ".[all-providers]"  # adds both
+pip install -e .              # Anthropic only (default)
+pip install -e ".[groq]"      # adds langchain-groq
+pip install -e ".[mistral]"   # adds langchain-mistralai
 ```
-
-You only need the extra for the provider you set in `BACKEND_MODEL`. The base `pip install -e .` is always required first (or replace it with one of the above — they include the base deps too).
 
 ### Configure
 
@@ -39,9 +36,7 @@ You only need the extra for the provider you set in `BACKEND_MODEL`. The base `p
 cp .env.example .env
 ```
 
-Open `.env` and fill in your keys. Set exactly one provider block.
-
-> **Important:** Keep `.env` comments ASCII-only. Unicode characters (arrows `→`, box-drawing `──`) in comments cause a `python-dotenv could not parse statement` warning and may prevent variables from loading correctly. The `.env.example` template is already ASCII-safe.
+Open `.env` and fill in your keys.
 
 **Anthropic (default)**
 ```env
@@ -58,23 +53,29 @@ BACKEND_MODEL=groq:llama-3.3-70b-versatile
 **Mistral**
 ```env
 MISTRAL_API_KEY=...
-BACKEND_MODEL=mistral:mistral-large-latest
+BACKEND_MODEL=mistral-large-latest
 ```
 
-Also add your LangSmith key:
+LangSmith (optional — traces visible in Studio UI):
 ```env
 LANGSMITH_API_KEY=...
-LANGSMITH_TRACING=true
+LANGSMITH_PROJECT=RAIC
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+LANGSMITH_TRACING=false
 ```
 
-### Run (LangGraph dev server)
+> **Note:** Keep `LANGSMITH_TRACING=false` when using `langgraph dev`. The dev server submits traces to LangSmith on its own. Setting it to `true` enables a second parallel tracer which causes a recursion error in the LangSmith client. Set it to `true` only when running agents directly outside `langgraph dev`.
+
+> **Note:** Keep `.env` comments ASCII-only. Unicode characters (`→`, `──`) cause a `python-dotenv could not parse statement` warning.
+
+### Run
 
 ```bash
 cd backend
 langgraph dev
 ```
 
-Opens LangGraph Studio at `http://localhost:8123`. The supervisor graph is loaded automatically from `langgraph.json`.
+Opens LangGraph Studio at `https://smith.langchain.com/studio/`. The supervisor graph loads automatically from `langgraph.json`.
 
 ---
 
@@ -82,31 +83,23 @@ Opens LangGraph Studio at `http://localhost:8123`. The supervisor graph is loade
 
 ```
 backend/
-├── langgraph.json              # Graph entrypoint + deploy config
+├── langgraph.json              # Graph entrypoint (points to make_graph factory)
 ├── pyproject.toml              # Dependencies
 ├── .env.example                # Environment variable template
 │
 ├── config/
-│   ├── settings.py             # Pydantic Settings — reads from .env
-│   └── environments/
-│       └── dev.yaml            # Dev environment defaults
+│   └── settings.py             # Pydantic Settings — reads from .env
 │
 ├── agents/
 │   ├── supervisor/             # Orchestrator: routes to specialists, synthesises results
-│   │   ├── graph.py            # Compiled StateGraph (InMemorySaver checkpointer)
-│   │   ├── nodes.py            # call_model node + should_continue edge factory
-│   │   ├── state.py            # SupervisorState (MessagesState + summary + agent_outputs)
+│   │   ├── graph.py            # make_graph() factory — create_agent with research tool
 │   │   └── prompts/system.txt
 │   └── research/               # Research specialist: web search and fetch
-│       ├── graph.py            # create_agent (langchain) + @tool wrapper for supervisor
-│       ├── state.py            # ResearchState (placeholder for Phase 2+)
+│       ├── graph.py            # create_agent + @tool wrapper exposed to supervisor
 │       └── prompts/system.txt
 │
 ├── tools/
 │   └── web.py                  # web_search, web_fetch (Phase 1 stubs)
-│
-├── middleware/
-│   └── retry.py                # ModelRetryMiddleware (create_agent) + .with_retry() (StateGraph)
 │
 └── hitl/
     └── channels/
@@ -121,46 +114,37 @@ Phase 1 establishes the full multi-agent skeleton end-to-end. Every subsequent p
 
 ### What is built
 
-**Supervisor agent (StateGraph)**
+**Supervisor agent**
 
-A LangGraph `StateGraph` that owns the conversation and routes work to specialist agents. It receives the user's message, decides which specialist to call, invokes it as a tool, then synthesises the result into a final response. The graph loops until there are no more tool calls, then ends.
+Built with `create_agent` from `langchain.agents`. Receives the user message, decides which specialist to call, invokes it as a tool, synthesises the result. `create_agent` builds a LangGraph `StateGraph` internally — `langgraph dev` can serve it directly via the `make_graph` factory in `langgraph.json`.
 
-Graph flow:
+**Research agent (agent-as-tool pattern)**
+
+A specialist for web search and information retrieval. Also built with `create_agent`, then wrapped in a `@tool` so the supervisor can call it like any other tool. Internally it runs its own model + tool-calling loop against `web_search` and `web_fetch`.
+
 ```
-START → call_model → [tool calls?] → tools → call_model → ... → END
+supervisor
+  └── research_agent_tool  (@tool that calls...)
+        └── research agent  (create_agent with...)
+              ├── web_search  (stub)
+              └── web_fetch   (stub)
 ```
-
-**Research agent (`create_agent`)**
-
-A specialist that handles web search and information retrieval. Built with LangChain's `create_agent` factory, which supports the middleware stack used in later phases. Wrapped as a `@tool` so the supervisor can call it like any other tool.
 
 **Stub web tools**
 
-`web_search` and `web_fetch` are `@tool` stubs that return placeholder responses. They match the real tool signatures so Phase 2 can swap in Tavily without touching the agent or graph code.
+`web_search` and `web_fetch` return placeholder strings. They match the real signatures so Phase 2 can swap in Tavily without touching the agent code.
 
-**Retry from day one**
+**Provider-agnostic model**
 
-`ModelRetryMiddleware` on the research agent handles rate limits, 5xx errors, and transient failures automatically. The supervisor's model uses LangChain's `.with_retry()` for the same effect. Both are configured in `middleware/retry.py`.
-
-**Provider-agnostic model init**
-
-All agents call `init_chat_model(settings.backend_model)`. Switching providers is one `.env` change — no code changes. Supported: Anthropic, Groq, Mistral (and any `init_chat_model`-compatible provider).
-
-**State with future fields**
-
-`SupervisorState` extends `MessagesState` with `summary` and `agent_outputs` fields. These are unused in Phase 1 but are in place so Phase 3 can wire `SummarizationMiddleware` and structured specialist results without a state migration.
-
-**Streaming wired**
-
-The CLI runner calls `graph.stream(..., stream_mode=["updates", "messages"], subgraphs=True)`. Token-level streaming from both the supervisor and the research agent is visible from the first run. No changes needed when Phase 3 adds more agents.
+Pass the model name as a string directly to `create_agent`. Switching providers is one `.env` change — no code changes.
 
 **HITL infrastructure**
 
-`hitl/channels/cli.py` contains a full interrupt → approve / edit / reject loop. In Phase 1 it activates only if an interrupt fires (the research agent has none). The code is in place so Phase 2's `HumanInTheLoopMiddleware` on the ops agent works immediately with no changes to the runner.
+`hitl/channels/cli.py` has a full interrupt → approve / edit / reject loop ready for Phase 2's `HumanInTheLoopMiddleware`.
 
 **LangSmith tracing**
 
-With `LANGSMITH_TRACING=true` and a valid `LANGSMITH_API_KEY`, every run is automatically traced — token counts, latency, tool calls, agent steps. No instrumentation code needed.
+`langgraph dev` automatically submits run traces to LangSmith using `LANGSMITH_API_KEY` and `LANGSMITH_PROJECT`. No extra instrumentation needed.
 
 ### What is NOT in Phase 1
 
@@ -182,55 +166,59 @@ With `LANGSMITH_TRACING=true` and a valid `LANGSMITH_API_KEY`, every run is auto
 ## Using the CLI runner directly
 
 ```python
-from agents.supervisor.graph import graph
+from agents.supervisor.graph import make_graph
 from hitl.channels.cli import run_with_hitl
 
+graph = make_graph()
 result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id="thread-1")
-```
-
-To resume a thread (conversation continues from last checkpoint):
-
-```python
-result = run_with_hitl(graph, "Can you expand on that?", thread_id="thread-1")
 ```
 
 ---
 
-## Switching models at runtime
+## Switching models
 
-Set `BACKEND_MODEL` in `.env` to any `init_chat_model`-compatible string:
+Set `BACKEND_MODEL` in `.env`. No code changes required.
 
 ```
+anthropic:claude-opus-4-8        # default
 anthropic:claude-haiku-4-5       # cheaper, faster
-groq:llama-3.1-8b-instant        # ultra-fast inference
-mistral:open-mixtral-8x7b        # open weights via Mistral API
+groq:llama-3.3-70b-versatile     # fast inference
+groq:llama-3.1-8b-instant        # ultra-fast
+mistral-large-latest             # Mistral (no prefix needed — auto-detected)
+mistral-small-latest             # cheaper Mistral
 ```
 
-No code changes required.
+Provider prefix rules (learned during setup):
+- Anthropic → `anthropic:model-name`
+- Groq → `groq:model-name`
+- Mistral → model name only, no prefix (e.g. `mistral-large-latest`, not `mistral:mistral-large-latest`)
 
 ---
 
 ## Architecture notes
 
+**`create_agent` is a LangGraph graph**
+
+`create_agent` from `langchain.agents` returns a compiled `LangGraph StateGraph` internally. That is why `langgraph dev` can serve it — it IS a LangGraph graph, it just doesn't require you to build the nodes/edges manually.
+
+**Pass model as string, not pre-instantiated**
+
+```python
+# Correct
+create_agent(model=settings.backend_model, ...)
+
+# Avoid — pre-instantiated model attaches extra metadata
+# that LangSmith's serializer can't walk cleanly
+create_agent(model=init_chat_model(settings.backend_model), ...)
+```
+
 **Checkpointer**
 
-`agents/supervisor/graph.py` compiles the graph with no checkpointer (`builder.compile()`). LangGraph API (`langgraph dev` and Agent Server) injects its own persistence layer automatically. Passing `InMemorySaver()` at compile time causes a `ValueError` and prevents the server from starting.
+`langgraph dev` / Agent Server injects its own checkpointer automatically. Do not pass one to `create_agent` when serving via the dev server. For direct CLI use, pass `checkpointer=MemorySaver()` to `create_agent`.
 
-For direct Python use outside LangGraph API (e.g. `hitl/channels/cli.py`), `InMemorySaver` is injected at the call site:
+**LangSmith double-tracing**
 
-```python
-if graph.checkpointer is None:
-    graph = graph.compile(checkpointer=InMemorySaver())
-```
-
-**Middleware imports**
-
-`create_agent` and all middleware classes come from `langchain`:
-
-```python
-from langchain.agents import create_agent
-from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddleware
-```
+`langgraph dev` already submits traces to LangSmith. Setting `LANGSMITH_TRACING=true` in `.env` activates a second parallel tracer (the LangChain callback system), which causes `maximum recursion depth exceeded` in the LangSmith client. Keep `LANGSMITH_TRACING=false` and let the dev server handle tracing.
 
 ---
 
@@ -238,17 +226,16 @@ from langchain.agents.middleware import ModelRetryMiddleware, ToolRetryMiddlewar
 
 **`python-dotenv could not parse statement at line N`**
 
-Caused by non-ASCII characters in `.env` comment lines (Unicode arrows `→`, box-drawing `──`). Edit `.env` and replace any such characters with plain ASCII equivalents (`->`, `-`).
+Non-ASCII characters in `.env` comment lines (`→`, `──`). Replace with ASCII (`->`, `-`).
 
 **`LangSmith: maximum recursion depth exceeded`**
 
-Caused by `deepagents` (now removed from deps) pulling `langchain-core==1.4.7`, which conflicts with `langsmith`. If you hit this on an existing install, uninstall `deepagents` and reinstall:
+Two tracers running at once. Set `LANGSMITH_TRACING=false` in `.env`. The `langgraph dev` server submits traces on its own — the LangChain-level tracer is redundant and causes the conflict.
 
-```bash
-uv pip uninstall deepagents
-uv pip install -e ".[all-providers]"
-```
+**`401 Unauthorized` from provider API**
+
+API key in `.env` is missing, wrong, or was rotated. Check the key matches the provider set in `BACKEND_MODEL`.
 
 **`ValueError: graph includes a custom checkpointer`**
 
-Remove `checkpointer=InMemorySaver()` from `builder.compile()` in `agents/supervisor/graph.py`. LangGraph API manages persistence itself.
+Passed `checkpointer=` to `create_agent` while also running via `langgraph dev`. Remove the checkpointer argument — the dev server injects its own.

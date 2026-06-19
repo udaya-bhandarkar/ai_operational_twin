@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     mistral_api_key: str = ""
 
     langsmith_api_key: str = ""
-    langsmith_tracing: bool = True
+    langsmith_tracing: bool = False
     hitl_enabled: bool = True
     eval_budget_usd: float = 5.0
 

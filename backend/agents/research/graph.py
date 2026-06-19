@@ -1,25 +1,18 @@
 import pathlib
 
 from langchain.agents import create_agent
-from langchain.tools import tool
+from langchain_core.tools import tool
 
 from config.settings import settings
-from middleware.retry import get_retry_middleware
 from tools.web import web_fetch, web_search
 
 _system_prompt = (pathlib.Path(__file__).parent / "prompts" / "system.txt").read_text()
 
-
-def _build_agent():
-    return create_agent(
-        model=settings.backend_model,
-        tools=[web_search, web_fetch],
-        system_prompt=_system_prompt,
-        middleware=get_retry_middleware(),
-    )
-
-
-_agent = _build_agent()
+_agent = create_agent(
+    model=settings.backend_model,
+    tools=[web_search, web_fetch],
+    system_prompt=_system_prompt,
+)
 
 
 @tool

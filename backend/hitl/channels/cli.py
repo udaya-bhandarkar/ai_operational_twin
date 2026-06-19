@@ -5,23 +5,25 @@ Streams the supervisor graph, prints token-level messages, and handles interrupt
 by prompting the user for approve / edit / reject before resuming execution.
 
 Usage:
-    from agents.supervisor.graph import graph
+    from agents.supervisor.graph import make_graph
     from hitl.channels.cli import run_with_hitl
 
+    graph = make_graph()
     run_with_hitl(graph, "What is the boiling point of water?", thread_id="t1")
 """
 
 import json
 
-from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 
 
-def run_with_hitl(graph, user_message: str, thread_id: str) -> dict:
-    # Compile with InMemorySaver when running outside LangGraph API.
-    # langgraph dev / Agent Server inject their own checkpointer — don't pass one there.
+def run_with_hitl(graph, user_message: str, thread_id: str = "default") -> dict:
+    # Inject InMemorySaver when running outside langgraph dev / Agent Server.
     if graph.checkpointer is None:
-        graph = graph.compile(checkpointer=InMemorySaver())
+        from langchain.agents import create_agent
+        graph = graph.bound.compile(checkpointer=MemorySaver())
+
     config = {"configurable": {"thread_id": thread_id}}
     current_input: dict | Command = {"messages": [{"role": "user", "content": user_message}]}
 
@@ -48,8 +50,7 @@ def run_with_hitl(graph, user_message: str, thread_id: str) -> dict:
         decision = _prompt_user(getattr(intr, "value", {}))
         current_input = Command(resume=decision)
 
-    final_state = graph.get_state(config).values
-    return final_state
+    return graph.get_state(config).values
 
 
 def _print_chunk(chunk: tuple | dict) -> None:

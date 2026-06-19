@@ -1,6 +1,6 @@
 {
   "graphs": {
-    "supervisor": "./agents/supervisor/graph.py:graph"
+    "supervisor": "./agents/supervisor/graph.py:make_graph"
   },
   "dependencies": ["."],
   "env": ".env"

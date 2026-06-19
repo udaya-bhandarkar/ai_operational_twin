@@ -11,3 +11,5 @@ data/database/*.db
 
 # OS
 .DS_Store
+
+.langgraph_api/
