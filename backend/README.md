@@ -18,8 +18,7 @@ Multi-agent LLM system built on LangGraph / LangChain / LangSmith.
 cd backend
 uv venv .venv --python 3.11
 .venv\Scripts\activate
-uv pip install -e ".[all-providers,tavily]"
-uv pip install "langgraph-cli[inmem]"
+uv pip install -e ".[all-providers,tavily]" "langgraph-cli[inmem]"
 ```
 
 Or install only the provider you need:
@@ -86,13 +85,18 @@ backend/
 ├── langgraph.json              # Graph entrypoint (points to make_graph factory)
 ├── pyproject.toml              # Dependencies
 ├── .env.example                # Environment variable template
+├── AGENTS.md                   # Supervisor memory: routing rules, conventions
 │
 ├── config/
-│   └── settings.py             # Pydantic Settings — reads from .env
+│   ├── settings.py             # Pydantic Settings — yaml defaults + .env overrides
+│   └── environments/
+│       ├── dev.yaml            # Dev defaults: CLI HITL, haiku cost routing
+│       ├── staging.yaml        # Staging defaults: API HITL, configured model
+│       └── prod.yaml           # Prod defaults: API HITL, configured model
 │
 ├── agents/
 │   ├── supervisor/             # Orchestrator: routes to specialists, synthesises results
-│   │   ├── graph.py            # make_graph() factory — create_agent with all specialist tools
+│   │   ├── graph.py            # make_graph() — full middleware stack including Phase 3
 │   │   └── prompts/system.txt
 │   ├── research/               # Research specialist: web search and fetch
 │   │   ├── graph.py            # lazy create_agent + @tool wrapper exposed to supervisor
@@ -103,11 +107,15 @@ backend/
 │
 ├── tools/
 │   ├── web.py                  # web_search (Tavily, graceful degradation), web_fetch (httpx)
-│   └── duckdb.py               # 5 DuckDB tools (list, schema, checker, query, execute)
+│   ├── duckdb.py               # 5 DuckDB tools (list, schema, checker, query, execute)
+│   └── mcp_client.py           # MultiServerMCPClient — add MCP servers here
 │
 ├── middleware/
 │   ├── pii.py                  # PIIMiddleware — API key blocking (input + output)
-│   └── retry.py                # ModelRetryMiddleware, ModelCallLimitMiddleware, ToolCallLimitMiddleware
+│   ├── retry.py                # ModelRetryMiddleware, ModelCallLimitMiddleware, ToolCallLimitMiddleware
+│   ├── context.py              # MemoryMiddleware (AGENTS.md) + AnthropicPromptCachingMiddleware
+│   ├── summarization.py        # SummarizationMiddleware — compress history at 80% token threshold
+│   └── dynamic_model.py        # @wrap_model_call dev_cost_router — budget model in dev
 │
 └── hitl/
     └── channels/
@@ -154,14 +162,14 @@ Set `LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY` in `.env`. Traces appear in
 
 | Feature | Phase |
 |---|---|
-| Real web search (Tavily) | 2 |
-| Ops agent (DuckDB read/write) | 2 |
-| HITL approval on tool calls | 2 |
-| PII middleware | 2 |
-| Postgres checkpointer | 3 |
-| MCP server integration | 3 |
-| Summarization + prompt caching | 3 |
-| Dynamic model selection | 3 |
+| Real web search (Tavily) | 2 ✓ |
+| Ops agent (DuckDB read/write) | 2 ✓ |
+| HITL approval on tool calls | 2 ✓ |
+| PII middleware | 2 ✓ |
+| Postgres checkpointer (`langgraph up`) | 3 ✓ |
+| MCP server integration | 3 ✓ |
+| Prompt caching + AGENTS.md memory | 3 ✓ |
+| Dynamic model selection (dev cost routing) | 3 ✓ |
 | Evaluations + CI gate | 4 |
 | Production deployment | 5 |
 
@@ -264,6 +272,152 @@ uv pip install -e ".[tavily]"  # optional — only needed for real web search
 
 ---
 
+---
+
+## Phase 3 — Persistence + MCP + Context Management
+
+### What is built
+
+**Environment-specific config**
+
+`config/environments/dev.yaml`, `staging.yaml`, and `prod.yaml` define per-environment defaults. `config/settings.py` loads the yaml for the current `BACKEND_ENV` before reading `.env` — so `.env` always wins but yaml provides sane per-env baselines.
+
+```
+BACKEND_ENV=dev      → loads config/environments/dev.yaml
+BACKEND_ENV=staging  → loads config/environments/staging.yaml
+```
+
+| Setting | dev | staging | prod |
+|---|---|---|---|
+| `backend_model` | claude-opus-4-8 | claude-opus-4-8 | claude-opus-4-8 |
+| `summarization_model` | defaults to `backend_model` | defaults to `backend_model` | defaults to `backend_model` |
+| `hitl_channel` | cli | api | api |
+
+**Durable persistence with `langgraph up`**
+
+`langgraph dev` uses an in-memory checkpointer — threads are lost on restart. For staging-parity with Postgres persistence, run:
+
+```bash
+langgraph up
+```
+
+Requires Docker. The CLI provisions a Postgres container automatically — no manual docker-compose needed. Threads survive process restarts; HITL interrupts survive server restarts.
+
+**MCP server integration**
+
+`tools/mcp_client.py` wraps `MultiServerMCPClient` from `langchain-mcp-adapters`. Add MCP servers to `MCP_SERVERS` in that file to expose their tools to any agent.
+
+```bash
+uv pip install -e ".[mcp]"
+```
+
+Ships empty by default — configure as needed:
+
+```python
+# tools/mcp_client.py
+MCP_SERVERS = {
+    "filesystem": {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp/workspace"],
+        "transport": "stdio",
+    },
+}
+```
+
+Then pass MCP tools to an agent:
+
+```python
+from tools.mcp_client import get_mcp_tools
+agent = create_agent(model=..., tools=[*existing_tools, *get_mcp_tools()])
+```
+
+`get_mcp_tools()` is sync-safe — handles both direct-script and langgraph dev (uvicorn) contexts via thread isolation.
+
+**Prompt caching (Anthropic)**
+
+`middleware/context.py` provides `get_prompt_caching_middleware()` which wraps `AnthropicPromptCachingMiddleware(ttl="5m")` from `langchain-anthropic`. Applied innermost on the supervisor — caches the system prompt, tool definitions, and conversation history breakpoints on Anthropic's servers. Cache hits are visible in LangSmith traces as `cache_read_input_tokens`.
+
+No-op when using Groq or Mistral models.
+
+**AGENTS.md memory**
+
+`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each agent run via `FilesystemBackend` (real disk paths). Teaches the supervisor routing conventions, write-safety rules, and response style. Add more sources by passing additional paths to `get_memory_middleware()`.
+
+```python
+from middleware.context import get_memory_middleware
+# add per-agent memory:
+get_memory_middleware("./AGENTS.md", "./agents/ops/AGENTS.md")
+```
+
+**Conversation summarization**
+
+`middleware/summarization.py` wraps `SummarizationMiddleware` from `langchain.agents.middleware`. Triggers when 80% of the model's max input tokens are used; retains the 6 most recent messages after compression. Summarization is done by `SUMMARIZATION_MODEL`, which defaults to `BACKEND_MODEL` when not set. Set `SUMMARIZATION_MODEL` to a cheaper model from the same provider to reduce summarization cost. Works with any provider.
+
+**LangGraph Store (persistent cross-thread memory)**
+
+LangGraph Store is auto-provisioned by the runtime:
+- `langgraph dev` — InMemoryStore (cleared on restart)
+- `langgraph up` — Postgres-backed store (persists across restarts)
+
+No code changes needed — the Agent Server injects the store automatically, same as the checkpointer. `CompositeBackend` routing (deepagents) requires `create_deep_agent` and is a Phase 6+ upgrade path.
+
+**Dynamic model routing**
+
+`middleware/dynamic_model.py` applies `dev_cost_router` to the supervisor via `@wrap_model_call`. Provider-agnostic — works with Anthropic, Groq, or Mistral. In `BACKEND_ENV=dev`, routes every supervisor model call to `SUMMARIZATION_MODEL` — a cheaper/faster model from the same provider as `BACKEND_MODEL`. Set `SUMMARIZATION_MODEL` in `.env` to a cheap model matching your provider:
+
+```
+# Anthropic
+SUMMARIZATION_MODEL=anthropic:claude-haiku-4-5   # default
+
+# Groq
+SUMMARIZATION_MODEL=groq:llama-3.1-8b-instant
+
+# Mistral
+SUMMARIZATION_MODEL=mistral-small-latest
+```
+
+No-op if `SUMMARIZATION_MODEL` is from a different provider than `BACKEND_MODEL` (prevents cross-provider key requirements). To disable dev routing entirely: set `BACKEND_ENV=staging` in your `.env`.
+
+**Updated supervisor middleware stack**
+
+```
+PIIMiddleware (api_key block)              — outermost
+ModelCallLimitMiddleware (10 calls)
+ModelRetryMiddleware (3 retries)
+MemoryMiddleware (AGENTS.md)              — injects memory into system prompt
+SummarizationMiddleware (80%, keep 6)     — compress history before model call
+dev_cost_router                           — swaps model per env
+AnthropicPromptCachingMiddleware          — innermost; caches prompt before model call
+```
+
+### Install Phase 3 deps
+
+```bash
+uv pip install -e .              # picks up deepagents + PyYAML from core deps
+uv pip install -e ".[mcp]"       # only needed if wiring MCP servers
+```
+
+### Updated structure
+
+```
+backend/
+├── AGENTS.md                    # NEW — supervisor memory: routing rules, conventions
+├── config/
+│   ├── settings.py              # + yaml source loading, summarization_model, hitl_channel
+│   └── environments/            # NEW
+│       ├── dev.yaml             # CLI HITL
+│       ├── staging.yaml         # API HITL
+│       └── prod.yaml            # API HITL
+├── tools/
+│   └── mcp_client.py            # NEW — MultiServerMCPClient (empty config by default)
+└── middleware/
+    ├── context.py               # NEW — MemoryMiddleware (AGENTS.md) + AnthropicPromptCachingMiddleware
+    ├── dynamic_model.py         # NEW — @wrap_model_call async dev_cost_router
+    └── summarization.py         # NEW — SummarizationMiddleware
+```
+
+---
+
 ## Using the CLI runner directly
 
 ```python
@@ -308,10 +462,11 @@ Provider prefix rules:
 # Correct
 create_agent(model=settings.backend_model, ...)
 
-# Avoid — pre-instantiated model attaches extra metadata
-# that LangSmith's serializer can't walk cleanly
+# Avoid
 create_agent(model=init_chat_model(settings.backend_model), ...)
 ```
+
+`create_agent` calls `init_chat_model()` internally and binds tools to the model in the right order. Passing an already-instantiated model object means `create_agent` receives it after tool binding has already happened elsewhere, which causes LangSmith to fail serializing the graph structure (it walks the model object and hits unexpected state). Pass the model name string; let `create_agent` own instantiation.
 
 **Checkpointer**
 
@@ -329,10 +484,6 @@ Set `LANGSMITH_TRACING=true`. Earlier versions of `langsmith`/`langchain` had a 
 
 ## Troubleshooting
 
-**`python-dotenv could not parse statement at line N`**
-
-Non-ASCII characters in `.env` comment lines (`→`, `──`). Replace with ASCII (`->`, `-`).
-
 **`ModuleNotFoundError` when running `langgraph dev`**
 
 `langgraph` CLI is using a different Python than where your packages are installed. Install `langgraph-cli[inmem]` into the same venv as your project, then run `langgraph dev` with the venv active.
@@ -348,3 +499,7 @@ Passed `checkpointer=` to `create_agent` while also running via `langgraph dev`.
 **Graph import slow (>5s warning in logs)**
 
 `create_agent(...)` called at module level. Move it inside `_get_agent()` with a `global` so it only runs on first use.
+
+**`LangChainDeprecationWarning: FilesystemBackend virtual_mode default will change`**
+
+Pass `virtual_mode=False` explicitly to `FilesystemBackend`. The default is changing in deepagents 0.6.0. `virtual_mode=False` is correct here — no virtual path routing is used, sources are real disk paths relative to `root_dir`.

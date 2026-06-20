@@ -1,0 +1,3 @@
+backend_env: staging
+backend_model: anthropic:claude-opus-4-8
+hitl_channel: api
