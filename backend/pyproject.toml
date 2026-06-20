@@ -8,11 +8,13 @@ version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
     "langgraph>=0.2",
-    "langchain>=0.3",
+    "langchain>=1.3.2",
     "langchain-anthropic>=0.3",
     "langsmith>=0.1",
     "pydantic-settings>=2.0",
     "python-dotenv>=1.0",
+    "duckdb>=0.10",
+    "httpx>=0.27",
 ]
 
 [project.optional-dependencies]
@@ -27,9 +29,13 @@ groq = [
 mistral = [
     "langchain-mistralai>=0.2",
 ]
+tavily = [
+    "tavily-python>=0.3",
+]
 all-providers = [
     "langchain-groq>=0.2",
     "langchain-mistralai>=0.2",
+    "tavily-python>=0.3",
 ]
 
 [tool.setuptools.packages.find]

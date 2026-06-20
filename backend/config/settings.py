@@ -19,6 +19,10 @@ class Settings(BaseSettings):
 
     langsmith_api_key: str = ""
     langsmith_tracing: bool = False
+
+    tavily_api_key: str = ""
+    duckdb_path: str = "data/operational.duckdb"
+
     hitl_enabled: bool = True
     eval_budget_usd: float = 5.0
 
