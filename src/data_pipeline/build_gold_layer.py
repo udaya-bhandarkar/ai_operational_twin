@@ -61,7 +61,8 @@ def build_operational_twin_db():
                 END, 2
             ) AS estimated_power_waste_cost_inr,
             
-            ROUND(((s.metrics.material_intake_kg - s.metrics.material_output_kg) * e.raw_pet_cost_per_kg_inr), 2) AS material_waste_cost_inr
+            ROUND(((s.metrics.material_intake_kg - s.metrics.material_output_kg) * e.raw_pet_cost_per_kg_inr), 2) AS material_waste_cost_inr,
+            ROUND((s.metrics.power_consumption_kw * 0.82), 2) AS carbon_emissions_kg_co2
 
         FROM sensor_telemetry s
         LEFT JOIN erp_rates e ON CAST(s.timestamp AS DATE) = CAST(e.date AS DATE);
