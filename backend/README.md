@@ -1,6 +1,6 @@
 # AI Operational Twin — Backend
 
-Multi-agent LLM system built on LangGraph / LangChain / LangSmith.
+Multi-agent LLM system built on LangGraph / LangChain / LangSmith. A supervisor agent orchestrates two specialists — one for web research, one for querying and writing to an operational DuckDB database — with human-in-the-loop approval on write operations, a full middleware stack, and a CI eval gate.
 
 ---
 
@@ -28,6 +28,8 @@ uv pip install -e .              # Anthropic only (default)
 uv pip install -e ".[groq]"      # adds langchain-groq
 uv pip install -e ".[mistral]"   # adds langchain-mistralai
 uv pip install -e ".[tavily]"    # adds tavily web search
+uv pip install -e ".[dev]"       # adds pytest + openevals + ruff
+uv pip install -e ".[mcp]"       # adds langchain-mcp-adapters
 ```
 
 > **Important:** Install `langgraph-cli` into the same venv as your project deps. If `langgraph` is in a different Python (e.g. Anaconda base), it won't see your venv packages and will fail with `ModuleNotFoundError`.
@@ -76,6 +78,12 @@ langgraph dev
 
 Opens LangGraph Studio at `https://smith.langchain.com/studio/`. The supervisor graph loads automatically from `langgraph.json`.
 
+For staging-parity with Postgres persistence (requires Docker):
+
+```bash
+langgraph up
+```
+
 ---
 
 ## Project Structure
@@ -85,18 +93,18 @@ backend/
 ├── langgraph.json              # Graph entrypoint (points to make_graph factory)
 ├── pyproject.toml              # Dependencies
 ├── .env.example                # Environment variable template
-├── AGENTS.md                   # Supervisor memory: routing rules, conventions
+├── AGENTS.md                   # Supervisor memory: routing rules, write-safety, response style
 │
 ├── config/
 │   ├── settings.py             # Pydantic Settings — yaml defaults + .env overrides
 │   └── environments/
-│       ├── dev.yaml            # Dev defaults: CLI HITL, haiku cost routing
-│       ├── staging.yaml        # Staging defaults: API HITL, configured model
-│       └── prod.yaml           # Prod defaults: API HITL, configured model
+│       ├── dev.yaml            # Dev defaults: CLI HITL
+│       ├── staging.yaml        # Staging defaults: API HITL
+│       └── prod.yaml           # Prod defaults: API HITL
 │
 ├── agents/
 │   ├── supervisor/             # Orchestrator: routes to specialists, synthesises results
-│   │   ├── graph.py            # make_graph() — full middleware stack including Phase 3
+│   │   ├── graph.py            # make_graph() — full middleware stack
 │   │   └── prompts/system.txt
 │   ├── research/               # Research specialist: web search and fetch
 │   │   ├── graph.py            # lazy create_agent + @tool wrapper exposed to supervisor
@@ -117,90 +125,80 @@ backend/
 │   ├── summarization.py        # SummarizationMiddleware — compress history at 80% token threshold
 │   └── dynamic_model.py        # @wrap_model_call dev_cost_router — budget model in dev
 │
-└── hitl/
-    └── channels/
-        └── cli.py              # CLI runner: streams graph, handles interrupts
+├── hitl/
+│   └── channels/
+│       └── cli.py              # CLI runner: streams graph, handles interrupts
+│
+├── evals/
+│   ├── datasets/v1/            # JSONL eval datasets (supervisor, research, ops)
+│   ├── evaluators/             # contains, exact_match, llm_judge (openevals)
+│   └── run_evals.py            # langsmith evaluate() + --gate flag
+│
+├── scripts/
+│   └── upload_datasets.py      # one-time LangSmith dataset upload
+│
+└── tests/
+    ├── test_evaluators.py      # unit tests for evaluators (no API calls)
+    └── test_config.py          # unit tests for Settings validator
 ```
 
 ---
 
-## Phase 1 — Core Graph
+## Agents
 
-Phase 1 establishes the full multi-agent skeleton end-to-end. Every subsequent phase adds to this foundation without restructuring it.
-
-### What is built
-
-**Supervisor agent**
+### Supervisor
 
 Built with `create_agent` from `langchain.agents`. Receives the user message, decides which specialist to call, invokes it as a tool, synthesises the result. `create_agent` builds a LangGraph `StateGraph` internally — `langgraph dev` can serve it directly via the `make_graph` factory in `langgraph.json`.
 
-**Research agent (agent-as-tool pattern)**
+The supervisor carries the full middleware stack (see [Middleware](#middleware)).
 
-A specialist for web search and information retrieval. Also built with `create_agent`, then wrapped in a `@tool` so the supervisor can call it like any other tool. Internally it runs its own model + tool-calling loop against `web_search` and `web_fetch`.
+### Research agent
+
+Specialist for web search and information retrieval. Built with `create_agent`, then wrapped in a `@tool` so the supervisor can call it like any other tool. Internally it runs its own model + tool-calling loop against `web_search` and `web_fetch`.
 
 ```
 supervisor
   └── research_agent_tool  (@tool that calls...)
         └── research agent  (create_agent with...)
-              ├── web_search  (stub in Phase 1)
-              └── web_fetch   (stub in Phase 1)
+              ├── web_search  (Tavily)
+              └── web_fetch   (httpx)
 ```
 
-**Provider-agnostic model**
+### Ops agent
 
-Pass the model name as a string directly to `create_agent`. Switching providers is one `.env` change — no code changes.
+Specialist for the operational DuckDB database. Also wrapped as a `@tool` for the supervisor. Carries `HumanInTheLoopMiddleware` — interrupts only on `duckdb_execute` (write operations). Read queries pass through without approval.
 
-**HITL infrastructure**
+```
+supervisor
+  └── ops_agent_tool  (@tool that calls...)
+        └── ops agent  (create_agent with HumanInTheLoopMiddleware)
+              ├── duckdb_list_tables
+              ├── duckdb_schema
+              ├── duckdb_query_checker
+              ├── duckdb_query      (read — no HITL)
+              └── duckdb_execute    (write — HITL interrupt)
+```
 
-`hitl/channels/cli.py` has a full interrupt → approve / edit / reject loop ready for Phase 2's `HumanInTheLoopMiddleware`.
-
-**LangSmith tracing**
-
-Set `LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY` in `.env`. Traces appear in LangSmith Studio automatically.
-
-### What is NOT in Phase 1
-
-| Feature | Phase |
-|---|---|
-| Real web search (Tavily) | 2 ✓ |
-| Ops agent (DuckDB read/write) | 2 ✓ |
-| HITL approval on tool calls | 2 ✓ |
-| PII middleware | 2 ✓ |
-| Postgres checkpointer (`langgraph up`) | 3 ✓ |
-| MCP server integration | 3 ✓ |
-| Prompt caching + AGENTS.md memory | 3 ✓ |
-| Dynamic model selection (dev cost routing) | 3 ✓ |
-| Evaluations + CI gate | 4 |
-| Production deployment | 5 |
+**Lazy initialization:** both subagents use a `_get_agent()` pattern — `create_agent` runs on first tool call, not at import time. This prevents slow startup; `langgraph dev` imports all graph modules before serving.
 
 ---
 
-## Phase 2 — Web Search, Ops Agent, HITL, PII
+## Tools
 
-### What is built
+### Web tools (`tools/web.py`)
 
-**Real web search (Tavily) with graceful degradation**
-
-`tools/web.py` calls the Tavily API if `TAVILY_API_KEY` is set. If the key is missing, `web_search` returns a clear message instead of crashing:
+`web_search` calls the Tavily API if `TAVILY_API_KEY` is set. If the key is missing it returns a clear message instead of crashing:
 
 ```
 [web_search] No results — TAVILY_API_KEY is not set.
 Add it to .env and run: uv pip install -e ".[tavily]"
 ```
 
-To enable real search:
-
-```bash
-uv pip install -e ".[tavily]"
-# then in .env:
-TAVILY_API_KEY=tvly-...
-```
-
 `web_fetch` uses `httpx` and truncates responses at 8 000 chars to protect the context window.
 
-**Ops agent — DuckDB read/write**
+### DuckDB tools (`tools/duckdb.py`)
 
-`agents/ops/graph.py` is a specialist for the operational DuckDB database. It has five tools split by operation type:
+Five tools split by operation type:
 
 | Tool | Type | Purpose |
 |---|---|---|
@@ -214,104 +212,9 @@ The checker returns `"OK — read query"` or `"OK — write query"` so the agent
 
 Database path: `DUCKDB_PATH` in `.env` (default: `data/operational.duckdb`). DuckDB creates the file on first connect — no manual setup needed.
 
-**HITL on write operations**
+### MCP tools (`tools/mcp_client.py`)
 
-`HumanInTheLoopMiddleware` is on the ops agent (not the supervisor). It interrupts only on `duckdb_execute` — reads pass through without approval. Decision options: approve, edit, reject. Interrupt bubbles up through the supervisor's checkpointer automatically.
-
-**PII middleware**
-
-`middleware/pii.py` uses `PIIMiddleware` from `langchain.agents.middleware` on the supervisor:
-
-- `PIIMiddleware("api_key", detector=r"sk-...", strategy="block", apply_to_input=True, apply_to_output=True)` — blocks `sk-...` API key patterns in both directions
-
-Email middleware is intentionally omitted. Redacting emails on input breaks legitimate requests ("draft an email to x@y.com"), and the ops agent may need to return emails from database query results.
-
-Requires `langchain>=1.3.2` for `apply_to_output` support.
-
-**Fault tolerance middleware**
-
-`middleware/retry.py` provides three protection layers. Each agent has its own independent middleware stack — limits and retry counters are not shared between agents.
-
-| Middleware | Supervisor | Research | Ops |
-|---|---|---|---|
-| `ModelRetryMiddleware(max_retries=3)` | yes | yes | yes |
-| `ModelCallLimitMiddleware(run_limit=10/15)` | 10 | — | 15 |
-| `ToolCallLimitMiddleware(web_search, run_limit=5)` | — | yes | — |
-| `ToolCallLimitMiddleware(duckdb_execute, run_limit=3)` | — | — | yes |
-
-**Isolation:** the supervisor's `ModelCallLimit(10)` only counts the supervisor's own model calls. When the supervisor calls `ops_agent_tool` or `research_agent_tool`, those are tool calls from the supervisor's perspective — the subagent's internal model calls are counted by the subagent's own limit independently.
-
-**Middleware order:** `ModelCallLimitMiddleware` sits outside `ModelRetryMiddleware` on every agent. If the limit were inside the retry wrapper, a single transient API failure would burn retry attempts against the call budget — 3 retries on one bad response would consume 3 of the 10 allowed calls. With limit outside, retries are invisible to the counter: one logical call counts as one regardless of how many retry attempts happen internally.
-
-**Lazy agent initialization**
-
-`create_agent(...)` is called inside `_get_agent()` with a module-level `global`, not at import time. This prevents slow startup — `langgraph dev` imports all modules at boot, and creating agents at import time adds ~5s per agent to startup.
-
-### Updated structure
-
-```
-backend/
-├── tools/
-│   ├── web.py          # Tavily + httpx (graceful degradation)
-│   └── duckdb.py       # 5 tools: list, schema, checker, query (read), execute (write+HITL)
-├── agents/
-│   └── ops/            # NEW — DuckDB specialist with HumanInTheLoopMiddleware
-├── middleware/
-│   ├── pii.py          # API key blocking on supervisor
-│   └── retry.py        # NEW — ModelRetryMiddleware, ModelCallLimitMiddleware, ToolCallLimitMiddleware
-└── config/
-    └── settings.py     # + tavily_api_key, duckdb_path
-```
-
-### Install Phase 2 deps
-
-```bash
-uv pip install -e .            # picks up duckdb + httpx from core deps
-uv pip install -e ".[tavily]"  # optional — only needed for real web search
-```
-
----
-
----
-
-## Phase 3 — Persistence + MCP + Context Management
-
-### What is built
-
-**Environment-specific config**
-
-`config/environments/dev.yaml`, `staging.yaml`, and `prod.yaml` define per-environment defaults. `config/settings.py` loads the yaml for the current `BACKEND_ENV` before reading `.env` — so `.env` always wins but yaml provides sane per-env baselines.
-
-```
-BACKEND_ENV=dev      → loads config/environments/dev.yaml
-BACKEND_ENV=staging  → loads config/environments/staging.yaml
-```
-
-| Setting | dev | staging | prod |
-|---|---|---|---|
-| `backend_model` | claude-opus-4-8 | claude-opus-4-8 | claude-opus-4-8 |
-| `summarization_model` | defaults to `backend_model` | defaults to `backend_model` | defaults to `backend_model` |
-| `hitl_channel` | cli | api | api |
-
-**Durable persistence with `langgraph up`**
-
-`langgraph dev` uses an in-memory checkpointer — threads are lost on restart. For staging-parity with Postgres persistence, run:
-
-```bash
-langgraph up
-```
-
-Requires Docker. The CLI provisions a Postgres container automatically — no manual docker-compose needed. Threads survive process restarts; HITL interrupts survive server restarts.
-
-**MCP server integration**
-
-`tools/mcp_client.py` wraps `MultiServerMCPClient` from `langchain-mcp-adapters`. Add MCP servers to `MCP_SERVERS` in that file to expose their tools to any agent.
-
-```bash
-uv pip install -e ".[mcp]"
-```
-
-Ships empty by default — configure as needed:
+Wraps `MultiServerMCPClient` from `langchain-mcp-adapters`. Ships empty — add MCP servers as needed:
 
 ```python
 # tools/mcp_client.py
@@ -324,7 +227,11 @@ MCP_SERVERS = {
 }
 ```
 
-Then pass MCP tools to an agent:
+```bash
+uv pip install -e ".[mcp]"
+```
+
+Then pass MCP tools to any agent:
 
 ```python
 from tools.mcp_client import get_mcp_tools
@@ -333,52 +240,11 @@ agent = create_agent(model=..., tools=[*existing_tools, *get_mcp_tools()])
 
 `get_mcp_tools()` is sync-safe — handles both direct-script and langgraph dev (uvicorn) contexts via thread isolation.
 
-**Prompt caching (Anthropic)**
+---
 
-`middleware/context.py` provides `get_prompt_caching_middleware()` which wraps `AnthropicPromptCachingMiddleware(ttl="5m")` from `langchain-anthropic`. Applied innermost on the supervisor — caches the system prompt, tool definitions, and conversation history breakpoints on Anthropic's servers. Cache hits are visible in LangSmith traces as `cache_read_input_tokens`.
+## Middleware
 
-No-op when using Groq or Mistral models.
-
-**AGENTS.md memory**
-
-`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each agent run via `FilesystemBackend` (real disk paths). Teaches the supervisor routing conventions, write-safety rules, and response style. Add more sources by passing additional paths to `get_memory_middleware()`.
-
-```python
-from middleware.context import get_memory_middleware
-# add per-agent memory:
-get_memory_middleware("./AGENTS.md", "./agents/ops/AGENTS.md")
-```
-
-**Conversation summarization**
-
-`middleware/summarization.py` wraps `SummarizationMiddleware` from `langchain.agents.middleware`. Triggers when 80% of the model's max input tokens are used; retains the 6 most recent messages after compression. Summarization is done by `SUMMARIZATION_MODEL`, which defaults to `BACKEND_MODEL` when not set. Set `SUMMARIZATION_MODEL` to a cheaper model from the same provider to reduce summarization cost. Works with any provider.
-
-**LangGraph Store (persistent cross-thread memory)**
-
-LangGraph Store is auto-provisioned by the runtime:
-- `langgraph dev` — InMemoryStore (cleared on restart)
-- `langgraph up` — Postgres-backed store (persists across restarts)
-
-No code changes needed — the Agent Server injects the store automatically, same as the checkpointer. `CompositeBackend` routing (deepagents) requires `create_deep_agent` and is a Phase 6+ upgrade path.
-
-**Dynamic model routing**
-
-`middleware/dynamic_model.py` applies `dev_cost_router` to the supervisor via `@wrap_model_call`. Provider-agnostic — works with Anthropic, Groq, or Mistral. In `BACKEND_ENV=dev`, routes every supervisor model call to `SUMMARIZATION_MODEL` — a cheaper/faster model from the same provider as `BACKEND_MODEL`. Set `SUMMARIZATION_MODEL` in `.env` to a cheap model matching your provider:
-
-```
-# Anthropic
-SUMMARIZATION_MODEL=anthropic:claude-haiku-4-5   # default
-
-# Groq
-SUMMARIZATION_MODEL=groq:llama-3.1-8b-instant
-
-# Mistral
-SUMMARIZATION_MODEL=mistral-small-latest
-```
-
-No-op if `SUMMARIZATION_MODEL` is from a different provider than `BACKEND_MODEL` (prevents cross-provider key requirements). To disable dev routing entirely: set `BACKEND_ENV=staging` in your `.env`.
-
-**Updated supervisor middleware stack**
+### Supervisor middleware stack
 
 ```
 PIIMiddleware (api_key block)              — outermost
@@ -390,47 +256,88 @@ dev_cost_router                           — swaps model per env
 AnthropicPromptCachingMiddleware          — innermost; caches prompt before model call
 ```
 
-### Install Phase 3 deps
+### PII (`middleware/pii.py`)
 
-```bash
-uv pip install -e .              # picks up deepagents + PyYAML from core deps
-uv pip install -e ".[mcp]"       # only needed if wiring MCP servers
-```
+`PIIMiddleware("api_key", detector=r"sk-...", strategy="block", apply_to_input=True, apply_to_output=True)` blocks `sk-...` API key patterns in both directions.
 
-### Updated structure
+Email middleware is intentionally omitted. Redacting emails on input breaks legitimate requests ("draft an email to x@y.com"), and the ops agent may need to return emails from database query results.
 
-```
-backend/
-├── AGENTS.md                    # NEW — supervisor memory: routing rules, conventions
-├── config/
-│   ├── settings.py              # + yaml source loading, summarization_model, hitl_channel
-│   └── environments/            # NEW
-│       ├── dev.yaml             # CLI HITL
-│       ├── staging.yaml         # API HITL
-│       └── prod.yaml            # API HITL
-├── tools/
-│   └── mcp_client.py            # NEW — MultiServerMCPClient (empty config by default)
-└── middleware/
-    ├── context.py               # NEW — MemoryMiddleware (AGENTS.md) + AnthropicPromptCachingMiddleware
-    ├── dynamic_model.py         # NEW — @wrap_model_call async dev_cost_router
-    └── summarization.py         # NEW — SummarizationMiddleware
-```
+### Fault tolerance (`middleware/retry.py`)
 
----
+Each agent has its own independent middleware stack — limits and retry counters are not shared.
 
-## Using the CLI runner directly
+| Middleware | Supervisor | Research | Ops |
+|---|---|---|---|
+| `ModelRetryMiddleware(max_retries=3)` | yes | yes | yes |
+| `ModelCallLimitMiddleware` | 10 | — | 15 |
+| `ToolCallLimitMiddleware(web_search, run_limit=5)` | — | yes | — |
+| `ToolCallLimitMiddleware(duckdb_execute, run_limit=3)` | — | — | yes |
+
+`ModelCallLimitMiddleware` sits outside `ModelRetryMiddleware`. If the limit were inside the retry wrapper, a single transient failure would burn retry attempts against the call budget. With limit outside, retries are invisible to the counter.
+
+### Memory (`middleware/context.py`)
+
+`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each run via `FilesystemBackend` (real disk paths). Teaches the supervisor routing conventions, write-safety rules, and response style.
+
+`FilesystemBackend` is created at module level (not inside `make_graph()`) so its `Path.resolve()` call runs synchronously at import time, not inside the async ASGI event loop.
+
+Add more sources by passing additional paths:
 
 ```python
-from agents.supervisor.graph import make_graph
-from hitl.channels.cli import run_with_hitl
-
-graph = make_graph()
-result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id="thread-1")
+from middleware.context import get_memory_middleware
+get_memory_middleware("./AGENTS.md", "./agents/ops/AGENTS.md")
 ```
+
+### Summarization (`middleware/summarization.py`)
+
+`SummarizationMiddleware` from `langchain.agents.middleware`. Triggers at 80% of the model's max input token budget; retains the 6 most recent messages after compression. Uses `SUMMARIZATION_MODEL` (defaults to `BACKEND_MODEL` when unset).
+
+### Dynamic model routing (`middleware/dynamic_model.py`)
+
+`dev_cost_router` via `@wrap_model_call`. In `BACKEND_ENV=dev`, routes supervisor model calls to `SUMMARIZATION_MODEL` — a cheaper model from the same provider. No-op when:
+- `SUMMARIZATION_MODEL == BACKEND_MODEL` (not set, defaults applied)
+- providers differ (prevents cross-provider key requirements)
+- `BACKEND_ENV` is not `dev`
+
+Set a budget model in `.env`:
+
+```env
+# Anthropic
+SUMMARIZATION_MODEL=anthropic:claude-haiku-4-5
+
+# Groq
+SUMMARIZATION_MODEL=groq:llama-3.1-8b-instant
+
+# Mistral
+SUMMARIZATION_MODEL=mistral-small-latest
+```
+
+To disable dev routing entirely: set `BACKEND_ENV=staging` in `.env`.
+
+### Prompt caching (`middleware/context.py`)
+
+`AnthropicPromptCachingMiddleware(ttl="5m")` applied innermost on the supervisor. Caches the system prompt, tool definitions, and conversation history breakpoints on Anthropic's servers. Cache hits appear in LangSmith traces as `cache_read_input_tokens`. No-op for Groq / Mistral models.
 
 ---
 
-## Switching models
+## Configuration
+
+### Environment-specific defaults
+
+`config/environments/dev.yaml`, `staging.yaml`, and `prod.yaml` define per-environment defaults. `config/settings.py` loads the yaml for `BACKEND_ENV` before reading `.env` — `.env` always wins, yaml provides sane baselines.
+
+```
+BACKEND_ENV=dev      → loads config/environments/dev.yaml
+BACKEND_ENV=staging  → loads config/environments/staging.yaml
+```
+
+| Setting | dev | staging | prod |
+|---|---|---|---|
+| `hitl_channel` | cli | api | api |
+| `backend_model` | claude-opus-4-8 | claude-opus-4-8 | claude-opus-4-8 |
+| `summarization_model` | defaults to `backend_model` | defaults to `backend_model` | defaults to `backend_model` |
+
+### Switching models
 
 Set `BACKEND_MODEL` in `.env`. No code changes required.
 
@@ -450,6 +357,95 @@ Provider prefix rules:
 
 ---
 
+## Persistence
+
+`langgraph dev` uses an in-memory checkpointer — threads are lost on restart. `langgraph up` (requires Docker) provisions a Postgres container automatically; threads and HITL interrupt state survive process restarts.
+
+LangGraph Store is auto-provisioned by the runtime alongside the checkpointer — InMemoryStore in `langgraph dev`, Postgres-backed in `langgraph up`. No code changes needed.
+
+---
+
+## Human-in-the-Loop
+
+`HumanInTheLoopMiddleware` is on the ops agent only (not the supervisor). It interrupts on `duckdb_execute` calls — read queries pass through without approval. Decision options: approve, edit, reject. The interrupt bubbles up through the supervisor's checkpointer automatically.
+
+The CLI runner (`hitl/channels/cli.py`) handles the full interrupt → approve / edit / reject loop when running outside langgraph dev:
+
+```python
+from agents.supervisor.graph import make_graph
+from hitl.channels.cli import run_with_hitl
+
+graph = make_graph()
+result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id="thread-1")
+```
+
+---
+
+## Evaluations + CI
+
+### Datasets
+
+`evals/datasets/v1/` contains three JSONL datasets:
+
+| Dataset | Examples | Covers |
+|---|---|---|
+| `supervisor-v1` | 5 | Routing to ops/research + response synthesis |
+| `research-v1` | 3 | Factual retrieval (SCADA, anomaly detection, KPIs) |
+| `ops-v1` | 3 | Read-only DB queries (list tables, schema, overview) |
+
+Each example: `{"inputs": {...messages...}, "outputs": {"criteria": "<word>"}, "metadata": {...}}`.
+
+### Evaluators
+
+| Evaluator | File | Description |
+|---|---|---|
+| `contains_evaluator` | `evaluators/contains.py` | Case-insensitive substring check on response |
+| `exact_match_evaluator` | `evaluators/exact_match.py` | Exact string match (stripped, lowercased) |
+| `correctness_evaluator` | `evaluators/llm_judge.py` | LLM-as-judge via openevals `create_llm_as_judge` |
+
+The LLM judge uses `settings.summarization_model` with `handle_errors=True` — a failed judge call returns `score=None` rather than crashing the run. Internally openevals uses ToolStrategy (tool calling) to extract the structured score.
+
+### Running evals
+
+```bash
+python -m evals.run_evals                          # run, print results
+python -m evals.run_evals --gate                   # exit 1 if avg score < 0.70
+python -m evals.run_evals --dataset supervisor-v1  # single dataset
+```
+
+Eval runs are recorded in LangSmith under `LANGSMITH_PROJECT`.
+
+### Dataset upload (one-time)
+
+Datasets must be uploaded to LangSmith before CI can use them:
+
+```bash
+python scripts/upload_datasets.py
+```
+
+Re-running is safe — appends to an existing dataset rather than replacing it.
+
+### CI pipeline
+
+`.github/workflows/ci.yml` has three sequential stages:
+
+| Stage | Job | What runs | When |
+|---|---|---|---|
+| 1 | `lint` | `ruff check` + graph import smoke test | every push / PR |
+| 2 | `test` | `pytest tests/` (no API calls) | after lint |
+| 3 | `eval-gate` | `evals/run_evals.py --gate` against LangSmith | push to `main` only |
+
+Stage 3 blocks merge if average score drops below 70%. Requires GitHub repository secrets:
+
+| Secret | Purpose |
+|---|---|
+| `LANGSMITH_API_KEY` | Fetch datasets + log results to LangSmith |
+| `ANTHROPIC_API_KEY` | Model calls during eval runs (swap for Groq/Mistral key if needed) |
+
+Set these in **Settings → Secrets and variables → Actions** on the repo.
+
+---
+
 ## Architecture notes
 
 **`create_agent` is a LangGraph graph**
@@ -466,19 +462,15 @@ create_agent(model=settings.backend_model, ...)
 create_agent(model=init_chat_model(settings.backend_model), ...)
 ```
 
-`create_agent` calls `init_chat_model()` internally and binds tools to the model in the right order. Passing an already-instantiated model object means `create_agent` receives it after tool binding has already happened elsewhere, which causes LangSmith to fail serializing the graph structure (it walks the model object and hits unexpected state). Pass the model name string; let `create_agent` own instantiation.
+`create_agent` calls `init_chat_model()` internally and binds tools to the model in the right order. Passing an already-instantiated model object causes LangSmith to fail serializing the graph structure. Pass the model name string; let `create_agent` own instantiation.
 
 **Checkpointer**
 
 `langgraph dev` / Agent Server injects its own checkpointer automatically. Do not pass one to `create_agent` when serving via the dev server. For direct CLI use, pass `checkpointer=MemorySaver()` to `create_agent`.
 
-**Lazy agent initialization**
+**`LANGSMITH_TRACING`**
 
-Subagents (`research`, `ops`) use a `_get_agent()` pattern — `create_agent` runs on first tool call, not at import. Calling `create_agent` at module level adds startup time because `langgraph dev` imports all graph modules before serving.
-
-**LANGSMITH_TRACING**
-
-Set `LANGSMITH_TRACING=true`. Earlier versions of `langsmith`/`langchain` had a bug where enabling this alongside `langgraph dev` caused a `maximum recursion depth exceeded` error (two tracers conflicting). This is fixed in `langchain>=1.3.2`.
+Set `LANGSMITH_TRACING=true`. Earlier versions of `langsmith`/`langchain` had a bug where enabling this alongside `langgraph dev` caused a `maximum recursion depth exceeded` error (two tracers conflicting). Fixed in `langchain>=1.3.2`.
 
 ---
 

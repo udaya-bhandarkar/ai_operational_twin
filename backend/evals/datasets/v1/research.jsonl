@@ -1,0 +1,3 @@
+{"inputs": {"messages": [{"role": "user", "content": "What is SCADA and how is it used in industrial control systems?"}]}, "outputs": {"criteria": "SCADA"}, "metadata": {"task": "factual", "evaluator": "contains"}}
+{"inputs": {"messages": [{"role": "user", "content": "Explain anomaly detection techniques for time series sensor data"}]}, "outputs": {"criteria": "anomaly"}, "metadata": {"task": "factual", "evaluator": "contains"}}
+{"inputs": {"messages": [{"role": "user", "content": "What are common KPIs used to measure manufacturing operational efficiency?"}]}, "outputs": {"criteria": "efficiency"}, "metadata": {"task": "factual", "evaluator": "contains"}}

@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main, Backend]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  # Stage 1 — lint (ruff) + import smoke test
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Create venv
+        run: uv venv .venv --python 3.11
+
+      - name: Install dev deps
+        run: uv pip install -e ".[dev]" --python .venv/bin/python
+
+      - name: Ruff lint
+        run: .venv/bin/python -m ruff check .
+
+      - name: Import smoke test
+        run: .venv/bin/python -c "from agents.supervisor.graph import make_graph; print('graph import OK')"
+        env:
+          ANTHROPIC_API_KEY: "dummy-key-for-import-check"
+          BACKEND_ENV: dev
+
+  # Stage 2 — unit tests (no API calls)
+  test:
+    name: Unit tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Create venv
+        run: uv venv .venv --python 3.11
+
+      - name: Install dev deps
+        run: uv pip install -e ".[dev]" --python .venv/bin/python
+
+      - name: Run unit tests
+        run: .venv/bin/python -m pytest tests/ -v
+        env:
+          BACKEND_ENV: dev
+          ANTHROPIC_API_KEY: "dummy-key-for-tests"
+
+  # Stage 3 — eval regression gate (runs only on push to main; requires real API keys)
+  eval-gate:
+    name: Eval regression gate
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_TRACING: "true"
+      LANGSMITH_PROJECT: RAIC
+      LANGSMITH_ENDPOINT: https://api.smith.langchain.com
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      BACKEND_ENV: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - name: Create venv
+        run: uv venv .venv --python 3.11
+
+      - name: Install all deps
+        run: uv pip install -e ".[dev,all-providers,tavily]" --python .venv/bin/python
+
+      - name: Run eval gate
+        run: .venv/bin/python -m evals.run_evals --gate
