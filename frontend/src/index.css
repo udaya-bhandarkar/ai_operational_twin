@@ -134,7 +134,7 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
   left: -16px;
   width: 16px;
   height: 16px;
-  background: var(--c-bg);
+  background: var(--c-panel);
   border-bottom-right-radius: 12px;
 }
 
