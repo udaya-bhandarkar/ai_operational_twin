@@ -1,9 +1,6 @@
-from typing import Any
+# Removed — replaced by prebuilt openevals evaluators in llm_judge.py.
+from langsmith.evaluation import evaluate
+help(evaluate)
 
-
-def contains_evaluator(run: Any, example: Any) -> dict:
-    """Check that the response contains an expected substring (case-insensitive)."""
-    response = ((run.outputs or {}).get("response") or "").lower()
-    criteria = ((example.outputs or {}).get("criteria") or "").lower()
-    score = int(bool(criteria) and criteria in response)
-    return {"key": "contains", "score": score}
+from langsmith import Client
+help(Client.read_dataset)

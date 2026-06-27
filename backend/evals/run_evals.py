@@ -45,25 +45,22 @@ def target(inputs: dict) -> dict:
 
 
 def _eval_configs(only_dataset: str | None = None) -> list[dict]:
-    from evals.evaluators.contains import contains_evaluator
-    from evals.evaluators.llm_judge import correctness_evaluator
+    from evals.evaluators.llm_judge import correctness_evaluator, relevance_evaluator
+    from evals.evaluators.string_match import string_contains_evaluator
+
+    # Three evaluators run on every dataset:
+    # - string_contains_evaluator : no model, instant — checks reference answer text in response
+    # - relevance_evaluator       : LLM judge, no reference answer needed
+    # - correctness_evaluator     : LLM judge, requires "answer" field in dataset examples
+    #
+    # NOTE: dataset Q&A pairs are not finalized yet. string_contains and correctness
+    # return SKIPPED / score=None for placeholder examples and are excluded from the gate average.
+    evaluators = [string_contains_evaluator, relevance_evaluator, correctness_evaluator]
 
     configs = [
-        {
-            "dataset": "supervisor-v1",
-            "evaluators": [contains_evaluator, correctness_evaluator],
-            "prefix": "supervisor",
-        },
-        {
-            "dataset": "research-v1",
-            "evaluators": [contains_evaluator],
-            "prefix": "research",
-        },
-        {
-            "dataset": "ops-v1",
-            "evaluators": [contains_evaluator],
-            "prefix": "ops",
-        },
+        {"dataset": "supervisor-v1", "evaluators": evaluators, "prefix": "supervisor"},
+        {"dataset": "research-v1",   "evaluators": evaluators, "prefix": "research"},
+        {"dataset": "ops-v1",        "evaluators": evaluators, "prefix": "ops"},
     ]
     if only_dataset:
         configs = [c for c in configs if c["dataset"] == only_dataset]
@@ -81,7 +78,7 @@ def run_evals(gate: bool = False, only_dataset: str | None = None) -> bool:
                 data=config["dataset"],
                 evaluators=config["evaluators"],
                 experiment_prefix=config["prefix"],
-                handle_errors=True,
+                error_handling="log",   # 'log' keeps failed runs visible in LangSmith; 'ignore' drops them
                 max_concurrency=2,
             )
             for row in results:

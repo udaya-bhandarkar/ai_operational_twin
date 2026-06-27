@@ -393,17 +393,28 @@ result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id=
 | `research-v1` | 3 | Factual retrieval (SCADA, anomaly detection, KPIs) |
 | `ops-v1` | 3 | Read-only DB queries (list tables, schema, overview) |
 
-Each example: `{"inputs": {...messages...}, "outputs": {"criteria": "<word>"}, "metadata": {...}}`.
+Each example format:
+```json
+{"inputs": {"messages": [{"role": "user", "content": "question"}]}, "outputs": {"answer": "reference answer"}, "metadata": {"task": "..."}}
+```
+
+The `outputs.answer` field is the reference answer used by `correctness_evaluator`. Fill these in with real expected answers before running the eval gate. Questions are placeholders — replace with real domain questions from the team.
 
 ### Evaluators
 
-| Evaluator | File | Description |
-|---|---|---|
-| `contains_evaluator` | `evaluators/contains.py` | Case-insensitive substring check on response |
-| `exact_match_evaluator` | `evaluators/exact_match.py` | Exact string match (stripped, lowercased) |
-| `correctness_evaluator` | `evaluators/llm_judge.py` | LLM-as-judge via openevals `create_llm_as_judge` |
+Three evaluators run on every dataset. **The evaluation infrastructure is final; the dataset Q&A pairs are not — they are placeholders until the team submits real questions and reference answers.**
 
-The LLM judge uses `settings.summarization_model` with `handle_errors=True` — a failed judge call returns `score=None` rather than crashing the run. Internally openevals uses ToolStrategy (tool calling) to extract the structured score.
+| Evaluator | File | Needs model | Needs reference answer | What it checks |
+|---|---|---|---|---|
+| `string_contains_evaluator` | `string_match.py` | No — pure code | Yes — `outputs.answer` | Reference answer text appears in AI response |
+| `relevance_evaluator` | `llm_judge.py` | Yes — LLM judge | No | Is the response relevant to the question at all |
+| `correctness_evaluator` | `llm_judge.py` | Yes — LLM judge | Yes — `outputs.answer` | AI response vs reference answer (semantic) |
+
+`string_contains_evaluator` uses `StringEvaluator` from `langsmith.evaluation` with a plain grading function — no API calls, instant, free. It checks whether the reference answer string appears literally in the AI response.
+
+The two LLM judges use prebuilt prompts (`CORRECTNESS_PROMPT`, `ANSWER_RELEVANCE_PROMPT`) from `openevals.prompts` via `create_llm_as_judge`. They use `settings.summarization_model` as the judge model.
+
+Examples with `"PLACEHOLDER"` in the `answer` field are skipped (`score=None`) and excluded from the gate average — so CI is not blocked by unfilled datasets.
 
 ### Running evals
 
@@ -427,15 +438,22 @@ Re-running is safe — appends to an existing dataset rather than replacing it.
 
 ### CI pipeline
 
-`.github/workflows/ci.yml` has three sequential stages:
+Two workflow files:
 
-| Stage | Job | What runs | When |
-|---|---|---|---|
-| 1 | `lint` | `ruff check` + graph import smoke test | every push / PR |
-| 2 | `test` | `pytest tests/` (no API calls) | after lint |
-| 3 | `eval-gate` | `evals/run_evals.py --gate` against LangSmith | push to `main` only |
+**`ci.yml`** — runs on every push and PR, no API calls, no token cost:
 
-Stage 3 blocks merge if average score drops below 70%. Requires GitHub repository secrets:
+| Stage | Job | What runs |
+|---|---|---|
+| 1 | `lint` | `ruff check` + graph import smoke test |
+| 2 | `test` | `pytest tests/` (unit tests, no API calls) |
+
+**`evals.yml`** — runs evals against LangSmith, costs tokens, NOT triggered on push:
+
+| Trigger | When |
+|---|---|
+| Manual (`workflow_dispatch`) | Run from GitHub Actions UI before releases; optionally pass a single `--dataset` name |
+
+The eval gate fails if average score across all evaluators drops below 70%. Running evals only on schedule/manually is standard practice in production — full E2E evals are too expensive to run on every commit. Requires GitHub repository secrets:
 
 | Secret | Purpose |
 |---|---|

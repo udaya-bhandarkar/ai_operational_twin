@@ -1,30 +1,56 @@
 from openevals.llm import create_llm_as_judge
+from openevals.prompts import ANSWER_RELEVANCE_PROMPT, CORRECTNESS_PROMPT
 
 from config.settings import settings
 
-CORRECTNESS_PROMPT = """\
-You are an expert evaluator for an AI operational twin system that monitors \
-industrial equipment and databases.
+_model = settings.summarization_model
 
-Evaluate whether the AI response correctly addresses the user's question.
-
-User question: {input}
-AI response: {output}
-Expected content hint: {reference_outputs}
-
-Score the response:
-1 = Response correctly addresses the question and aligns with the expected content
-0 = Response is incorrect, off-topic, or fails to address the question
-
-Return only the score. Partial credit is not allowed.
-"""
-
-# Uses ToolStrategy internally (openevals default) so the judge returns
-# a structured score via tool calling. handle_errors=True means a failed
-# judge call returns score=None rather than raising, keeping the eval run alive.
-correctness_evaluator = create_llm_as_judge(
+# Scores whether the AI response is factually correct relative to a reference answer.
+# Requires the dataset example to have an "answer" field in outputs.
+# Returns score=True/False + comment.
+_correctness = create_llm_as_judge(
     prompt=CORRECTNESS_PROMPT,
-    model=settings.summarization_model,
+    model=_model,
     feedback_key="correctness",
-    handle_errors=True,
 )
+
+# Scores whether the AI response is relevant to the input question.
+# Does NOT require a reference answer — works on any dataset.
+# Returns score=True/False + comment.
+_relevance = create_llm_as_judge(
+    prompt=ANSWER_RELEVANCE_PROMPT,
+    model=_model,
+    feedback_key="relevance",
+)
+
+
+def _question(run) -> str:
+    messages = (run.inputs or {}).get("messages", [])
+    return messages[-1].get("content", "") if messages else ""
+
+
+def _response(run) -> str:
+    return (run.outputs or {}).get("response", "")
+
+
+def correctness_evaluator(run, example) -> dict:
+    """Compare AI response to the reference answer in example.outputs['answer'].
+
+    Requires dataset examples to have {"outputs": {"answer": "..."}} populated.
+    """
+    return _correctness(
+        inputs=_question(run),
+        outputs=_response(run),
+        reference_outputs=(example.outputs or {}).get("answer", ""),
+    )
+
+
+def relevance_evaluator(run, example) -> dict:
+    """Check that the AI response is relevant to the input question.
+
+    Works without a reference answer — safe to use before Q&A pairs are filled in.
+    """
+    return _relevance(
+        inputs=_question(run),
+        outputs=_response(run),
+    )
