@@ -1,0 +1,164 @@
+:root {
+  --c-primary: rgb(19, 140, 143);
+  --c-deep:    rgb(0, 90, 112);
+  --c-accent:  rgb(0, 122, 140);
+  --c-danger:  #c0392b;
+  --c-bg:      #f4f6f7;
+  --c-panel:   #ffffff;
+  --c-border:  #e2e8e9;
+  --c-text:    #1f2a2b;
+  --radius: 10px;
+  --gap: 16px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); background: var(--c-bg); }
+
+.app { min-height: 100vh; }
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; gap: var(--gap);
+  padding: 12px 20px; background: var(--c-panel); border-bottom: 1px solid var(--c-border);
+}
+.topbar__title h1 { font-size: 24px; margin: 0; color: var(--c-deep); }
+.topbar__subtitle { font-size: 12px; color: #607071; }
+.topbar__updated { margin-left: auto; font-size: 12px; color: #607071; }
+
+/* View toggle */
+.view-toggle { display: inline-flex; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
+.view-toggle__btn { border: 0; background: transparent; padding: 6px 14px; cursor: pointer; font-size: 13px; }
+.view-toggle__btn.is-active { background: var(--c-accent); color: #fff; }
+
+/* Body: dashboard (left) + chat (right) */
+.app__body {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--gap);
+  padding: var(--gap);
+  height: calc(100vh - 60px);   /* full screen minus the top bar */
+  overflow: hidden;             /* page itself never scrolls */
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  overflow-y: auto;     /* left side scrolls inside its own area if needed */
+  min-height: 0;        /* the important bit — see below */
+}
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+.dashboard__charts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+
+/* KPI cards */
+.kpi-card { background: var(--c-panel); border: 1px solid var(--c-border); border-top: 3px solid;
+  border-radius: var(--radius); padding: 14px; }
+.kpi-card__label { font-size: 12px; color: #607071; }
+.kpi-card__value { font-size: 26px; font-weight: 700; margin: 6px 0; color: var(--c-deep); }
+.kpi-card__delta { font-size: 12px; }
+.kpi-card__delta--up { color: var(--c-danger); }
+.kpi-card__delta--down { color: #2e8b57; }
+
+/* Cards / panels */
+.card { background: var(--c-panel); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 12px; }
+.card__title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--c-deep); }
+.card__empty { font-size: 13px; color: #607071; padding: 12px 0; }
+
+/* Events table */
+.events-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.events-table th, .events-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--c-border); }
+.events-table__waste { color: var(--c-danger); font-weight: 600; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef2f2; }
+.badge--critical_power_waste { background: #fdecea; color: var(--c-danger); }
+.badge--nominal { background: #e8f5ee; color: #2e8b57; }
+
+/* Chat */
+.dashboard__chat {
+  height: 100%;
+  min-height: 0;
+}
+.chat { display: flex; flex-direction: column; height: 100%; background: var(--c-panel);
+  border: 1px solid var(--c-border); border-radius: var(--radius); }
+.chat__header { padding: 12px; font-weight: 600; color: var(--c-deep); border-bottom: 1px solid var(--c-border); }
+.chat__messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.chat__input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--c-border); }
+.chat__input input { flex: 1; padding: 8px 10px; border: 1px solid var(--c-border); border-radius: 8px; }
+.chat__input button { padding: 8px 14px; background: var(--c-accent); color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+.chat__input button:disabled { opacity: 0.5; cursor: default; }
+.chat__error { font-size: 12px; color: var(--c-danger); }
+
+.bubble { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 14px; line-height: 1.35; }
+.bubble--user { align-self: flex-end; background: var(--c-accent); color: #fff; }
+.bubble--assistant { align-self: flex-start; background: #eef2f2; }
+.bubble--pending { opacity: 0.6; }
+
+.bubble { position: relative; }
+
+/* ---- User bubble: tail curves out of bottom-right ---- */
+.bubble--user::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  background: var(--c-accent);          /* same colour as the bubble */
+  border-bottom-left-radius: 14px;       /* this curve = the tail's hook */
+}
+.bubble--user::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: -16px;
+  width: 16px;
+  height: 16px;
+  background: var(--c-panel);             /* panel background — "cuts" the curve */
+  border-bottom-left-radius: 12px;
+}
+
+/* ---- Assistant bubble: tail curves out of bottom-left ---- */
+.bubble--assistant::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  width: 16px;
+  height: 16px;
+  background: #eef2f2;                   /* same grey as the bubble */
+  border-bottom-right-radius: 14px;
+}
+.bubble--assistant::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -16px;
+  width: 16px;
+  height: 16px;
+  background: var(--c-bg);
+  border-bottom-right-radius: 12px;
+}
+
+.typing { display: inline-flex; gap: 4px; align-items: center; }
+.typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #607071;
+  animation: typing-bounce 1.2s infinite ease-in-out;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30%           { transform: translateY(-5px); opacity: 1; }
+}
+
+.state { font-size: 13px; color: #607071; padding: 12px 0; }
+.state--error { color: var(--c-danger); }
+
+/* Responsive: stack chat under the dashboard on narrow screens */
+@media (max-width: 1100px) {
+  .app__body { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard__charts { grid-template-columns: 1fr; }
+  .dashboard__chat { position: static; height: 520px; }
+}
