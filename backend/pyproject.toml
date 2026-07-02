@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-operational-twin-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.2",
+    "langchain>=1.3.2",
+    "langchain-anthropic>=0.3",
+    "langsmith>=0.1",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "duckdb>=0.10",
+    "httpx>=0.27",
+    "PyYAML>=6.0",
+    "deepagents>=0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "openevals>=0.1",
+    "ruff>=0.4",
+]
+groq = [
+    "langchain-groq>=0.2",
+]
+mistral = [
+    "langchain-mistralai>=0.2",
+]
+tavily = [
+    "tavily-python>=0.3",
+]
+mcp = [
+    "langchain-mcp-adapters>=0.1",
+]
+all-providers = [
+    "langchain-groq>=0.2",
+    "langchain-mistralai>=0.2",
+    "tavily-python>=0.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests*", "evals*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]  # pyflakes + basic pycodestyle errors only
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

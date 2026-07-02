@@ -1,0 +1,3 @@
+{"inputs": {"messages": [{"role": "user", "content": "List all tables in the database"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "db_read"}}
+{"inputs": {"messages": [{"role": "user", "content": "Show the column names and types for any table you find in the database"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "db_schema"}}
+{"inputs": {"messages": [{"role": "user", "content": "What data does the operational database contain?"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "db_overview"}}
