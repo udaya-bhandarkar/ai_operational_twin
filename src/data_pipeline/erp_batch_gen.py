@@ -8,6 +8,13 @@ CURRENT_DIR = Path(__file__).resolve().parent
 RAW_DATA_DIR = CURRENT_DIR.parent.parent / "data" / "raw"
 RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+# Static ERP rates (in INR)
+STATIC_ELECTRICITY_RATE = 9.00           # Midpoint of (7.5, 10.5)
+STATIC_WATER_RATE = 0.85                 # Midpoint of (0.5, 1.2)
+STATIC_RAW_PET_COST = 41.50              # Midpoint of (35.0, 48.0)
+STATIC_FINISHED_THREAD_PRICE = 190.00    # Midpoint of (160.0, 220.0)
+STATIC_DAILY_FACILITY_MAINTENANCE = 65000.00 # Midpoint of (40000.0, 90000.0)
+
 def generate_erp_batch(days_to_generate=30, filename="erp_daily_rates_inr.csv"):
     output_file = RAW_DATA_DIR / filename
     
@@ -31,11 +38,11 @@ def generate_erp_batch(days_to_generate=30, filename="erp_daily_rates_inr.csv"):
     for i in range(days_to_generate + 1):
         current_date = start_date + timedelta(days=i)
         
-        electricity_rate = round(random.uniform(7.5, 10.5), 2)
-        water_rate = round(random.uniform(0.5, 1.2), 2)  # NEW: Water costs ₹0.5 to ₹1.2 per liter
-        raw_pet_cost = round(random.uniform(35.0, 48.0), 2)     
-        thread_price = round(random.uniform(160.0, 220.0), 2)   
-        maintenance_cost = round(random.uniform(40000.0, 90000.0), 2)
+        electricity_rate = STATIC_ELECTRICITY_RATE
+        water_rate = STATIC_WATER_RATE
+        raw_pet_cost = STATIC_RAW_PET_COST
+        thread_price = STATIC_FINISHED_THREAD_PRICE
+        maintenance_cost = STATIC_DAILY_FACILITY_MAINTENANCE
         
         records.append({
             "date": current_date.isoformat(),
