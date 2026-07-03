@@ -141,6 +141,20 @@ Connects to DuckDB and retrieves:
 
 ---
 
+### 5. Multi-Agent Backend (`backend/`)
+
+LangGraph multi-agent system (supervisor + research + ops specialists) with a **FastAPI gateway** (`backend/api/`) that serves the dashboard and chat. The gateway reads `gold_operational_metrics` for dashboard data and forwards chat to the ops agent (which queries the same DuckDB). See `backend/README.md`.
+
+### 6. React Dashboard (`frontend/`)
+
+Vite + React dashboard (KPIs, waste charts, top-events, chat panel). Connects to the gateway via `VITE_API_BASE=http://localhost:8000/api`. See `frontend/README.md`.
+
+**Full-stack run order:** build gold DB → start backend gateway (`:8000`) → start frontend (`npm run dev`). Details in `backend/README.md` → *API Gateway*.
+
+> **Integration status:** dashboard endpoints are live and verified against the frontend mock shapes. A few contract points (view scoping, KPI deltas, facilities/departments shape) are still open — tracked in `backend/README.md` → *Open questions (for designers)*.
+
+---
+
 # Data Model
 
 ## Silver Layer
@@ -182,21 +196,29 @@ Connects to DuckDB and retrieves:
 
 ### gold_operational_metrics
 
-This is the final analytics table used by downstream consumers.
+This is the final analytics table used by downstream consumers (the API gateway and dashboard read from it directly).
 
 | Column | Description |
 |----------|-------------|
 | timestamp | Telemetry timestamp |
 | operation_date | Extracted operation date |
+| facility_id | Facility identifier (e.g. `CHENNAI_RECYCLING_PLANT`) |
+| department_id | Department (e.g. `PRE_PROCESSING`, `WASHING`) |
+| line_id | Production line identifier |
 | machine_id | Machine identifier |
-| status | Machine status |
+| status | Machine status (`NORMAL` / `CRITICAL_POWER_WASTE`) |
 | power_kw | Power consumption |
+| water_liters | Water consumption |
 | material_in_kg | Material input |
 | material_out_kg | Material output |
+| efficiency_ratio | Output / input ratio |
 | current_electricity_rate | ERP electricity rate |
-| operational_cost_inr | Power cost |
-| estimated_waste_cost_inr | Excess energy waste cost |
+| current_water_rate | ERP water rate |
+| operational_power_cost_inr | Power cost |
+| operational_water_cost_inr | Water cost |
+| estimated_power_waste_cost_inr | Excess energy waste cost |
 | material_waste_cost_inr | Material loss cost |
+| carbon_emissions_kg_co2 | Estimated carbon emissions |
 
 ---
 

@@ -61,7 +61,11 @@ class Settings(BaseSettings):
     langsmith_tracing: bool = False
 
     tavily_api_key: str = ""
-    duckdb_path: str = "data/operational.duckdb"
+    # Canonical operational DB built by src/data_pipeline/build_gold_layer.py at repo root.
+    # settings.py = backend/config/settings.py → parents[2] = repo root.
+    duckdb_path: str = str(
+        pathlib.Path(__file__).resolve().parents[2] / "data" / "database" / "operational_twin.db"
+    )
 
     hitl_enabled: bool = True
     eval_budget_usd: float = 5.0

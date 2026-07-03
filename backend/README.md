@@ -2,6 +2,8 @@
 
 Multi-agent LLM system built on LangGraph / LangChain / LangSmith. A supervisor agent orchestrates two specialists — one for web research, one for querying and writing to an operational DuckDB database — with human-in-the-loop approval on write operations, a full middleware stack, and a CI eval gate.
 
+A **FastAPI gateway** (`api/`) sits in front of the graph and the DuckDB gold layer, serving the React dashboard (see [API Gateway](#api-gateway)).
+
 ---
 
 ## Setup
@@ -95,6 +97,12 @@ backend/
 ├── .env.example                # Environment variable template
 ├── AGENTS.md                   # Supervisor memory: routing rules, write-safety, response style
 │
+├── api/                        # FastAPI gateway — frontend (React dashboard) ↔ backend
+│   ├── app.py                  # FastAPI app + CORS + uvicorn entry (port 8000)
+│   ├── db.py                   # read-only DuckDB access + scope filter + snapshot-time anchor
+│   ├── dashboard.py            # 7 dashboard GET endpoints (match frontend mockData.js field-for-field)
+│   └── chat.py                 # POST /api/chat → supervisor graph (async ainvoke)
+│
 ├── config/
 │   ├── settings.py             # Pydantic Settings — yaml defaults + .env overrides
 │   └── environments/
@@ -141,6 +149,59 @@ backend/
     ├── test_evaluators.py      # unit tests for evaluators (no API calls)
     └── test_config.py          # unit tests for Settings validator
 ```
+
+---
+
+## API Gateway
+
+FastAPI app (`api/`) that fronts the dashboard and chat for the React frontend (`frontend/`). Dashboard endpoints read the DuckDB gold layer directly; `/api/chat` forwards to the supervisor graph.
+
+### Run
+
+```bash
+# 1. Build the gold DB once (from repo root)
+python src/data_pipeline/build_gold_layer.py
+
+# 2. Start the gateway (from backend/)
+.venv/Scripts/python.exe -m uvicorn api.app:app --port 8000
+# or: python -m api.app
+```
+
+Frontend connects by setting `VITE_API_BASE=http://localhost:8000/api`. CORS is enabled for any `localhost`/`127.0.0.1` origin (no Vite proxy needed).
+
+### Endpoints
+
+All responses match `frontend/src/mocks/mockData.js` field-for-field.
+
+| Method | Path | Returns |
+|---|---|---|
+| GET | `/health` | `{status}` |
+| GET | `/api/kpis` | totals, efficiency, deltas, as_of |
+| GET | `/api/waste-over-time` | `{range, points:[{bucket, waste_cost_inr}]}` |
+| GET | `/api/waste-by-machine` | `{machines:[{machine_id, waste_cost_inr}]}` |
+| GET | `/api/top-events` | `{events:[{machine_id, timestamp, efficiency_ratio, energy_cost_inr, total_waste_inr, status}]}` |
+| GET | `/api/machines` | `{machines:[{machine_id, status}]}` |
+| GET | `/api/facilities` | `{facilities:[{id, name}]}` — *provisional shape* |
+| GET | `/api/departments` | `{departments:[{id, name, facility_id}]}` — *provisional shape* |
+| POST | `/api/chat` | `{reply, thread_id}` — forwards to supervisor graph |
+
+**Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr`. Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
+
+### ⚠️ Open TODOs (deferred — pending designer answers)
+
+These are marked `TODO(...)` in `api/db.py` and `api/dashboard.py`. **Do not ship to `main` without resolving — track against the [open questions](#open-questions-for-designers).**
+
+| # | TODO | Location | Current behaviour |
+|---|---|---|---|
+| 1 | `view` semantics (ceo/factory/department) undefined | `api/db.py` `scope_where` | **No-op** — numbers are global unless `facility_id`/`department_id` sent |
+| 2 | KPI `deltas` need a comparison window; snapshot has no history | `api/dashboard.py` `kpis` | Returns neutral `0.0` for all deltas |
+| 3 | `facilities` / `departments` item shape unconfirmed (no mock, no UI consumer) | `api/dashboard.py` | Provisional `{id, name[, facility_id]}` |
+| 4 | `energy_waste_cost_inr` → which column? | `api/dashboard.py` (`_WASTE`, `kpis`) | Mapped to `estimated_power_waste_cost_inr` |
+| 5 | Frontend `client.js` missing `getFacilities`/`getDepartments` exports; never sends `facility_id`/`department_id` | frontend (owner's side) | Backend accepts params already; frontend must catch up |
+
+### Known blocker
+
+`/api/chat` returns `401 Unauthorized` when the provider key in `.env` is invalid/rotated. The dashboard endpoints need no key. Fix by setting a valid key for whatever `BACKEND_MODEL` points at (see [Troubleshooting](#troubleshooting)).
 
 ---
 
@@ -210,7 +271,7 @@ Five tools split by operation type:
 
 The checker returns `"OK — read query"` or `"OK — write query"` so the agent knows which execution tool to call next. `duckdb_query` hard-rejects mutation keywords. `duckdb_execute` hard-rejects SELECT.
 
-Database path: `DUCKDB_PATH` in `.env` (default: `data/operational.duckdb`). DuckDB creates the file on first connect — no manual setup needed.
+Database path: `DUCKDB_PATH` in `.env`. Default is the canonical gold-layer DB at the repo root: `data/database/operational_twin.db`, built by `src/data_pipeline/build_gold_layer.py` (run it once before starting the API — see root README). The API gateway reads the same DB.
 
 ### MCP tools (`tools/mcp_client.py`)
 
@@ -461,6 +522,26 @@ The eval gate fails if average score across all evaluators drops below 70%. Runn
 | `ANTHROPIC_API_KEY` | Model calls during eval runs (swap for Groq/Mistral key if needed) |
 
 Set these in **Settings → Secrets and variables → Actions** on the repo.
+
+---
+
+## Open questions (for designers)
+
+Blocking full frontend integration. Answers resolve the [API Gateway TODOs](#️-open-todos-deferred--pending-designer-answers).
+
+**For the frontend designer**
+1. **facilities / departments item shape** — no mock exists and `App.jsx` doesn't render them yet. Confirm exact fields. Assumed: `facilities:[{id,name}]`, `departments:[{id,name,facility_id}]`.
+2. **`view` semantics** — client only sends `?view=ceo|factory|department`, never `facility_id`/`department_id`. What should each `view` scope to on its own? (e.g. ceo=all, factory=per-facility, department=per-department)
+3. **`client.js` gaps** — no `getFacilities`/`getDepartments` exports (but `useScopeOptions` imports them → Vite build break); client never sends `facility_id`/`department_id`. Are you adding these, or should backend stay optional-for-now?
+4. **KPI `deltas`** — period-over-period vs what window? (data is currently a single snapshot with no history)
+5. **`energy_waste_cost_inr`** — power *waste* (`estimated_power_waste_cost_inr`) or total power *cost* (`operational_power_cost_inr`)?
+
+**For the data designer**
+6. **Canonical DB path** — confirmed `data/database/operational_twin.db`, table `gold_operational_metrics`. ✅ (backend now points here)
+7. **Facility / department display names** — only IDs in the gold table. Is there a name lookup, or does the UI show IDs?
+8. **`energy_waste` definition** — same as Q5, from the data side.
+9. **Refresh model** — one-time snapshot, or will `sensor_data_*.json` keep landing? Affects `as_of` and deltas.
+10. **Existing analytics queries** — any views/queries from the financial-impact work to reuse instead of re-deriving?
 
 ---
 
