@@ -4,6 +4,17 @@ import pathlib
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Load backend/.env into os.environ so provider SDKs (Mistral, Anthropic, Tavily) that
+# read os.environ directly pick up the keys. `langgraph dev` does this via langgraph.json's
+# "env" field; other entrypoints (uvicorn API gateway, run_evals, CLI) need it done here.
+# override=True so .env is authoritative over any stale shell/conda env var of the same name.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(pathlib.Path(__file__).resolve().parents[1] / ".env", override=True)
+except ImportError:
+    pass
+
 
 def _load_env_yaml() -> dict:
     """Load the environment-specific yaml config as field defaults.

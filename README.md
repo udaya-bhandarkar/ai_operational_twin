@@ -1,349 +1,162 @@
 # AI Operational Twin
 
-## Overview
+An industrial analytics platform for a PET-recycling operation. It generates synthetic ERP +
+IoT sensor data, enriches it into a financial-impact "gold layer" in DuckDB, serves it through
+a multi-agent LLM backend + FastAPI gateway, and visualises it in a React dashboard with an
+AI chat assistant.
 
-AI Operational Twin is a lightweight industrial analytics simulation that combines:
+Three layers, end to end:
 
-- ERP/business data (costs and rates)
-- IoT machine telemetry
-- DuckDB analytics
-
-The system generates synthetic manufacturing data, enriches operational events with financial information, and produces a Gold Layer table for operational cost and waste analysis.
+| Layer | What it does | Docs |
+|---|---|---|
+| **Data pipeline** (`src/`, `data/`) | Generates ERP/sensor data, builds the `gold_operational_metrics` DuckDB table | [below](#data-pipeline) |
+| **Backend** (`backend/`) | Supervisor + research + ops agents (LangGraph) and a FastAPI gateway serving dashboard + chat | [`backend/README.md`](backend/README.md) |
+| **Frontend** (`frontend/`) | React + Vite dashboard: KPIs, waste charts, top-events, scope dropdowns, chat | [`frontend/README.md`](frontend/README.md) |
 
 ---
 
 ## Architecture
 
 ```text
-ERP Batch Generator
-        │
-        ▼
-erp_daily_rates_inr.csv
-        │
-        ▼
-    erp_rates
-        │
-        │
-        ├──────────────┐
-        │              │
-        ▼              │
-                      JOIN
-        ▲              │
-        │              ▼
-sensor_telemetry ──► gold_operational_metrics
-        ▲
-        │
-sensor_data.json
-        ▲
-        │
-Sensor Stream Generator
+ ERP generator ─► erp_daily_rates_inr.csv ─┐
+                                           ├─► DuckDB gold_operational_metrics
+ Sensor stream ─► sensor_data_*.json ──────┘              │
+                                                          ▼
+                                          FastAPI gateway (backend/api, :8000)
+                                          ├─ GET /api/kpis, /waste-*, /machines, …  (reads gold table)
+                                          └─ POST /api/chat ─► Supervisor agent ─► Ops agent ─► DuckDB
+                                                          │
+                                                          ▼
+                                          React dashboard (frontend, :5173)
+```
+
+The dashboard reads the gold table through the gateway's REST endpoints; the chat forwards to
+the LangGraph agents, which query the same DuckDB.
+
+---
+
+## Repository layout
+
+```
+ai_operational_twin/
+├── src/                    # Data pipeline (ERP + sensor generators, gold-layer builder)
+│   ├── data_pipeline/
+│   └── ai_engine/
+├── data/
+│   ├── raw/                # Generated ERP csv + sensor json (inputs)
+│   └── database/           # Built DuckDB file (gitignored — rebuild locally)
+├── backend/                # Multi-agent LangGraph system + FastAPI gateway   → backend/README.md
+├── frontend/               # React + Vite dashboard                           → frontend/README.md
+├── QUESTIONS_FOR_DESIGNERS.md   # Cross-team contract Q&A (+ open items)
+└── README.md               # You are here
 ```
 
 ---
 
-## Project Components
+## Quickstart (full stack)
 
-### 1. ERP Batch Generator
+Run the three layers in order. Each sub-README has the deep detail; this is the happy path.
 
-**File**
+### Prerequisites
+- Python 3.11+ and [`uv`](https://github.com/astral-sh/uv)
+- Node.js 18+ and npm
+- An LLM provider API key (Anthropic / Groq / Mistral) — needed for **chat only**; the dashboard works without one
 
-```text
-src/data_pipeline/erp_batch_gen.py
+### 1. Build the data (DuckDB gold layer)
+
+```bash
+python src/data_pipeline/erp_batch_gen.py      # ERP rates  → data/raw/erp_daily_rates_inr.csv
+python src/data_pipeline/sensor_stream.py      # Sensor data → data/raw/sensor_data_*.json  (Ctrl+C to stop)
+python src/data_pipeline/build_gold_layer.py   # Builds data/database/operational_twin.db
 ```
 
-Generates daily ERP/business records including:
+Re-run `build_gold_layer.py` whenever new sensor files land — it re-ingests all of them.
 
-- Electricity cost per kWh
-- Raw PET material cost
-- Finished thread selling price
-- Daily maintenance cost
+### 2. Start the backend gateway (port 8000)
 
-**Output**
+Full setup (venv, env keys, agents) is in [`backend/README.md`](backend/README.md). Minimal:
 
-```text
-data/raw/erp_daily_rates_inr.csv
+```bash
+cd backend
+uv venv .venv --python 3.11
+uv pip install -e .
+cp .env.example .env          # fill in your provider key (chat only)
+.venv/Scripts/python.exe -m uvicorn api.app:app --port 8000
 ```
+
+Verify: `curl http://localhost:8000/health` → `{"status":"ok"}`.
+
+> The gateway serves the dashboard endpoints and forwards `/api/chat` to the LangGraph agents.
+> To explore the agents directly in LangGraph Studio, use `langgraph dev` instead — see the backend README.
+
+### 3. Start the frontend (port 5173)
+
+Full detail in [`frontend/README.md`](frontend/README.md). Minimal:
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+# in .env: VITE_USE_MOCKS=false and VITE_API_BASE=http://localhost:8000/api
+npm run dev
+```
+
+Open the printed URL (`http://localhost:5173`). Dashboard renders live data; chat needs a valid
+provider key in `backend/.env`. To develop the UI with no backend, set `VITE_USE_MOCKS=true`.
 
 ---
 
-### 2. Sensor Stream Generator
+## Documentation
 
-**File**
-
-```text
-src/data_pipeline/sensor_stream.py
-```
-
-Simulates machine telemetry for manufacturing equipment.
-
-Monitored machines:
-
-- PET_SHREDDER_01
-- EXTRUDER_UNIT_01
-- SPINNING_LINE_01
-
-Generated metrics:
-
-- Power consumption
-- Material intake
-- Material output
-- Efficiency ratio
-- Operational status
-
-**Output**
-
-```text
-data/raw/sensor_data.json
-```
+| Doc | Covers |
+|---|---|
+| [`backend/README.md`](backend/README.md) | Agents, middleware, tools, HITL, evals/CI, the **API gateway** (endpoints, scope params, CORS), config, troubleshooting |
+| [`frontend/README.md`](frontend/README.md) | Components, hooks, the mock/live switch, view toggle, styling, connecting to the backend |
+| [`QUESTIONS_FOR_DESIGNERS.md`](QUESTIONS_FOR_DESIGNERS.md) | Contract decisions between frontend/backend/data + remaining open items |
 
 ---
 
-### 3. Gold Layer Builder
+## Data pipeline
 
-**File**
+The `src/` layer produces the single source of truth: the `gold_operational_metrics` table.
 
-```text
-src/data_pipeline/build_gold_layer.py
-```
+| Component | File | Output |
+|---|---|---|
+| ERP batch generator | `src/data_pipeline/erp_batch_gen.py` | `data/raw/erp_daily_rates_inr.csv` (electricity/water/PET rates) |
+| Sensor stream generator | `src/data_pipeline/sensor_stream.py` | `data/raw/sensor_data_*.json` (machine telemetry) |
+| Gold-layer builder | `src/data_pipeline/build_gold_layer.py` | `data/database/operational_twin.db` |
 
-Loads both data sources into DuckDB and creates the final analytics table.
+The builder loads both sources into DuckDB (`erp_rates`, `sensor_telemetry`), joins them by date,
+and computes operational costs + waste. Data keeps arriving as more sensor files land; the
+`sensor_data_*.json` wildcard ingests all of them on each rebuild.
 
-Operations performed:
-
-1. Load ERP CSV data
-2. Load sensor JSON data
-3. Join datasets by operation date
-4. Calculate operational costs
-5. Calculate estimated energy waste costs
-6. Calculate material waste costs
-
-**Output Database**
-
-```text
-data/database/operational_twin.db
-```
-
----
-
-### 4. AI Agent Verification
-
-**File**
-
-```text
-src/ai_engine/agent.py
-```
-
-Connects to DuckDB and retrieves:
-
-- Top 5 highest waste events
-- Machine waste rankings
-- Operational insights
-
----
-
-### 5. Multi-Agent Backend (`backend/`)
-
-LangGraph multi-agent system (supervisor + research + ops specialists) with a **FastAPI gateway** (`backend/api/`) that serves the dashboard and chat. The gateway reads `gold_operational_metrics` for dashboard data and forwards chat to the ops agent (which queries the same DuckDB). See `backend/README.md`.
-
-### 6. React Dashboard (`frontend/`)
-
-Vite + React dashboard (KPIs, waste charts, top-events, chat panel). Connects to the gateway via `VITE_API_BASE=http://localhost:8000/api`. See `frontend/README.md`.
-
-**Full-stack run order:** build gold DB → start backend gateway (`:8000`) → start frontend (`npm run dev`). Details in `backend/README.md` → *API Gateway*.
-
-> **Integration status:** dashboard endpoints are live and verified against the frontend mock shapes. A few contract points (view scoping, KPI deltas, facilities/departments shape) are still open — tracked in `backend/README.md` → *Open questions (for designers)*.
-
----
-
-# Data Model
-
-## Silver Layer
-
-### erp_rates
+### `gold_operational_metrics` schema
 
 | Column | Description |
-|----------|-------------|
-| date | ERP business date |
-| electricity_rate_per_kwh_inr | Electricity price (INR/kWh) |
-| raw_pet_cost_per_kg_inr | Raw PET material cost |
-| finished_thread_price_per_kg_inr | Product selling price |
-| daily_facility_maintenance_inr | Daily maintenance cost |
+|---|---|
+| timestamp / operation_date | Telemetry time + derived date |
+| facility_id / department_id / line_id / machine_id | Location + machine hierarchy |
+| status | `NORMAL` / `CRITICAL_POWER_WASTE` |
+| power_kw / water_liters | Resource consumption |
+| material_in_kg / material_out_kg / efficiency_ratio | Material throughput |
+| current_electricity_rate / current_water_rate | ERP rates (joined) |
+| operational_power_cost_inr / operational_water_cost_inr | Total resource cost |
+| estimated_power_waste_cost_inr | **Excess** power cost (power over the 300 kW threshold) |
+| material_waste_cost_inr | Material lost (`in − out`) × PET rate |
+| carbon_emissions_kg_co2 | Estimated carbon |
+
+Waste convention used across the stack: waste = **excess only** (power over threshold; material
+in−out). See `build_gold_layer.py` for the exact SQL.
 
 ---
 
-### sensor_telemetry
+## Project status
 
-| Column | Description |
-|----------|-------------|
-| timestamp | Event timestamp |
-| event_type | Event type |
-| machine_id | Machine identifier |
-| metrics | Nested telemetry metrics |
-| status | Operational state |
+- ✅ Data pipeline → DuckDB gold layer
+- ✅ Multi-agent backend (supervisor / research / ops) + FastAPI gateway
+- ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
+- ✅ Chat end-to-end through the gateway
+- ⏳ **Chat streaming + markdown rendering** — gateway returns a single response (no token streaming); chat bubbles render plain text
+- ⏳ **Water waste** — data designer wants electricity / water / material waste split out (excess-only); water-waste has no gold-layer column yet (needs a threshold rule + a frontend card)
 
-#### metrics structure
-
-| Field | Description |
-|---------|-------------|
-| power_consumption_kw | Machine power draw |
-| material_intake_kg | Input material |
-| material_output_kg | Output material |
-| efficiency_ratio | Output/Input ratio |
-
----
-
-## Gold Layer
-
-### gold_operational_metrics
-
-This is the final analytics table used by downstream consumers (the API gateway and dashboard read from it directly).
-
-| Column | Description |
-|----------|-------------|
-| timestamp | Telemetry timestamp |
-| operation_date | Extracted operation date |
-| facility_id | Facility identifier (e.g. `CHENNAI_RECYCLING_PLANT`) |
-| department_id | Department (e.g. `PRE_PROCESSING`, `WASHING`) |
-| line_id | Production line identifier |
-| machine_id | Machine identifier |
-| status | Machine status (`NORMAL` / `CRITICAL_POWER_WASTE`) |
-| power_kw | Power consumption |
-| water_liters | Water consumption |
-| material_in_kg | Material input |
-| material_out_kg | Material output |
-| efficiency_ratio | Output / input ratio |
-| current_electricity_rate | ERP electricity rate |
-| current_water_rate | ERP water rate |
-| operational_power_cost_inr | Power cost |
-| operational_water_cost_inr | Water cost |
-| estimated_power_waste_cost_inr | Excess energy waste cost |
-| material_waste_cost_inr | Material loss cost |
-| carbon_emissions_kg_co2 | Estimated carbon emissions |
-
----
-
-# Cost Calculations
-
-### Operational Cost
-
-```sql
-power_kw * electricity_rate
-```
-
-### Estimated Energy Waste Cost
-
-```sql
-CASE
-    WHEN status = 'CRITICAL_POWER_WASTE'
-    THEN (power_kw - 300) * electricity_rate
-    ELSE 0
-END
-```
-
-### Material Waste Cost
-
-```sql
-(material_in_kg - material_out_kg)
-    * raw_pet_cost_per_kg_inr
-```
-
----
-
-# Example Output
-
-| timestamp | machine_id | status | power_kw | estimated_waste_cost_inr |
-|------------|------------|---------|-----------|--------------------------|
-| 2026-06-08T10:12:51Z | SPINNING_LINE_01 | CRITICAL_POWER_WASTE | 307.95 | 75.43 |
-
-Interpretation:
-
-- Machine exceeded the 300 kW threshold.
-- Additional electricity usage is treated as waste.
-- Waste is converted into monetary impact using ERP electricity rates.
-
----
-
-# Running the Project
-
-## Step 1: Generate ERP Data
-
-```bash
-python src/data_pipeline/erp_batch_gen.py
-```
-
----
-
-## Step 2: Generate Sensor Data
-
-Run the stream and stop it with `Ctrl+C` when enough events have been generated.
-
-```bash
-python src/data_pipeline/sensor_stream.py
-```
-
----
-
-## Step 3: Build the Gold Layer
-
-```bash
-python src/data_pipeline/build_gold_layer.py
-```
-
-This creates:
-
-```text
-data/database/operational_twin.db
-```
-
----
-
-## Step 4: Verify Results
-
-```bash
-python src/ai_engine/agent.py
-```
-
-Example output:
-
-```text
-Top 5 Highest Waste Events (in INR):
-
-timestamp              machine_id         power_kw   rate_inr   waste_cost
----------------------------------------------------------------------------
-2026-06-08T10:15:00Z   PET_SHREDDER_01    548.20     9.81       2435.84
-...
-```
-
----
-
-# Technology Stack
-
-- Python
-- DuckDB
-- CSV
-- JSON
-- Pathlib
-
----
-
-# Future Enhancements
-
-- Real-time streaming ingestion
-- Dashboard visualization
-- Predictive maintenance models
-- LLM-powered operational assistant
-- Machine-level KPI summaries
-- Facility-level analytics
-- Automated anomaly detection
-
----
-
-# Final Output
-
-The primary output of the project is:
-
-```text
-gold_operational_metrics
-```
-
-This Gold Layer table serves as the single source of truth for operational cost, waste, and efficiency analytics.
+See [`QUESTIONS_FOR_DESIGNERS.md`](QUESTIONS_FOR_DESIGNERS.md) for the full open-items list.

@@ -5,9 +5,10 @@ built by src/data_pipeline/build_gold_layer.py.
 
 Scope params (shared by every endpoint):
     view          — 'ceo' | 'factory' | 'department' granularity selector.
-                    TODO(frontend-designer): confirm what each view scopes to
-                    when no facility_id/department_id is sent. Currently a no-op
-                    (numbers are global) so results stay honest until specced.
+                    Confirmed (frontend designer): the dropdowns drive scoping —
+                    factory view sends facility_id; department view sends
+                    facility_id + department_id; ceo sends neither. So `view`
+                    itself needs no server logic; the ids below do the filtering.
     facility_id   — optional exact-match filter on facility_id.
     department_id — optional exact-match filter on department_id.
 """
@@ -33,8 +34,8 @@ def connect():
 def scope_where(facility_id: str | None, department_id: str | None) -> tuple[str, list]:
     """Build a WHERE clause + bound params from the scope filters.
 
-    `view` is intentionally not applied yet — see module docstring.
-    Returns ("" , []) when unfiltered, else ("WHERE ...", [params]).
+    `view` is not applied server-side by design — the dropdowns send the ids
+    (see module docstring). Returns ("", []) when unfiltered, else ("WHERE ...", [params]).
     """
     clauses: list[str] = []
     params: list = []

@@ -1,8 +1,13 @@
 """Dashboard GET endpoints. Responses match frontend/src/mocks/mockData.js field-for-field.
 
 Waste convention: waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr.
-TODO(designers): confirm `energy_waste_cost_inr` maps to estimated_power_waste_cost_inr
-(power *waste*) and not operational_power_cost_inr (power *cost*).
+Confirmed by both designers: `energy_waste_cost_inr` = estimated_power_waste_cost_inr
+(EXCESS power waste, not total power cost). material_waste_cost_inr is excess by nature.
+
+NOTE (data designer): wastes should eventually be split further — electricity / WATER /
+material, all excess-only. Water waste has no column in the gold layer yet (the builder
+computes operational_water_cost_inr = total, not excess). Adding it needs a data-side
+change in build_gold_layer.py + a frontend card. Tracked as an open cross-team item.
 """
 from fastapi import APIRouter, Query
 
@@ -37,8 +42,9 @@ def kpis(view: str = _View, facility_id: str = _Facility, department_id: str = _
         "energy_waste_cost_inr": round(energy, 2),
         "material_waste_cost_inr": round(material, 2),
         "efficiency_ratio": round(eff, 3),
-        # TODO(frontend-designer): deltas need a defined comparison window and the
-        # dataset is a single snapshot (no history) — returning neutral 0.0 until specced.
+        # deltas: frontend designer plans to drop the delta UI (no history yet). Data will
+        # accumulate over time (new sensor files land), so real period-over-period deltas
+        # become computable later. Returning neutral 0.0 keeps the field non-breaking meanwhile.
         "deltas": {
             "total_waste_cost_inr": 0.0,
             "energy_waste_cost_inr": 0.0,
@@ -145,14 +151,21 @@ def machines(view: str = _View, facility_id: str = _Facility, department_id: str
 
 
 # --- Scope-option endpoints -------------------------------------------------
-# TODO(frontend-designer): item shape unconfirmed (no mock, no UI consumer yet).
-# Provisional shape below — confirm field names before relying on these.
+# Shapes confirmed against frontend mockData.js (dropdowns bind to these):
+#   facilities:  {facility_id, label}
+#   departments: {department_id, label, facility_id}
+# No name lookup table exists (data designer), so `label` is derived from the id:
+# "CHENNAI_RECYCLING_PLANT" -> "Chennai Recycling Plant".
+
+def _label(raw: str) -> str:
+    return " ".join(w.capitalize() for w in raw.split("_"))
+
 
 @router.get("/facilities")
 def facilities():
     with connect() as conn:
         rows = conn.execute(f"SELECT DISTINCT facility_id FROM {GOLD} ORDER BY 1").fetchall()
-    return {"facilities": [{"id": f, "name": f} for (f,) in rows]}
+    return {"facilities": [{"facility_id": f, "label": _label(f)} for (f,) in rows]}
 
 
 @router.get("/departments")
@@ -161,5 +174,9 @@ def departments(facility_id: str = _Facility):
     sql = f"SELECT DISTINCT department_id, facility_id FROM {GOLD} {where} ORDER BY 1"
     with connect() as conn:
         rows = conn.execute(sql, params).fetchall()
-    # facility_id on each row per the data designer's note.
-    return {"departments": [{"id": d, "name": d, "facility_id": fac} for d, fac in rows]}
+    # facility_id on each row — the dept dropdown filters by selected facility.
+    return {
+        "departments": [
+            {"department_id": d, "label": _label(d), "facility_id": fac} for d, fac in rows
+        ]
+    }

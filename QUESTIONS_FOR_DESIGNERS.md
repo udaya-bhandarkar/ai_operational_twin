@@ -1,5 +1,15 @@
 # Questions for Designers — Frontend/Backend/Data Integration
 
+===============================================================================
+STATUS: ALL ANSWERED (2026-07-04). Gateway updated to match. One item remains open:
+  >> WATER WASTE: data designer wants wastes split & excess-only (electricity/water/
+     material). Electricity + material are done. WATER WASTE has no column in the gold
+     layer yet — needs (a) build_gold_layer.py to compute an excess-water column with a
+     threshold rule, and (b) a frontend water-waste KPI card. Until then the API exposes
+     electricity + material waste only.
+Original questions + answers kept below for the record.
+===============================================================================
+
 Context: the FastAPI gateway connecting the React dashboard to the DuckDB data is built and
 working. A few contract details are still ambiguous. Answers to the questions below let us
 finish the integration without guessing. Split by who each question is for.

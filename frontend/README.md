@@ -180,7 +180,7 @@ The frontend is built against these endpoints. `view` is `ceo | factory | depart
 
 The exact response shapes are mirrored in `mocks/mockData.js` — that file is the living reference for the contract. When live data renders wrong, compare the real response to the matching mock; the mismatch is the bug.
 
-> **Status:** the structured data endpoints (`/api/kpis` etc.) require a FastAPI gateway that reads the DuckDB Gold Layer and is **not yet built** — only the LangGraph chat agent currently runs. Until the gateway exists, run with `VITE_USE_MOCKS=true`. `/api/chat` forwards to the LangGraph supervisor agent.
+> **Status:** the FastAPI gateway (`backend/api/`) is **built and live** — all endpoints above serve real data from the DuckDB gold layer, and `/api/chat` forwards to the LangGraph supervisor agent. Run the backend on `:8000`, set `VITE_USE_MOCKS=false` and `VITE_API_BASE=http://localhost:8000/api` (CORS is enabled, so no Vite proxy is needed). Set `VITE_USE_MOCKS=true` to develop the UI with no backend. See the root `README.md` for full-stack setup and `backend/README.md` for gateway details.
 
 ---
 

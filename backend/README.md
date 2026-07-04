@@ -181,23 +181,32 @@ All responses match `frontend/src/mocks/mockData.js` field-for-field.
 | GET | `/api/waste-by-machine` | `{machines:[{machine_id, waste_cost_inr}]}` |
 | GET | `/api/top-events` | `{events:[{machine_id, timestamp, efficiency_ratio, energy_cost_inr, total_waste_inr, status}]}` |
 | GET | `/api/machines` | `{machines:[{machine_id, status}]}` |
-| GET | `/api/facilities` | `{facilities:[{id, name}]}` — *provisional shape* |
-| GET | `/api/departments` | `{departments:[{id, name, facility_id}]}` — *provisional shape* |
+| GET | `/api/facilities` | `{facilities:[{facility_id, label}]}` |
+| GET | `/api/departments` | `{departments:[{department_id, label, facility_id}]}` |
 | POST | `/api/chat` | `{reply, thread_id}` — forwards to supervisor graph |
 
 **Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr`. Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
 
-### ⚠️ Open TODOs (deferred — pending designer answers)
+### Design decisions (resolved with designers)
 
-These are marked `TODO(...)` in `api/db.py` and `api/dashboard.py`. **Do not ship to `main` without resolving — track against the [open questions](#open-questions-for-designers).**
+All the original open items are now answered:
 
-| # | TODO | Location | Current behaviour |
-|---|---|---|---|
-| 1 | `view` semantics (ceo/factory/department) undefined | `api/db.py` `scope_where` | **No-op** — numbers are global unless `facility_id`/`department_id` sent |
-| 2 | KPI `deltas` need a comparison window; snapshot has no history | `api/dashboard.py` `kpis` | Returns neutral `0.0` for all deltas |
-| 3 | `facilities` / `departments` item shape unconfirmed (no mock, no UI consumer) | `api/dashboard.py` | Provisional `{id, name[, facility_id]}` |
-| 4 | `energy_waste_cost_inr` → which column? | `api/dashboard.py` (`_WASTE`, `kpis`) | Mapped to `estimated_power_waste_cost_inr` |
-| 5 | Frontend `client.js` missing `getFacilities`/`getDepartments` exports; never sends `facility_id`/`department_id` | frontend (owner's side) | Backend accepts params already; frontend must catch up |
+| # | Question | Resolution |
+|---|---|---|
+| 1 | `view` semantics | Dropdowns drive scoping — factory sends `facility_id`, department sends `facility_id`+`department_id`, ceo sends neither. No server-side `view` logic needed; the id filters do the work. |
+| 2 | `facilities` / `departments` shape | `{facility_id, label}` and `{department_id, label, facility_id}`. `label` derived from the id (no lookup table). |
+| 3 | KPI `deltas` | Frontend dropping the delta UI (no history). Field kept at `0.0` (non-breaking); real deltas become computable once data accumulates. |
+| 4 / 5 | `energy_waste_cost_inr` | = `estimated_power_waste_cost_inr` (**excess** power waste, not total cost). Confirmed both sides. |
+| — | Frontend `client.js` gaps | Frontend designer added `getFacilities`/`getDepartments` + sends `facility_id`/`department_id`. Done. |
+
+### Remaining open item — split waste types (cross-team)
+
+Data designer wants wastes reported **separately and excess-only**: electricity / **water** / material.
+- `estimated_power_waste_cost_inr` (electricity, excess) ✅ exists
+- `material_waste_cost_inr` (excess by nature) ✅ exists
+- **water waste ❌ does not exist** — the gold layer only has `operational_water_cost_inr` (total, not excess).
+
+Needs: (a) **data side** — add an excess-water-waste column in `build_gold_layer.py` (needs a waste threshold/rule like the 300 kW power one); (b) **frontend** — add a water-waste KPI card. Until both land, the API exposes electricity + material waste only.
 
 ### Known blocker
 
@@ -525,23 +534,23 @@ Set these in **Settings → Secrets and variables → Actions** on the repo.
 
 ---
 
-## Open questions (for designers)
+## Designer questions — all answered
 
-Blocking full frontend integration. Answers resolve the [API Gateway TODOs](#️-open-todos-deferred--pending-designer-answers).
+Original list is in `QUESTIONS_FOR_DESIGNERS.md` (repo root). Resolutions:
 
-**For the frontend designer**
-1. **facilities / departments item shape** — no mock exists and `App.jsx` doesn't render them yet. Confirm exact fields. Assumed: `facilities:[{id,name}]`, `departments:[{id,name,facility_id}]`.
-2. **`view` semantics** — client only sends `?view=ceo|factory|department`, never `facility_id`/`department_id`. What should each `view` scope to on its own? (e.g. ceo=all, factory=per-facility, department=per-department)
-3. **`client.js` gaps** — no `getFacilities`/`getDepartments` exports (but `useScopeOptions` imports them → Vite build break); client never sends `facility_id`/`department_id`. Are you adding these, or should backend stay optional-for-now?
-4. **KPI `deltas`** — period-over-period vs what window? (data is currently a single snapshot with no history)
-5. **`energy_waste_cost_inr`** — power *waste* (`estimated_power_waste_cost_inr`) or total power *cost* (`operational_power_cost_inr`)?
+**Frontend designer**
+1. Shapes — assumption confirmed; actual contract is the mock: `{facility_id, label}` / `{department_id, label, facility_id}`. ✅
+2. `view` — dropdowns pick facility (factory view) and facility→department (department view); client sends the ids. ✅
+3. `client.js` — designer added the missing fns + scope params. ✅
+4. `deltas` — being removed (no history); field kept neutral for now. ✅
+5. `energy_waste` — = wasted power (excess). ✅
 
-**For the data designer**
-6. **Canonical DB path** — confirmed `data/database/operational_twin.db`, table `gold_operational_metrics`. ✅ (backend now points here)
-7. **Facility / department display names** — only IDs in the gold table. Is there a name lookup, or does the UI show IDs?
-8. **`energy_waste` definition** — same as Q5, from the data side.
-9. **Refresh model** — one-time snapshot, or will `sensor_data_*.json` keep landing? Affects `as_of` and deltas.
-10. **Existing analytics queries** — any views/queries from the financial-impact work to reuse instead of re-deriving?
+**Data designer**
+6. DB path — confirmed `data/database/operational_twin.db`. ✅
+7. Names — no lookup table; dashboard shows friendly labels (backend derives `label` from id). ✅
+8. Wastes — separate + excess-only. Electricity + material done; **water waste still needs a gold-layer column** (see [remaining open item](#remaining-open-item--split-waste-types-cross-team)). ⚠️
+9. Refresh — data keeps arriving (multiple sensor files). `as_of`/windows anchor on `MAX(timestamp)` — already correct. Rebuild the gold DB to ingest new files. ✅
+10. Existing queries — the gold-layer SQL in `build_gold_layer.py` is the source; gateway reads `gold_operational_metrics` directly. ✅
 
 ---
 
