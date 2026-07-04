@@ -2,6 +2,10 @@ import { useApiResource } from './useApiResource';
 import { getKpis } from '../api/client';
 import { REFRESH_MS } from '../config/constants';
 
-export function useKpis(view) {
-  return useApiResource(() => getKpis(view), [view], { intervalMs: REFRESH_MS });
+export function useKpis(scope) {
+  return useApiResource(
+    () => getKpis(scope),
+    [scope.view, scope.facilityId, scope.departmentId],
+    { intervalMs: REFRESH_MS }
+  );
 }

@@ -26,9 +26,30 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 .topbar__updated { margin-left: auto; font-size: 12px; color: #607071; }
 
 /* View toggle */
-.view-toggle { display: inline-flex; border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; }
-.view-toggle__btn { border: 0; background: transparent; padding: 6px 14px; cursor: pointer; font-size: 13px; }
-.view-toggle__btn.is-active { background: var(--c-accent); color: #fff; }
+.view-toggle { display: inline-flex; gap: 4px; position: relative; }
+.view-toggle__group { position: relative; }
+.view-toggle__btn {
+  border: 1px solid var(--c-border); background: var(--c-panel);
+  padding: 6px 14px; cursor: pointer; font-size: 13px; border-radius: var(--radius);
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+}
+.view-toggle__btn.is-active { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
+.caret { font-size: 10px; opacity: 0.8; }
+
+.dropdown {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 20;
+  min-width: 200px; background: var(--c-panel);
+  border: 1px solid var(--c-border); border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12); padding: 4px; overflow: hidden;
+}
+.dropdown__item {
+  display: block; width: 100%; text-align: left;
+  border: 0; background: transparent; padding: 8px 12px;
+  font-size: 13px; cursor: pointer; border-radius: 6px;
+}
+.dropdown__item:hover { background: #eef2f2; }
+.dropdown__label { padding: 6px 12px; font-size: 11px; color: #607071; text-transform: uppercase; }
+.dropdown__back { border: 0; background: transparent; cursor: pointer; font-size: 12px; color: var(--c-accent); padding: 0; }
 
 /* Body: dashboard (left) + chat (right) */
 .app__body {
@@ -47,7 +68,7 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
   overflow-y: auto;     /* left side scrolls inside its own area if needed */
   min-height: 0;        /* the important bit — see below */
 }
-.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
 .dashboard__charts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 
 /* KPI cards */
@@ -70,7 +91,7 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 .events-table__waste { color: var(--c-danger); font-weight: 600; }
 .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #eef2f2; }
 .badge--critical_power_waste { background: #fdecea; color: var(--c-danger); }
-.badge--nominal { background: #e8f5ee; color: #2e8b57; }
+.badge--normal { background: #e8f5ee; color: #2e8b57; }
 
 /* Chat */
 .dashboard__chat {

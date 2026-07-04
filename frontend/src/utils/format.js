@@ -16,6 +16,9 @@ export const formatTime = (ts) =>
 export const formatDateTime = (ts) =>
   ts ? new Date(ts).toLocaleString('en-IN') : '—';
 
+export const formatCO2 = (v) =>
+  v == null ? '—' : `${Number(v).toLocaleString('en-IN', { maximumFractionDigits: 0 })} kg`;
+
 export const formatDelta = (fraction) => {
   if (fraction == null) return null;
   const pct = (fraction * 100).toFixed(1);

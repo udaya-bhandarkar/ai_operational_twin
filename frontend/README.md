@@ -180,13 +180,7 @@ The frontend is built against these endpoints. `view` is `ceo | factory | depart
 
 The exact response shapes are mirrored in `mocks/mockData.js` — that file is the living reference for the contract. When live data renders wrong, compare the real response to the matching mock; the mismatch is the bug.
 
-> **Status (updated):** the FastAPI gateway is **now built** (`backend/api/`) and all structured endpoints above are live and verified against these mock shapes. `/api/chat` forwards to the LangGraph supervisor agent. Run the backend (`uvicorn api.app:app --port 8000`) and set `VITE_USE_MOCKS=false` to go live.
->
-> **Two follow-ups on the frontend side:**
-> 1. `api/client.js` is missing `getFacilities` / `getDepartments` exports, but `hooks/useScopeOptions.js` imports them — this breaks `npm run build`. Add the two client functions (endpoints `GET /api/facilities`, `GET /api/departments` exist on the gateway).
-> 2. The client only sends `?view=`; it never sends `facility_id` / `department_id`. The gateway already accepts them as optional filters — wire them when scope dropdowns land.
->
-> **CORS vs proxy:** the gateway enables CORS for any localhost origin, so you can either keep the Vite `/api` proxy **or** point directly at it with `VITE_API_BASE=http://localhost:8000/api`. Both work.
+> **Status:** the structured data endpoints (`/api/kpis` etc.) require a FastAPI gateway that reads the DuckDB Gold Layer and is **not yet built** — only the LangGraph chat agent currently runs. Until the gateway exists, run with `VITE_USE_MOCKS=true`. `/api/chat` forwards to the LangGraph supervisor agent.
 
 ---
 

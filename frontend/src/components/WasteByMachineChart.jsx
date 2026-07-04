@@ -4,8 +4,8 @@ import Card from './ui/Card.jsx';
 import { formatINR } from '../utils/format.js';
 import { COLORS } from '../config/constants';
 
-export default function WasteByMachineChart({ view }) {
-  const { data, loading, error } = useWasteByMachine(view);
+export default function WasteByMachineChart({ scope }) {
+  const { data, loading, error } = useWasteByMachine(scope);
   const machines = data?.machines ?? [];
 
   return (
