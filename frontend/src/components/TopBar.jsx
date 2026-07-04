@@ -1,7 +1,7 @@
 import ViewToggle from './ViewToggle.jsx';
 import { formatTime } from '../utils/format.js';
 
-export default function TopBar({ view, onViewChange }) {
+export default function TopBar({ scope, onScopeChange }) {
   return (
     <header className="topbar">
       <div className="topbar__title">
@@ -9,7 +9,7 @@ export default function TopBar({ view, onViewChange }) {
         <span className="topbar__subtitle">Ekak Innovations</span>
       </div>
       <div className="topbar__updated">Last updated {formatTime(new Date().toISOString())}</div>
-      <ViewToggle value={view} onChange={onViewChange} />
+      <ViewToggle scope={scope} onChange={onScopeChange} />
     </header>
   );
 }

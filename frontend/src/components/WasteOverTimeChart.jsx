@@ -4,8 +4,8 @@ import Card from './ui/Card.jsx';
 import { formatINR, formatTime } from '../utils/format.js';
 import { COLORS } from '../config/constants';
 
-export default function WasteOverTimeChart({ view }) {
-  const { data, loading, error } = useWasteOverTime(view);
+export default function WasteOverTimeChart({ scope }) {
+  const { data, loading, error } = useWasteOverTime(scope);
   const points = data?.points ?? [];
 
   return (

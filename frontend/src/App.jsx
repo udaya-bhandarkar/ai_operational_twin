@@ -7,26 +7,26 @@ import TopEventsTable from './components/TopEventsTable.jsx';
 import ChatPanel from './components/ChatPanel.jsx';
 
 export default function App() {
-  const [view, setView] = useState('ceo');
+  const [scope, setScope] = useState({ view: 'ceo', facilityId: null, departmentId: null });
 
   return (
     <div className="app">
-      <TopBar view={view} onViewChange={setView} />
+      <TopBar scope={scope} onScopeChange={setScope} />
 
       <div className="app__body">
         <main className="dashboard">
-          <KpiGrid view={view} />
+          <KpiGrid scope={scope} />
 
           <section className="dashboard__charts">
-            <WasteOverTimeChart view={view} />
-            <WasteByMachineChart view={view} />
+            <WasteOverTimeChart scope={scope} />
+            <WasteByMachineChart scope={scope} />
           </section>
 
-          <TopEventsTable />
+          <TopEventsTable scope={scope} />
         </main>
 
         <aside className="dashboard__chat">
-          <ChatPanel view={view} />
+          <ChatPanel view={scope.view} />
         </aside>
       </div>
     </div>

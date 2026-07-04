@@ -16,12 +16,20 @@ async function request(path, options = {}) {
   return res.json();
 }
 
-export const getKpis           = (view)           => request(`/kpis?view=${encodeURIComponent(view)}`);
-export const getWasteOverTime  = (view, r = '24h')=> request(`/waste-over-time?view=${view}&range=${r}`);
-export const getWasteByMachine = (view)           => request(`/waste-by-machine?view=${view}`);
-export const getTopEvents      = (limit = 5)      => request(`/top-events?limit=${limit}`);
-export const getMachines       = (view)           => request(`/machines?view=${view}`);
+function scopeParams({ view, facilityId, departmentId }) {
+  const params = new URLSearchParams({ view });
+  if (facilityId) params.set('facility_id', facilityId);
+  if (departmentId) params.set('department_id', departmentId);
+  return params.toString();
+}
 
+export const getKpis           = (scope)          => request(`/kpis?${scopeParams(scope)}`);
+export const getWasteOverTime  = (scope, r = '24h')=> request(`/waste-over-time?${scopeParams(scope)}&range=${r}`);
+export const getWasteByMachine = (scope)          => request(`/waste-by-machine?${scopeParams(scope)}`);
+export const getTopEvents      = (scope, limit = 5)=> request(`/top-events?${scopeParams(scope)}&limit=${limit}`);
+export const getMachines       = (scope)          => request(`/machines?${scopeParams(scope)}`);
+export const getFacilities  = () => request('/facilities');
+export const getDepartments = () => request('/departments');
 export const sendChatMessage = ({ message, threadId, view }) =>
   request('/chat', {
     method: 'POST',

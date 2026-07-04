@@ -2,8 +2,8 @@ import { useTopEvents } from '../hooks/useTopEvents.js';
 import Card from './ui/Card.jsx';
 import { formatINR, formatPercent, formatTime } from '../utils/format.js';
 
-export default function TopEventsTable() {
-  const { data, loading, error } = useTopEvents(5);
+export default function TopEventsTable({ scope }) {
+  const { data, loading, error } = useTopEvents(scope);
   const events = data?.events ?? [];
 
   return (
