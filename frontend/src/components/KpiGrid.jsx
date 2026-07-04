@@ -5,7 +5,6 @@ import { COLORS } from '../config/constants';
 
 export default function KpiGrid({ scope }) {
   const { data, loading, error } = useKpis(scope);
-  const d = data?.deltas ?? {};
 
   const cards = [
     { key: 'total_waste_cost_inr',    label: 'Total Waste Cost (Today)', format: formatINR,     accent: COLORS.deep },
@@ -23,7 +22,6 @@ export default function KpiGrid({ scope }) {
           key={c.key}
           label={c.label}
           value={c.format(data?.[c.key])}
-          delta={d[c.key]}
           accent={c.accent}
           loading={loading}
           error={error}
