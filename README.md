@@ -2,7 +2,7 @@
 
 An industrial analytics platform for a PET-recycling operation. It generates synthetic ERP +
 IoT sensor data, enriches it into a financial-impact "gold layer" in DuckDB, serves it through
-a multi-agent LLM backend + FastAPI gateway, and visualises it in a React dashboard with an
+a LangGraph agent + FastAPI gateway, and visualises it in a React dashboard with an
 AI chat assistant.
 
 Three layers, end to end:
@@ -10,7 +10,7 @@ Three layers, end to end:
 | Layer | What it does | Docs |
 |---|---|---|
 | **Data pipeline** (`src/`, `data/`) | Generates ERP/sensor data, builds the `gold_operational_metrics` DuckDB table | [below](#data-pipeline) |
-| **Backend** (`backend/`) | Supervisor + research + ops agents (LangGraph) and a FastAPI gateway serving dashboard + chat | [`backend/README.md`](backend/README.md) |
+| **Backend** (`backend/`) | A LangGraph agent (DuckDB + web tools, HITL on writes) and a FastAPI gateway serving dashboard + chat | [`backend/README.md`](backend/README.md) |
 | **Frontend** (`frontend/`) | React + Vite dashboard: KPIs, waste charts, top-events, scope dropdowns, chat | [`frontend/README.md`](frontend/README.md) |
 
 ---
@@ -24,7 +24,7 @@ Three layers, end to end:
                                                           ▼
                                           FastAPI gateway (backend/api, :8000)
                                           ├─ GET /api/kpis, /waste-*, /machines, …  (reads gold table)
-                                          └─ POST /api/chat ─► Supervisor agent ─► Ops agent ─► DuckDB
+                                          └─ POST /api/chat ─► LangGraph agent ─► DuckDB / web tools
                                                           │
                                                           ▼
                                           React dashboard (frontend, :5173)
@@ -153,7 +153,7 @@ in−out). See `build_gold_layer.py` for the exact SQL.
 ## Project status
 
 - ✅ Data pipeline → DuckDB gold layer
-- ✅ Multi-agent backend (supervisor / research / ops) + FastAPI gateway
+- ✅ LangGraph agent backend (DuckDB + web tools, single reasoning loop) + FastAPI gateway
 - ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
 - ✅ Chat end-to-end through the gateway
 - ⏳ **Chat streaming + markdown rendering** — gateway returns a single response (no token streaming); chat bubbles render plain text

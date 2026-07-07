@@ -1,6 +1,8 @@
 # AI Operational Twin — Backend
 
-Multi-agent LLM system built on LangGraph / LangChain / LangSmith. A supervisor agent orchestrates two specialists — one for web research, one for querying and writing to an operational DuckDB database — with human-in-the-loop approval on write operations, a full middleware stack, and a CI eval gate.
+LLM agent built on LangGraph / LangChain / LangSmith. A single agent queries and writes to an operational DuckDB database and can search the web, with human-in-the-loop approval on write operations, a full middleware stack, and a CI eval gate.
+
+> **Architecture note:** this started as a supervisor orchestrating two sub-agents (ops + research). That nesting made every question pay for two reasoning loops (supervisor → sub-agent → tools), roughly doubling model calls — which tripped provider rate limits and slowed responses. It was **collapsed into one agent with all tools attached directly**: ~half the model calls, faster replies, and cleaner answers (no double-summarisation). The multi-agent pattern is worth reintroducing only when there are many specialists or a need for per-agent isolation.
 
 A **FastAPI gateway** (`api/`) sits in front of the graph and the DuckDB gold layer, serving the React dashboard (see [API Gateway](#api-gateway)).
 
@@ -111,15 +113,9 @@ backend/
 │       └── prod.yaml           # Prod defaults: API HITL
 │
 ├── agents/
-│   ├── supervisor/             # Orchestrator: routes to specialists, synthesises results
-│   │   ├── graph.py            # make_graph() — full middleware stack
-│   │   └── prompts/system.txt
-│   ├── research/               # Research specialist: web search and fetch
-│   │   ├── graph.py            # lazy create_agent + @tool wrapper exposed to supervisor
-│   │   └── prompts/system.txt
-│   └── ops/                    # Ops specialist: DuckDB read/write
-│       ├── graph.py            # lazy create_agent + @tool wrapper + HumanInTheLoopMiddleware
-│       └── prompts/system.txt
+│   └── supervisor/             # Single agent: DuckDB + web tools, one reasoning loop
+│       ├── graph.py            # make_graph() — all tools + full middleware stack + HITL
+│       └── prompts/system.txt  # role + gold-table schema + tool rules + answer formatting
 │
 ├── tools/
 │   ├── web.py                  # web_search (Tavily, graceful degradation), web_fetch (httpx)
@@ -214,42 +210,31 @@ Needs: (a) **data side** — add an excess-water-waste column in `build_gold_lay
 
 ---
 
-## Agents
+## Agent
 
-### Supervisor
-
-Built with `create_agent` from `langchain.agents`. Receives the user message, decides which specialist to call, invokes it as a tool, synthesises the result. `create_agent` builds a LangGraph `StateGraph` internally — `langgraph dev` can serve it directly via the `make_graph` factory in `langgraph.json`.
-
-The supervisor carries the full middleware stack (see [Middleware](#middleware)).
-
-### Research agent
-
-Specialist for web search and information retrieval. Built with `create_agent`, then wrapped in a `@tool` so the supervisor can call it like any other tool. Internally it runs its own model + tool-calling loop against `web_search` and `web_fetch`.
+One `create_agent` (from `langchain.agents`) with every tool attached directly — the DuckDB
+tools and the web tools — running a single reasoning loop. `create_agent` builds a LangGraph
+`StateGraph` internally, so `langgraph dev` serves it directly via the `make_graph` factory in
+`langgraph.json`.
 
 ```
-supervisor
-  └── research_agent_tool  (@tool that calls...)
-        └── research agent  (create_agent with...)
-              ├── web_search  (Tavily)
-              └── web_fetch   (httpx)
+agent  (create_agent, full middleware stack + HITL)
+  ├── duckdb_query          (read — no HITL)
+  ├── duckdb_query_checker  (validate before a write)
+  ├── duckdb_list_tables    (explore other tables — rarely needed)
+  ├── duckdb_schema         (explore other tables — rarely needed)
+  ├── duckdb_execute        (write — HITL interrupt: approve / edit / reject)
+  ├── web_search            (Tavily)
+  └── web_fetch             (httpx)
 ```
 
-### Ops agent
+`HumanInTheLoopMiddleware` interrupts only on `duckdb_execute` (writes); reads and web calls
+pass through. The agent's system prompt carries the `gold_operational_metrics` schema, so it
+writes SQL directly instead of spending calls on `list_tables`/`schema` for the primary table.
 
-Specialist for the operational DuckDB database. Also wrapped as a `@tool` for the supervisor. Carries `HumanInTheLoopMiddleware` — interrupts only on `duckdb_execute` (write operations). Read queries pass through without approval.
-
-```
-supervisor
-  └── ops_agent_tool  (@tool that calls...)
-        └── ops agent  (create_agent with HumanInTheLoopMiddleware)
-              ├── duckdb_list_tables
-              ├── duckdb_schema
-              ├── duckdb_query_checker
-              ├── duckdb_query      (read — no HITL)
-              └── duckdb_execute    (write — HITL interrupt)
-```
-
-**Lazy initialization:** both subagents use a `_get_agent()` pattern — `create_agent` runs on first tool call, not at import time. This prevents slow startup; `langgraph dev` imports all graph modules before serving.
+**Why one agent, not a supervisor + sub-agents:** see the architecture note at the top. Nesting
+sub-agents-as-tools doubled model calls (each sub-agent is its own reasoning loop) and caused
+double-summarisation of results. A single agent halves the calls and preserves table output.
 
 ---
 
@@ -314,16 +299,18 @@ agent = create_agent(model=..., tools=[*existing_tools, *get_mcp_tools()])
 
 ## Middleware
 
-### Supervisor middleware stack
+### Middleware stack (the single agent)
 
 ```
 PIIMiddleware (api_key block)              — outermost
-ModelCallLimitMiddleware (10 calls)
-ModelRetryMiddleware (3 retries)
+ModelCallLimitMiddleware (15 calls)
+ToolCallLimit (duckdb_execute=3, web_search=5)
+ModelRetryMiddleware (rate-limit-aware)
 MemoryMiddleware (AGENTS.md)              — injects memory into system prompt
 SummarizationMiddleware (80%, keep 6)     — compress history before model call
 dev_cost_router                           — swaps model per env
 RateLimitMiddleware                       — paces model calls under provider RPM
+HumanInTheLoopMiddleware                  — interrupts on duckdb_execute (writes)
 AnthropicPromptCachingMiddleware          — innermost; caches prompt before model call
 ```
 
@@ -331,18 +318,18 @@ AnthropicPromptCachingMiddleware          — innermost; caches prompt before mo
 
 `PIIMiddleware("api_key", detector=r"sk-...", strategy="block", apply_to_input=True, apply_to_output=True)` blocks `sk-...` API key patterns in both directions.
 
-Email middleware is intentionally omitted. Redacting emails on input breaks legitimate requests ("draft an email to x@y.com"), and the ops agent may need to return emails from database query results.
+Email middleware is intentionally omitted. Redacting emails on input breaks legitimate requests ("draft an email to x@y.com"), and the agent may need to return emails from database query results.
 
 ### Fault tolerance (`middleware/retry.py`)
 
-Each agent has its own independent middleware stack — limits and retry counters are not shared.
+Limits on the single agent (`get_ops_limits()` + `get_research_limits()`):
 
-| Middleware | Supervisor | Research | Ops |
-|---|---|---|---|
-| `ModelRetryMiddleware(max_retries=3)` | yes | yes | yes |
-| `ModelCallLimitMiddleware` | 10 | — | 15 |
-| `ToolCallLimitMiddleware(web_search, run_limit=5)` | — | yes | — |
-| `ToolCallLimitMiddleware(duckdb_execute, run_limit=3)` | — | — | yes |
+| Middleware | Value |
+|---|---|
+| `ModelRetryMiddleware` | rate-limit-aware, up to 5 attempts |
+| `ModelCallLimitMiddleware` | 15 model calls per run |
+| `ToolCallLimitMiddleware(duckdb_execute)` | 3 writes per run |
+| `ToolCallLimitMiddleware(web_search)` | 5 searches per run |
 
 `ModelCallLimitMiddleware` sits outside `ModelRetryMiddleware`. If the limit were inside the retry wrapper, a single transient failure would burn retry attempts against the call budget. With limit outside, retries are invisible to the counter.
 
@@ -355,9 +342,9 @@ Proactive throttle — the "waiting system" for provider rate limits. A single a
 (e.g. Mistral free tier ~1 req/s) that burst returns HTTP 429.
 
 `RateLimitMiddleware` blocks before each model call until a shared `InMemoryRateLimiter`
-grants a token, spacing calls under the limit. One module-level limiter is shared across all
-agents (supervisor + ops + research), so pacing is global. Implements both sync and async
-hooks (works on `graph.invoke` and `graph.ainvoke`). Placed **inside** `ModelRetryMiddleware`
+grants a token, spacing calls under the limit. The limiter is module-level (a single shared
+instance), so pacing stays global even if more agents are added later. Implements both sync and
+async hooks (works on `graph.invoke` and `graph.ainvoke`). Placed **inside** `ModelRetryMiddleware`
 so retries are paced too. Tune with `MODEL_REQUESTS_PER_SECOND` (0 disables).
 
 Paired with the retry middleware's rate-limit-aware backoff (below), a multi-step DB question
@@ -366,7 +353,7 @@ serialized at the configured rate). Raise the rate on paid tiers / Anthropic for
 
 ### Memory (`middleware/context.py`)
 
-`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each run via `FilesystemBackend` (real disk paths). Teaches the supervisor routing conventions, write-safety rules, and response style.
+`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each run via `FilesystemBackend` (real disk paths). Teaches the agent write-safety rules and response style.
 
 `FilesystemBackend` is created at module level (not inside `make_graph()`) so its `Path.resolve()` call runs synchronously at import time, not inside the async ASGI event loop.
 
@@ -374,7 +361,7 @@ Add more sources by passing additional paths:
 
 ```python
 from middleware.context import get_memory_middleware
-get_memory_middleware("./AGENTS.md", "./agents/ops/AGENTS.md")
+get_memory_middleware("./AGENTS.md", "./docs/operational-playbook.md")
 ```
 
 ### Summarization (`middleware/summarization.py`)
@@ -456,7 +443,7 @@ LangGraph Store is auto-provisioned by the runtime alongside the checkpointer �
 
 ## Human-in-the-Loop
 
-`HumanInTheLoopMiddleware` is on the ops agent only (not the supervisor). It interrupts on `duckdb_execute` calls — read queries pass through without approval. Decision options: approve, edit, reject. The interrupt bubbles up through the supervisor's checkpointer automatically.
+`HumanInTheLoopMiddleware` is on the agent, configured to interrupt only on `duckdb_execute` calls — read queries and web calls pass through without approval. Decision options: approve, edit, reject. The interrupt bubbles up through the agent's checkpointer automatically.
 
 The CLI runner (`hitl/channels/cli.py`) handles the full interrupt → approve / edit / reject loop when running outside langgraph dev:
 
@@ -478,7 +465,7 @@ result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id=
 
 | Dataset | Examples | Covers |
 |---|---|---|
-| `supervisor-v1` | 5 | Routing to ops/research + response synthesis |
+| `supervisor-v1` | 5 | End-to-end agent behaviour: DB query + web + response formatting |
 | `research-v1` | 3 | Factual retrieval (SCADA, anomaly detection, KPIs) |
 | `ops-v1` | 3 | Read-only DB queries (list tables, schema, overview) |
 
