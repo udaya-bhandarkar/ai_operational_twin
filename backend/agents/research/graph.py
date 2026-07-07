@@ -4,6 +4,7 @@ from langchain.agents import create_agent
 from langchain_core.tools import tool
 
 from config.settings import settings
+from middleware.rate_limit import get_rate_limit_middleware
 from middleware.retry import get_model_retry, get_research_limits
 from tools.web import web_fetch, web_search
 
@@ -22,7 +23,7 @@ def _get_agent():
             model=settings.backend_model,
             tools=_tools,
             system_prompt=_system_prompt,
-            middleware=[get_model_retry(), *get_research_limits()],
+            middleware=[get_model_retry(), *get_rate_limit_middleware(), *get_research_limits()],
         )
     return _agent
 

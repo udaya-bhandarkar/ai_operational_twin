@@ -4,18 +4,46 @@ from langchain.agents.middleware import (
     ToolCallLimitMiddleware,
 )
 
+# Error signatures worth retrying: provider rate limits (HTTP 429) and transient server
+# errors (5xx / overloaded / timeout). Matched on the exception text so it stays
+# provider-agnostic (Mistral / Anthropic / Groq raise different exception classes).
+_RETRYABLE_MARKERS = (
+    "429",
+    "rate limit",
+    "rate_limited",
+    "overloaded",
+    "timeout",
+    "timed out",
+    "502",
+    "503",
+    "504",
+    "temporarily unavailable",
+)
+
+
+def _should_retry(exc: Exception) -> bool:
+    text = str(exc).lower()
+    return any(marker in text for marker in _RETRYABLE_MARKERS)
+
 
 def get_model_retry() -> ModelRetryMiddleware:
-    """Retry failed model calls with exponential backoff.
+    """Retry failed model calls, waiting out rate limits with long exponential backoff.
 
-    on_failure="continue" returns an AIMessage with the error instead of raising,
-    so the agent can surface the failure gracefully rather than crashing.
-    Placed inside ModelCallLimitMiddleware so retries don't inflate the call count.
+    Pairs with RateLimitMiddleware (proactive pacing). When a 429 slips through anyway,
+    this waits progressively longer (5s → 10 → 20 → 40 → 60) for the provider's window to
+    reset, rather than hammering. `retry_on` restricts retries to rate-limit / transient
+    errors — non-retryable failures (bad request, auth) surface immediately instead of
+    burning attempts.
+
+    on_failure="continue" returns an AIMessage with the error instead of raising, so the
+    agent surfaces the failure gracefully. Placed inside ModelCallLimitMiddleware so
+    retries don't inflate the call count.
     """
     return ModelRetryMiddleware(
-        max_retries=3,
+        max_retries=5,
+        retry_on=_should_retry,
         backoff_factor=2.0,
-        initial_delay=1.0,
+        initial_delay=5.0,
         max_delay=60.0,
         jitter=True,
         on_failure="continue",

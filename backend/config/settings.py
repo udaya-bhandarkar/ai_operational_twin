@@ -81,5 +81,18 @@ class Settings(BaseSettings):
     hitl_enabled: bool = True
     eval_budget_usd: float = 5.0
 
+    # Proactive model-call throttle (shared across all agents). A single DB question fans
+    # into many rapid model calls; without pacing this bursts past provider RPM limits
+    # (e.g. Mistral free tier -> HTTP 429). Set to your provider's sustained req/sec.
+    # Mistral free tier tolerates ~2/s in practice; raise further for paid tiers or Anthropic.
+    # The rate-limit-aware retry (middleware/retry.py) backstops any 429 that slips through.
+    # 0 disables throttling.
+    model_requests_per_second: float = 2.0
+
+    # CORS allow-list for the API gateway. Comma-separated explicit origins for deployed
+    # frontends, e.g. "https://twin.example.com,https://staging.example.com".
+    # Localhost origins (any port) are allowed automatically when BACKEND_ENV=dev.
+    cors_origins: str = ""
+
 
 settings = Settings()

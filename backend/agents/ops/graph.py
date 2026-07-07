@@ -5,6 +5,7 @@ from langchain.agents.middleware import HumanInTheLoopMiddleware
 from langchain_core.tools import tool
 
 from config.settings import settings
+from middleware.rate_limit import get_rate_limit_middleware
 from middleware.retry import get_model_retry, get_ops_limits
 from tools.duckdb import (
     duckdb_execute,
@@ -34,6 +35,7 @@ def _get_agent():
             middleware=[
                 *get_ops_limits(),
                 get_model_retry(),
+                *get_rate_limit_middleware(),
                 HumanInTheLoopMiddleware(
                     interrupt_on={
                         "duckdb_execute": {

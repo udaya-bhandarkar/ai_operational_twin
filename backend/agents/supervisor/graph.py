@@ -8,6 +8,7 @@ from config.settings import settings
 from middleware.context import get_memory_middleware, get_prompt_caching_middleware
 from middleware.dynamic_model import dev_cost_router
 from middleware.pii import get_pii_middleware
+from middleware.rate_limit import get_rate_limit_middleware
 from middleware.retry import get_model_retry, get_supervisor_limits
 from middleware.summarization import get_summarization_middleware
 
@@ -24,6 +25,7 @@ def make_graph():
     # MemoryMiddleware           — loads AGENTS.md into system prompt on each run
     # SummarizationMiddleware    — compresses history at 80% token threshold
     # dev_cost_router            — swaps to budget model in dev (inside retry = consistent per call)
+    # RateLimitMiddleware        — paces model calls under provider RPM (inside retry = retries paced too)
     # AnthropicPromptCaching     — innermost; injects cache_control blocks just before model call
     middleware = (
         get_pii_middleware()
@@ -32,6 +34,7 @@ def make_graph():
         + [get_memory_middleware("./AGENTS.md")]
         + [get_summarization_middleware()]
         + [dev_cost_router]
+        + get_rate_limit_middleware()
         + [get_prompt_caching_middleware()]
     )
     return create_agent(
