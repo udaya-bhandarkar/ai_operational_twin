@@ -1,0 +1,1266 @@
+[
+  {
+    "timestamp": "2026-07-07T15:49:10.165691Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 301.9,
+      "water_consumption_liters": 24.76,
+      "material_intake_kg": 49.18,
+      "material_output_kg": 47.3,
+      "efficiency_ratio": 0.962
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:11.670173Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 291.79,
+      "water_consumption_liters": 17.04,
+      "material_intake_kg": 48.24,
+      "material_output_kg": 46.84,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:13.171122Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_D",
+    "machine_id": "CHENNAI_SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 282.89,
+      "water_consumption_liters": 23.31,
+      "material_intake_kg": 46.43,
+      "material_output_kg": 44.41,
+      "efficiency_ratio": 0.957
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:14.672112Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_WINDING_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 299.86,
+      "water_consumption_liters": 24.82,
+      "material_intake_kg": 49.73,
+      "material_output_kg": 47.31,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:16.175185Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 280.27,
+      "water_consumption_liters": 19.85,
+      "material_intake_kg": 46.39,
+      "material_output_kg": 44.57,
+      "efficiency_ratio": 0.961
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:17.676784Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 290.02,
+      "water_consumption_liters": 17.66,
+      "material_intake_kg": 47.12,
+      "material_output_kg": 45.95,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:19.179259Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 299.74,
+      "water_consumption_liters": 15.41,
+      "material_intake_kg": 48.41,
+      "material_output_kg": 46.0,
+      "efficiency_ratio": 0.95
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:20.680061Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 501.13,
+      "water_consumption_liters": 59.99,
+      "material_intake_kg": 47.44,
+      "material_output_kg": 30.27,
+      "efficiency_ratio": 0.638
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:22.181850Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_PELLETIZER_01",
+    "metrics": {
+      "power_consumption_kw": 301.52,
+      "water_consumption_liters": 19.77,
+      "material_intake_kg": 48.45,
+      "material_output_kg": 46.57,
+      "efficiency_ratio": 0.961
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:23.684925Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 488.8,
+      "water_consumption_liters": 52.52,
+      "material_intake_kg": 47.56,
+      "material_output_kg": 32.46,
+      "efficiency_ratio": 0.683
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:25.186361Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 280.2,
+      "water_consumption_liters": 24.13,
+      "material_intake_kg": 46.47,
+      "material_output_kg": 44.43,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:26.689848Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 281.4,
+      "water_consumption_liters": 18.62,
+      "material_intake_kg": 45.04,
+      "material_output_kg": 43.44,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:28.195125Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 299.9,
+      "water_consumption_liters": 21.98,
+      "material_intake_kg": 47.15,
+      "material_output_kg": 46.12,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:29.696176Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.28,
+      "water_consumption_liters": 19.78,
+      "material_intake_kg": 46.16,
+      "material_output_kg": 45.05,
+      "efficiency_ratio": 0.976
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:31.196980Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_PELLETIZER_01",
+    "metrics": {
+      "power_consumption_kw": 288.39,
+      "water_consumption_liters": 16.27,
+      "material_intake_kg": 47.16,
+      "material_output_kg": 46.59,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:32.697742Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 306.87,
+      "water_consumption_liters": 21.23,
+      "material_intake_kg": 47.66,
+      "material_output_kg": 45.67,
+      "efficiency_ratio": 0.958
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:34.198953Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_OPTICAL_SORTER_01",
+    "metrics": {
+      "power_consumption_kw": 294.83,
+      "water_consumption_liters": 16.89,
+      "material_intake_kg": 45.33,
+      "material_output_kg": 43.17,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:35.700553Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_02",
+    "metrics": {
+      "power_consumption_kw": 293.96,
+      "water_consumption_liters": 19.43,
+      "material_intake_kg": 45.59,
+      "material_output_kg": 44.45,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:37.201695Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 291.65,
+      "water_consumption_liters": 20.26,
+      "material_intake_kg": 45.32,
+      "material_output_kg": 43.23,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:38.702819Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_COLD_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 292.79,
+      "water_consumption_liters": 20.64,
+      "material_intake_kg": 45.12,
+      "material_output_kg": 43.33,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:40.203975Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 281.76,
+      "water_consumption_liters": 15.85,
+      "material_intake_kg": 49.22,
+      "material_output_kg": 47.37,
+      "efficiency_ratio": 0.963
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:41.705615Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 304.77,
+      "water_consumption_liters": 18.08,
+      "material_intake_kg": 46.32,
+      "material_output_kg": 44.52,
+      "efficiency_ratio": 0.961
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:43.207035Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.34,
+      "water_consumption_liters": 17.07,
+      "material_intake_kg": 45.83,
+      "material_output_kg": 44.43,
+      "efficiency_ratio": 0.97
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:44.708361Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_02",
+    "metrics": {
+      "power_consumption_kw": 301.51,
+      "water_consumption_liters": 22.93,
+      "material_intake_kg": 45.46,
+      "material_output_kg": 44.13,
+      "efficiency_ratio": 0.971
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:46.209213Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_02",
+    "metrics": {
+      "power_consumption_kw": 301.21,
+      "water_consumption_liters": 24.69,
+      "material_intake_kg": 48.02,
+      "material_output_kg": 45.87,
+      "efficiency_ratio": 0.955
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:47.710165Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 290.88,
+      "water_consumption_liters": 18.18,
+      "material_intake_kg": 49.51,
+      "material_output_kg": 47.32,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:49.211030Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.07,
+      "water_consumption_liters": 15.2,
+      "material_intake_kg": 45.93,
+      "material_output_kg": 44.41,
+      "efficiency_ratio": 0.967
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:50.715734Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 293.36,
+      "water_consumption_liters": 15.91,
+      "material_intake_kg": 49.99,
+      "material_output_kg": 47.91,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:52.217586Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 309.8,
+      "water_consumption_liters": 20.46,
+      "material_intake_kg": 49.09,
+      "material_output_kg": 48.12,
+      "efficiency_ratio": 0.98
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:53.719517Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.21,
+      "water_consumption_liters": 24.38,
+      "material_intake_kg": 48.26,
+      "material_output_kg": 46.23,
+      "efficiency_ratio": 0.958
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:55.221362Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 289.78,
+      "water_consumption_liters": 22.19,
+      "material_intake_kg": 47.29,
+      "material_output_kg": 46.13,
+      "efficiency_ratio": 0.975
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:56.722525Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 287.51,
+      "water_consumption_liters": 16.32,
+      "material_intake_kg": 45.26,
+      "material_output_kg": 44.77,
+      "efficiency_ratio": 0.989
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:58.230929Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 296.64,
+      "water_consumption_liters": 24.25,
+      "material_intake_kg": 46.74,
+      "material_output_kg": 44.43,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:49:59.742392Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 292.01,
+      "water_consumption_liters": 16.76,
+      "material_intake_kg": 45.4,
+      "material_output_kg": 44.09,
+      "efficiency_ratio": 0.971
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:01.245685Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_OPTICAL_SORTER_01",
+    "metrics": {
+      "power_consumption_kw": 293.25,
+      "water_consumption_liters": 21.11,
+      "material_intake_kg": 49.77,
+      "material_output_kg": 48.66,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:02.751766Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_D",
+    "machine_id": "CHENNAI_SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 308.81,
+      "water_consumption_liters": 19.59,
+      "material_intake_kg": 48.73,
+      "material_output_kg": 48.11,
+      "efficiency_ratio": 0.987
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:04.252455Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 307.08,
+      "water_consumption_liters": 20.87,
+      "material_intake_kg": 46.73,
+      "material_output_kg": 44.56,
+      "efficiency_ratio": 0.954
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:05.757293Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_WINDING_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 306.7,
+      "water_consumption_liters": 17.03,
+      "material_intake_kg": 46.09,
+      "material_output_kg": 45.05,
+      "efficiency_ratio": 0.977
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:07.264484Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 306.72,
+      "water_consumption_liters": 17.72,
+      "material_intake_kg": 46.65,
+      "material_output_kg": 44.94,
+      "efficiency_ratio": 0.963
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:08.765163Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_02",
+    "metrics": {
+      "power_consumption_kw": 291.37,
+      "water_consumption_liters": 19.38,
+      "material_intake_kg": 46.68,
+      "material_output_kg": 45.74,
+      "efficiency_ratio": 0.98
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:10.332385Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 535.8,
+      "water_consumption_liters": 51.6,
+      "material_intake_kg": 47.1,
+      "material_output_kg": 28.79,
+      "efficiency_ratio": 0.611
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:11.883715Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 285.6,
+      "water_consumption_liters": 21.74,
+      "material_intake_kg": 46.94,
+      "material_output_kg": 44.86,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:13.384209Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 282.96,
+      "water_consumption_liters": 22.57,
+      "material_intake_kg": 48.47,
+      "material_output_kg": 46.09,
+      "efficiency_ratio": 0.951
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:14.885013Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 286.38,
+      "water_consumption_liters": 21.72,
+      "material_intake_kg": 45.36,
+      "material_output_kg": 44.89,
+      "efficiency_ratio": 0.99
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:16.385764Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_02",
+    "metrics": {
+      "power_consumption_kw": 516.23,
+      "water_consumption_liters": 40.65,
+      "material_intake_kg": 47.98,
+      "material_output_kg": 29.61,
+      "efficiency_ratio": 0.617
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:17.886636Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 287.15,
+      "water_consumption_liters": 15.32,
+      "material_intake_kg": 47.71,
+      "material_output_kg": 46.68,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:19.387257Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 510.37,
+      "water_consumption_liters": 43.91,
+      "material_intake_kg": 46.49,
+      "material_output_kg": 29.56,
+      "efficiency_ratio": 0.636
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:20.893875Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_02",
+    "metrics": {
+      "power_consumption_kw": 282.63,
+      "water_consumption_liters": 15.65,
+      "material_intake_kg": 45.59,
+      "material_output_kg": 44.63,
+      "efficiency_ratio": 0.979
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:22.397411Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_02",
+    "metrics": {
+      "power_consumption_kw": 287.29,
+      "water_consumption_liters": 18.39,
+      "material_intake_kg": 48.86,
+      "material_output_kg": 47.91,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:23.898642Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_SPINNING_LINE_01",
+    "metrics": {
+      "power_consumption_kw": 308.17,
+      "water_consumption_liters": 18.86,
+      "material_intake_kg": 47.23,
+      "material_output_kg": 45.28,
+      "efficiency_ratio": 0.959
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:25.400264Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 297.69,
+      "water_consumption_liters": 24.48,
+      "material_intake_kg": 46.55,
+      "material_output_kg": 45.28,
+      "efficiency_ratio": 0.973
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:26.900707Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 297.43,
+      "water_consumption_liters": 19.59,
+      "material_intake_kg": 46.53,
+      "material_output_kg": 44.91,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:28.401642Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 281.12,
+      "water_consumption_liters": 24.93,
+      "material_intake_kg": 49.41,
+      "material_output_kg": 47.52,
+      "efficiency_ratio": 0.962
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:29.902415Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_COLD_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 301.49,
+      "water_consumption_liters": 17.1,
+      "material_intake_kg": 46.94,
+      "material_output_kg": 46.22,
+      "efficiency_ratio": 0.985
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:31.403831Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_PELLETIZER_01",
+    "metrics": {
+      "power_consumption_kw": 296.42,
+      "water_consumption_liters": 17.9,
+      "material_intake_kg": 45.09,
+      "material_output_kg": 44.32,
+      "efficiency_ratio": 0.983
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:32.905896Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 288.7,
+      "water_consumption_liters": 21.28,
+      "material_intake_kg": 49.98,
+      "material_output_kg": 49.4,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:34.407200Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_PELLETIZER_01",
+    "metrics": {
+      "power_consumption_kw": 306.66,
+      "water_consumption_liters": 18.72,
+      "material_intake_kg": 49.58,
+      "material_output_kg": 48.14,
+      "efficiency_ratio": 0.971
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:35.908344Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 296.47,
+      "water_consumption_liters": 20.66,
+      "material_intake_kg": 46.38,
+      "material_output_kg": 44.36,
+      "efficiency_ratio": 0.956
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:37.408875Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 291.18,
+      "water_consumption_liters": 15.03,
+      "material_intake_kg": 45.05,
+      "material_output_kg": 44.18,
+      "efficiency_ratio": 0.981
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:38.909884Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 295.52,
+      "water_consumption_liters": 22.19,
+      "material_intake_kg": 45.39,
+      "material_output_kg": 43.13,
+      "efficiency_ratio": 0.95
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:40.410926Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_02",
+    "metrics": {
+      "power_consumption_kw": 282.67,
+      "water_consumption_liters": 17.79,
+      "material_intake_kg": 47.43,
+      "material_output_kg": 45.57,
+      "efficiency_ratio": 0.961
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:41.911688Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "FINISHING",
+    "line_id": "LINE_C",
+    "machine_id": "PUNE_WINDING_UNIT_01",
+    "metrics": {
+      "power_consumption_kw": 309.92,
+      "water_consumption_liters": 23.61,
+      "material_intake_kg": 45.99,
+      "material_output_kg": 44.98,
+      "efficiency_ratio": 0.978
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:43.412549Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 283.11,
+      "water_consumption_liters": 23.63,
+      "material_intake_kg": 46.04,
+      "material_output_kg": 44.42,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:44.913789Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 531.05,
+      "water_consumption_liters": 49.73,
+      "material_intake_kg": 49.39,
+      "material_output_kg": 36.38,
+      "efficiency_ratio": 0.737
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:46.414828Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 287.27,
+      "water_consumption_liters": 20.28,
+      "material_intake_kg": 48.55,
+      "material_output_kg": 46.87,
+      "efficiency_ratio": 0.965
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:47.916751Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_02",
+    "metrics": {
+      "power_consumption_kw": 300.03,
+      "water_consumption_liters": 18.81,
+      "material_intake_kg": 49.16,
+      "material_output_kg": 48.3,
+      "efficiency_ratio": 0.982
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:49.418129Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 483.4,
+      "water_consumption_liters": 43.05,
+      "material_intake_kg": 48.42,
+      "material_output_kg": 33.21,
+      "efficiency_ratio": 0.686
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:50.919501Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 486.94,
+      "water_consumption_liters": 47.49,
+      "material_intake_kg": 48.19,
+      "material_output_kg": 30.66,
+      "efficiency_ratio": 0.636
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:52.420705Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "CHENNAI_OPTICAL_SORTER_01",
+    "metrics": {
+      "power_consumption_kw": 308.75,
+      "water_consumption_liters": 22.54,
+      "material_intake_kg": 47.93,
+      "material_output_kg": 47.45,
+      "efficiency_ratio": 0.99
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:53.951637Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_SINK_FLOAT_01",
+    "metrics": {
+      "power_consumption_kw": 308.43,
+      "water_consumption_liters": 23.05,
+      "material_intake_kg": 48.94,
+      "material_output_kg": 46.68,
+      "efficiency_ratio": 0.954
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:55.453241Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 286.04,
+      "water_consumption_liters": 19.49,
+      "material_intake_kg": 48.82,
+      "material_output_kg": 47.72,
+      "efficiency_ratio": 0.978
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:56.956520Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_PELLETIZER_01",
+    "metrics": {
+      "power_consumption_kw": 290.84,
+      "water_consumption_liters": 16.07,
+      "material_intake_kg": 46.63,
+      "material_output_kg": 44.48,
+      "efficiency_ratio": 0.954
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:58.459064Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 288.61,
+      "water_consumption_liters": 20.26,
+      "material_intake_kg": 47.77,
+      "material_output_kg": 47.2,
+      "efficiency_ratio": 0.988
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:50:59.960080Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_HOT_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 306.3,
+      "water_consumption_liters": 23.55,
+      "material_intake_kg": 48.97,
+      "material_output_kg": 47.7,
+      "efficiency_ratio": 0.974
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:51:01.462087Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_C",
+    "machine_id": "CHENNAI_EXTRUDER_02",
+    "metrics": {
+      "power_consumption_kw": 286.58,
+      "water_consumption_liters": 20.35,
+      "material_intake_kg": 49.5,
+      "material_output_kg": 47.14,
+      "efficiency_ratio": 0.952
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:51:02.962788Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_BALE_BREAKER_01",
+    "metrics": {
+      "power_consumption_kw": 308.11,
+      "water_consumption_liters": 23.5,
+      "material_intake_kg": 45.43,
+      "material_output_kg": 44.12,
+      "efficiency_ratio": 0.971
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:51:04.463689Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "EXTRUSION",
+    "line_id": "LINE_B",
+    "machine_id": "PUNE_EXTRUDER_01",
+    "metrics": {
+      "power_consumption_kw": 284.15,
+      "water_consumption_liters": 24.31,
+      "material_intake_kg": 46.22,
+      "material_output_kg": 45.58,
+      "efficiency_ratio": 0.986
+    },
+    "status": "NORMAL"
+  },
+  {
+    "timestamp": "2026-07-07T15:51:05.965436Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "CHENNAI_RECYCLING_PLANT",
+    "department_id": "WASHING",
+    "line_id": "LINE_B",
+    "machine_id": "CHENNAI_COLD_WASHER_01",
+    "metrics": {
+      "power_consumption_kw": 471.76,
+      "water_consumption_liters": 54.35,
+      "material_intake_kg": 49.38,
+      "material_output_kg": 32.09,
+      "efficiency_ratio": 0.65
+    },
+    "status": "CRITICAL_POWER_WASTE"
+  },
+  {
+    "timestamp": "2026-07-07T15:51:07.466360Z",
+    "event_type": "machine_telemetry",
+    "facility_id": "PUNE_RECYCLING_PLANT",
+    "department_id": "PRE_PROCESSING",
+    "line_id": "LINE_A",
+    "machine_id": "PUNE_PET_SHREDDER_01",
+    "metrics": {
+      "power_consumption_kw": 292.92,
+      "water_consumption_liters": 20.81,
+      "material_intake_kg": 49.41,
+      "material_output_kg": 47.42,
+      "efficiency_ratio": 0.96
+    },
+    "status": "NORMAL"
+  }
+]
