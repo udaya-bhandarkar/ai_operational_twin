@@ -167,7 +167,7 @@ python src/data_pipeline/build_gold_layer.py
 # or: python -m api.app
 ```
 
-Frontend connects by setting `VITE_API_BASE=http://localhost:8000/api`. CORS is enabled for any `localhost`/`127.0.0.1` origin (no Vite proxy needed).
+Frontend connects by setting `VITE_API_BASE=http://localhost:8000/api`. CORS is enabled for any `localhost`/`127.0.0.1` origin in dev (no Vite proxy needed). For a **deployed** frontend, set `CORS_ORIGINS` in `.env` to a comma-separated list of allowed origins (e.g. `https://twin.example.com`) — localhost is auto-allowed only when `BACKEND_ENV=dev`.
 
 ### Endpoints
 
@@ -323,6 +323,7 @@ ModelRetryMiddleware (3 retries)
 MemoryMiddleware (AGENTS.md)              — injects memory into system prompt
 SummarizationMiddleware (80%, keep 6)     — compress history before model call
 dev_cost_router                           — swaps model per env
+RateLimitMiddleware                       — paces model calls under provider RPM
 AnthropicPromptCachingMiddleware          — innermost; caches prompt before model call
 ```
 
@@ -344,6 +345,24 @@ Each agent has its own independent middleware stack — limits and retry counter
 | `ToolCallLimitMiddleware(duckdb_execute, run_limit=3)` | — | — | yes |
 
 `ModelCallLimitMiddleware` sits outside `ModelRetryMiddleware`. If the limit were inside the retry wrapper, a single transient failure would burn retry attempts against the call budget. With limit outside, retries are invisible to the counter.
+
+**Rate-limit-aware retry.** `get_model_retry()` uses `retry_on` to retry **only** rate-limit / transient errors (429, 5xx, overloaded, timeout — matched on exception text, provider-agnostic), with long backoff (5 → 10 → 20 → 40 → 60 s, up to 5 attempts) to wait out the provider's window. Non-retryable failures (bad request, auth) surface immediately instead of burning attempts. Works with `RateLimitMiddleware` (proactive pacing) so a multi-call DB question completes on a free tier rather than failing with 429.
+
+### Rate limiting (`middleware/rate_limit.py`)
+
+Proactive throttle — the "waiting system" for provider rate limits. A single agent turn
+(especially a DB question) fans into many rapid model calls; on a rate-limited provider
+(e.g. Mistral free tier ~1 req/s) that burst returns HTTP 429.
+
+`RateLimitMiddleware` blocks before each model call until a shared `InMemoryRateLimiter`
+grants a token, spacing calls under the limit. One module-level limiter is shared across all
+agents (supervisor + ops + research), so pacing is global. Implements both sync and async
+hooks (works on `graph.invoke` and `graph.ainvoke`). Placed **inside** `ModelRetryMiddleware`
+so retries are paced too. Tune with `MODEL_REQUESTS_PER_SECOND` (0 disables).
+
+Paired with the retry middleware's rate-limit-aware backoff (below), a multi-step DB question
+completes on a free tier instead of failing with 429 — at the cost of latency (calls are
+serialized at the configured rate). Raise the rate on paid tiers / Anthropic for faster chat.
 
 ### Memory (`middleware/context.py`)
 

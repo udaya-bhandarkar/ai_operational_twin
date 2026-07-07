@@ -176,6 +176,38 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 .state { font-size: 13px; color: #607071; padding: 12px 0; }
 .state--error { color: var(--c-danger); }
 
+/* ---- Markdown rendering inside assistant bubbles ---- */
+.markdown { font-size: 14px; line-height: 1.45; }
+.markdown > *:first-child { margin-top: 0; }
+.markdown > *:last-child { margin-bottom: 0; }
+.markdown p { margin: 6px 0; }
+.markdown ul, .markdown ol { margin: 6px 0; padding-left: 20px; }
+.markdown li { margin: 2px 0; }
+.markdown h1, .markdown h2, .markdown h3, .markdown h4 {
+  margin: 10px 0 4px; font-size: 14px; font-weight: 700; color: var(--c-deep);
+}
+.markdown code {
+  background: rgba(0, 0, 0, 0.06); padding: 1px 5px; border-radius: 4px;
+  font-family: ui-monospace, monospace; font-size: 12.5px;
+}
+.markdown pre {
+  background: rgba(0, 0, 0, 0.06); padding: 8px 10px; border-radius: 8px;
+  overflow-x: auto; margin: 6px 0;
+}
+.markdown pre code { background: none; padding: 0; }
+.markdown a { color: var(--c-accent); }
+.markdown table {
+  border-collapse: collapse; margin: 8px 0; font-size: 13px;
+  display: block; overflow-x: auto; max-width: 100%;
+}
+.markdown th, .markdown td {
+  border: 1px solid var(--c-border); padding: 5px 9px; text-align: left; white-space: nowrap;
+}
+.markdown th { background: rgba(0, 0, 0, 0.04); font-weight: 600; color: var(--c-deep); }
+.markdown blockquote {
+  margin: 6px 0; padding-left: 10px; border-left: 3px solid var(--c-border); color: #4a5a5b;
+}
+
 /* Responsive: stack chat under the dashboard on narrow screens */
 @media (max-width: 1100px) {
   .app__body { grid-template-columns: 1fr; }
