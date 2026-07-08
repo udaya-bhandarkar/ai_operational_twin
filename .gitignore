@@ -9,5 +9,11 @@ venv/
 # Generated database (rebuild with build_gold_layer.py)
 data/database/*.db
 
+# LangGraph dev runtime store
+.langgraph_api/
+
+# Archived raw-data snapshots (kept locally, not in the build)
+*.bak
+
 # OS
 .DS_Store

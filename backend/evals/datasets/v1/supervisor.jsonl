@@ -1,0 +1,5 @@
+{"inputs": {"messages": [{"role": "user", "content": "What tables are available in the operational database?"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "ops_routing"}}
+{"inputs": {"messages": [{"role": "user", "content": "What is predictive maintenance and why is it important for industrial systems?"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "research_routing"}}
+{"inputs": {"messages": [{"role": "user", "content": "Show me the schema for any table in the database"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "ops_routing"}}
+{"inputs": {"messages": [{"role": "user", "content": "What are best practices for collecting industrial sensor data?"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "research_routing"}}
+{"inputs": {"messages": [{"role": "user", "content": "How many tables exist in the operational database?"}]}, "outputs": {"answer": "PLACEHOLDER — fill in expected answer"}, "metadata": {"task": "ops_routing"}}

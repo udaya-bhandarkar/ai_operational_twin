@@ -1,0 +1,138 @@
+"""Run evaluation suite against LangSmith datasets.
+
+Usage:
+    python -m evals.run_evals              # run evals, print results
+    python -m evals.run_evals --gate       # exit 1 if avg score < PASS_THRESHOLD
+    python -m evals.run_evals --dataset supervisor-v1  # run single dataset
+"""
+import asyncio
+import logging
+import sys
+import threading
+import uuid
+from typing import Any
+
+from langchain_core.messages import HumanMessage
+from langsmith.evaluation import evaluate
+
+logger = logging.getLogger(__name__)
+
+PASS_THRESHOLD = 0.7
+
+_graph: Any = None
+
+# One persistent event loop in a background thread. `evaluate()` calls `target` many times
+# (possibly from worker threads); the agent's async model client binds to the first loop it
+# runs on, so we must reuse ONE loop for every call. asyncio.run() would create and close a
+# fresh loop each call, orphaning that client ("Event loop is closed"). run_coroutine_threadsafe
+# submits each coroutine to this single long-lived loop safely.
+_loop = asyncio.new_event_loop()
+threading.Thread(target=_loop.run_forever, daemon=True).start()
+
+
+def _run_async(coro: Any) -> Any:
+    return asyncio.run_coroutine_threadsafe(coro, _loop).result()
+
+
+def _get_graph() -> Any:
+    global _graph
+    if _graph is None:
+        from agents.supervisor.graph import make_graph
+        _graph = make_graph()
+    return _graph
+
+
+def target(inputs: dict) -> dict:
+    graph = _get_graph()
+    messages = [
+        HumanMessage(content=m["content"])
+        for m in inputs.get("messages", [])
+        if m.get("role") == "user"
+    ]
+    # Run async on the shared persistent loop: some middleware (dev_cost_router) only
+    # implements the async model-call hook, so a sync graph.invoke raises NotImplementedError.
+    result = _run_async(
+        graph.ainvoke(
+            {"messages": messages},
+            config={"configurable": {"thread_id": str(uuid.uuid4())}},
+        )
+    )
+    response_messages = result.get("messages", [])
+    response = response_messages[-1].content if response_messages else ""
+    return {"response": response}
+
+
+def _eval_configs(only_dataset: str | None = None) -> list[dict]:
+    from evals.evaluators.llm_judge import correctness_evaluator, relevance_evaluator
+    from evals.evaluators.string_match import string_contains_evaluator
+
+    # Three evaluators run on every dataset:
+    # - string_contains_evaluator : no model, instant — checks reference answer text in response
+    # - relevance_evaluator       : LLM judge, no reference answer needed
+    # - correctness_evaluator     : LLM judge, requires "answer" field in dataset examples
+    #
+    # NOTE: dataset Q&A pairs are not finalized yet. string_contains and correctness
+    # return SKIPPED / score=None for placeholder examples and are excluded from the gate average.
+    evaluators = [string_contains_evaluator, relevance_evaluator, correctness_evaluator]
+
+    configs = [
+        {"dataset": "supervisor-v1", "evaluators": evaluators, "prefix": "supervisor"},
+        {"dataset": "research-v1",   "evaluators": evaluators, "prefix": "research"},
+        {"dataset": "ops-v1",        "evaluators": evaluators, "prefix": "ops"},
+    ]
+    if only_dataset:
+        configs = [c for c in configs if c["dataset"] == only_dataset]
+    return configs
+
+
+def run_evals(gate: bool = False, only_dataset: str | None = None) -> bool:
+    all_scores: list[float] = []
+
+    for config in _eval_configs(only_dataset):
+        logger.info("Running evals: %s", config["dataset"])
+        try:
+            results = evaluate(
+                target,
+                data=config["dataset"],
+                evaluators=config["evaluators"],
+                experiment_prefix=config["prefix"],
+                error_handling="log",   # 'log' keeps failed runs visible in LangSmith; 'ignore' drops them
+                max_concurrency=2,
+            )
+            for row in results:
+                for er in (row.evaluation_results.results or []):
+                    if er.score is not None:
+                        all_scores.append(float(er.score))
+        except Exception:
+            logger.exception("Eval run failed for dataset: %s", config["dataset"])
+            if gate:
+                return False
+
+    if not all_scores:
+        logger.warning("No scores collected — check datasets exist in LangSmith.")
+        return not gate
+
+    avg = sum(all_scores) / len(all_scores)
+    logger.info("Overall average score: %.2f  (threshold: %.2f)", avg, PASS_THRESHOLD)
+
+    if gate:
+        if avg < PASS_THRESHOLD:
+            print(
+                f"EVAL GATE FAILED: {avg:.2f} < {PASS_THRESHOLD:.2f}",
+                file=sys.stderr,
+            )
+            return False
+        print(f"EVAL GATE PASSED: {avg:.2f} >= {PASS_THRESHOLD:.2f}")
+
+    return True
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    gate = "--gate" in sys.argv
+    only = next(
+        (sys.argv[i + 1] for i, a in enumerate(sys.argv) if a == "--dataset"),
+        None,
+    )
+    passed = run_evals(gate=gate, only_dataset=only)
+    sys.exit(0 if passed else 1)
