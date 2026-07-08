@@ -31,17 +31,19 @@ def kpis(view: str = _View, facility_id: str = _Facility, department_id: str = _
         SELECT
             COALESCE(SUM(estimated_power_waste_cost_inr), 0) AS energy_waste,
             COALESCE(SUM(material_waste_cost_inr), 0)        AS material_waste,
-            COALESCE(AVG(efficiency_ratio), 0)               AS efficiency_ratio
+            COALESCE(AVG(efficiency_ratio), 0)               AS efficiency_ratio,
+            COALESCE(SUM(carbon_emissions_kg_co2), 0)        AS carbon_emissions
         FROM {GOLD} {where}
     """
     with connect() as conn:
-        energy, material, eff = conn.execute(sql, params).fetchone()
+        energy, material, eff, carbon = conn.execute(sql, params).fetchone()
         as_of = max_timestamp(conn)
     return {
         "total_waste_cost_inr": round(energy + material, 2),
         "energy_waste_cost_inr": round(energy, 2),
         "material_waste_cost_inr": round(material, 2),
         "efficiency_ratio": round(eff, 3),
+        "carbon_emissions_kg_co2": round(carbon, 2),
         # deltas: frontend designer plans to drop the delta UI (no history yet). Data will
         # accumulate over time (new sensor files land), so real period-over-period deltas
         # become computable later. Returning neutral 0.0 keeps the field non-breaking meanwhile.
