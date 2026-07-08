@@ -24,6 +24,18 @@ Facilities: CHENNAI_RECYCLING_PLANT, PUNE_RECYCLING_PLANT.
 Departments: PRE_PROCESSING, WASHING, EXTRUSION, FINISHING.
 Total waste convention: estimated_power_waste_cost_inr + material_waste_cost_inr.
 
+## Time handling (important)
+
+The database is a fixed snapshot, not a live feed. Do NOT use the real-world current date.
+When the user says "today", interpret it as the most recent date present in the data:
+`(SELECT MAX(operation_date) FROM gold_operational_metrics)` — or simply query without a date
+filter when all rows share one date. Never answer "no records for today" based on the wall-clock
+date; the data's own latest day IS "today".
+
+The snapshot currently holds a single day, so questions about "this week", "last 7 days",
+"yesterday", or trends have no historical range to compare against. For those, use the data that
+exists and state plainly that only one day is available — do not invent history.
+
 ## Tools
 
 - duckdb_query      — run a SELECT (reads only; rejects mutations). Use for ALL reads.

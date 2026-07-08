@@ -5,8 +5,10 @@ Usage:
     python -m evals.run_evals --gate       # exit 1 if avg score < PASS_THRESHOLD
     python -m evals.run_evals --dataset supervisor-v1  # run single dataset
 """
+import asyncio
 import logging
 import sys
+import threading
 import uuid
 from typing import Any
 
@@ -18,6 +20,18 @@ logger = logging.getLogger(__name__)
 PASS_THRESHOLD = 0.7
 
 _graph: Any = None
+
+# One persistent event loop in a background thread. `evaluate()` calls `target` many times
+# (possibly from worker threads); the agent's async model client binds to the first loop it
+# runs on, so we must reuse ONE loop for every call. asyncio.run() would create and close a
+# fresh loop each call, orphaning that client ("Event loop is closed"). run_coroutine_threadsafe
+# submits each coroutine to this single long-lived loop safely.
+_loop = asyncio.new_event_loop()
+threading.Thread(target=_loop.run_forever, daemon=True).start()
+
+
+def _run_async(coro: Any) -> Any:
+    return asyncio.run_coroutine_threadsafe(coro, _loop).result()
 
 
 def _get_graph() -> Any:
@@ -35,9 +49,13 @@ def target(inputs: dict) -> dict:
         for m in inputs.get("messages", [])
         if m.get("role") == "user"
     ]
-    result = graph.invoke(
-        {"messages": messages},
-        config={"configurable": {"thread_id": str(uuid.uuid4())}},
+    # Run async on the shared persistent loop: some middleware (dev_cost_router) only
+    # implements the async model-call hook, so a sync graph.invoke raises NotImplementedError.
+    result = _run_async(
+        graph.ainvoke(
+            {"messages": messages},
+            config={"configurable": {"thread_id": str(uuid.uuid4())}},
+        )
     )
     response_messages = result.get("messages", [])
     response = response_messages[-1].content if response_messages else ""
