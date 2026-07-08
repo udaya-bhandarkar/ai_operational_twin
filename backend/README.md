@@ -459,26 +459,29 @@ result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id=
 
 ## Evaluations + CI
 
+> **Running the evals? See [`evals/README.md`](evals/README.md)** — a step-by-step guide for
+> setup and reading results. This section covers the design.
+
 ### Datasets
 
-`evals/datasets/v1/` contains three JSONL datasets:
+`evals/datasets/v1/` holds JSONL datasets (one per LangSmith dataset):
 
 | Dataset | Examples | Covers |
 |---|---|---|
-| `supervisor-v1` | 5 | End-to-end agent behaviour: DB query + web + response formatting |
-| `research-v1` | 3 | Factual retrieval (SCADA, anomaly detection, KPIs) |
-| `ops-v1` | 3 | Read-only DB queries (list tables, schema, overview) |
+| `ops-v1` | 116 | The QA test suite — hierarchy/aggregation, resource use, yield loss, thresholds, root-cause, trends, financials, anti-hallucination, exec summaries |
+| `supervisor-v1` / `research-v1` | few | Legacy placeholder buckets (pre-single-agent); ignore |
 
-Each example format:
+`ops-v1` is generated from the QA team's questions and is graded against the June-14 dataset
+they were authored on (loaded into the gold DB). Each example:
 ```json
-{"inputs": {"messages": [{"role": "user", "content": "question"}]}, "outputs": {"answer": "reference answer"}, "metadata": {"task": "..."}}
+{"inputs": {"messages": [{"role": "user", "content": "question"}]}, "outputs": {"answer": "reference answer"}, "metadata": {"task": "suite3_I"}}
 ```
-
-The `outputs.answer` field is the reference answer used by `correctness_evaluator`. Fill these in with real expected answers before running the eval gate. Questions are placeholders — replace with real domain questions from the team.
+`outputs.answer` is the reference used by `correctness_evaluator`; omit it (`{}`) for questions
+with no known answer (they're graded by relevance only).
 
 ### Evaluators
 
-Three evaluators run on every dataset. **The evaluation infrastructure is final; the dataset Q&A pairs are not — they are placeholders until the team submits real questions and reference answers.**
+Three evaluators run on every dataset:
 
 | Evaluator | File | Needs model | Needs reference answer | What it checks |
 |---|---|---|---|---|
@@ -490,17 +493,21 @@ Three evaluators run on every dataset. **The evaluation infrastructure is final;
 
 The two LLM judges use prebuilt prompts (`CORRECTNESS_PROMPT`, `ANSWER_RELEVANCE_PROMPT`) from `openevals.prompts` via `create_llm_as_judge`. They use `settings.summarization_model` as the judge model.
 
-Examples with `"PLACEHOLDER"` in the `answer` field are skipped (`score=None`) and excluded from the gate average — so CI is not blocked by unfilled datasets.
+Examples with an empty/`PLACEHOLDER` `answer` are skipped by `correctness`/`string_contains` (`score=None`) and excluded from the gate average — they're graded by `relevance` only.
+
+The eval runner drives the agent asynchronously on one shared event loop (`run_evals.py`),
+since the agent's middleware requires the async model-call path.
 
 ### Running evals
 
 ```bash
-python -m evals.run_evals                          # run, print results
-python -m evals.run_evals --gate                   # exit 1 if avg score < 0.70
-python -m evals.run_evals --dataset supervisor-v1  # single dataset
+python scripts/upload_datasets.py                 # once — push datasets to LangSmith
+python -m evals.run_evals --dataset ops-v1        # run, print results
+python -m evals.run_evals --dataset ops-v1 --gate # exit 1 if avg score < 0.70
 ```
 
-Eval runs are recorded in LangSmith under `LANGSMITH_PROJECT`.
+Eval runs are recorded in LangSmith under `LANGSMITH_PROJECT`. **Step-by-step setup and how to
+read the results: [`evals/README.md`](evals/README.md).**
 
 ### Dataset upload (one-time)
 
