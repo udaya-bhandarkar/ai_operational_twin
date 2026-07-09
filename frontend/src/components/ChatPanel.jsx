@@ -42,6 +42,9 @@ export default function ChatPanel({ view }) {
         />
         <button onClick={submit} disabled={loading || !draft.trim()}>Send</button>
       </div>
+      <div className="chat__disclaimer">
+        AI can make mistakes. Please verify critical information.
+      </div>
     </div>
   );
 }
