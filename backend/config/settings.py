@@ -93,6 +93,8 @@ class Settings(BaseSettings):
     # frontends, e.g. "https://twin.example.com,https://staging.example.com".
     # Localhost origins (any port) are allowed automatically when BACKEND_ENV=dev.
     cors_origins: str = ""
+    # Regex pattern to match allowed origins (e.g. r"https://.*\.vercel\.app" for Vercel).
+    cors_origin_regex: str = ""
 
 
 settings = Settings()
