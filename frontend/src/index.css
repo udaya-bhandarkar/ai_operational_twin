@@ -15,6 +15,13 @@
 body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); background: var(--c-bg); }
 
 .app { min-height: 100vh; }
+.app--needs-padding {
+  padding-bottom: 5px;
+}
+.app--needs-padding .app__body {
+  height: auto;
+  overflow: visible;
+}
 
 /* Top bar */
 .topbar {
@@ -57,17 +64,22 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
   grid-template-columns: 1fr 360px;
   gap: var(--gap);
   padding: var(--gap);
-  height: calc(100vh - 60px);   /* full screen minus the top bar */
-  overflow: hidden;             /* page itself never scrolls */
+  align-items: start;
+  min-height: calc(100vh - 80px); 
 }
 
 .dashboard {
   display: flex;
   flex-direction: column;
   gap: var(--gap);
-  overflow-y: auto;     /* left side scrolls inside its own area if needed */
-  min-height: 0;        /* the important bit — see below */
+  min-height: 0;        
 }
+.dashboard__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
 .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap); }
 .dashboard__charts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
 
@@ -95,7 +107,6 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 
 /* Chat */
 .dashboard__chat {
-  height: 100%;
   min-height: 0;
 }
 .chat { display: flex; flex-direction: column; height: 100%; background: var(--c-panel);
@@ -210,7 +221,8 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 
 /* Responsive: stack chat under the dashboard on narrow screens */
 @media (max-width: 1100px) {
-  .app__body { grid-template-columns: 1fr; }
+  .app__body { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .app { min-height: 100vh; overflow-y: auto; }
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   .dashboard__charts { grid-template-columns: 1fr; }
   .dashboard__chat { position: static; height: 520px; }
