@@ -12,7 +12,7 @@ export default function KpiGrid({ scope }) {
     { key: 'material_waste_cost_inr', label: 'Material Waste Cost',      format: formatINR,     accent: COLORS.primary },
     { key: 'efficiency_ratio',        label: 'Efficiency Ratio',         format: formatPercent, accent: COLORS.primary },
     { key: 'carbon_emissions_kg_co2',  label: 'Carbon Emissions',        format: formatCO2,     accent: COLORS.deep },
-    { key: 'water_waste_cost_inr',     label: 'Water Cost',              format: formatINR,     accent: COLORS.accent },
+    { key: 'water_waste_cost_inr',     label: 'Water Waste Cost',        format: formatINR,     accent: COLORS.accent },
   ];
 
   return (

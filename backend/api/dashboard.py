@@ -31,17 +31,19 @@ def kpis(view: str = _View, facility_id: str = _Facility, department_id: str = _
         SELECT
             COALESCE(SUM(estimated_power_waste_cost_inr), 0) AS energy_waste,
             COALESCE(SUM(material_waste_cost_inr), 0)        AS material_waste,
+            COALESCE(SUM(estimated_water_waste_cost_inr), 0)  AS water_waste,
             COALESCE(AVG(efficiency_ratio), 0)               AS efficiency_ratio,
             COALESCE(SUM(carbon_emissions_kg_co2), 0)        AS carbon_emissions
         FROM {GOLD} {where}
     """
     with connect() as conn:
-        energy, material, eff, carbon = conn.execute(sql, params).fetchone()
+        energy, material, water, eff, carbon = conn.execute(sql, params).fetchone()
         as_of = max_timestamp(conn)
     return {
-        "total_waste_cost_inr": round(energy + material, 2),
+        "total_waste_cost_inr": round(energy + material + water, 2),
         "energy_waste_cost_inr": round(energy, 2),
         "material_waste_cost_inr": round(material, 2),
+        "water_waste_cost_inr": round(water, 2),
         "efficiency_ratio": round(eff, 3),
         "carbon_emissions_kg_co2": round(carbon, 2),
         # deltas: frontend designer plans to drop the delta UI (no history yet). Data will
@@ -51,6 +53,7 @@ def kpis(view: str = _View, facility_id: str = _Facility, department_id: str = _
             "total_waste_cost_inr": 0.0,
             "energy_waste_cost_inr": 0.0,
             "material_waste_cost_inr": 0.0,
+            "water_waste_cost_inr": 0.0,
             "efficiency_ratio": 0.0,
         },
         "as_of": as_of,
