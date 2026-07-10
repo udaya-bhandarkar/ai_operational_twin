@@ -26,16 +26,21 @@ export default function WasteByMachineChart({ scope }) {
     return Math.min(Math.ceil(longest), 220);
   }, [machines]);
 
+  // Enough vertical space per bar so every label can render without Recharts skipping any
+  const chartHeight = Math.max(240, machines.length * 18);
+
   return (
     <Card title="Waste Cost by Machine" loading={loading} error={error} empty={!machines.length}>
-      <ResponsiveContainer width="100%" height={240}>
-        <BarChart data={machines} layout="vertical" margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-          <XAxis type="number" tickFormatter={(v) => `₹${v}`} fontSize={11} />
-          <YAxis type="category" dataKey="machine_id" width={yAxisWidth} fontSize={11} />
-          <Tooltip formatter={(v) => formatINR(v)} />
-          <Bar dataKey="waste_cost_inr" name="Waste cost" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
+      <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <BarChart data={machines} layout="vertical" margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+            <XAxis type="number" tickFormatter={(v) => `₹${v}`} fontSize={12} />
+            <YAxis type="category" dataKey="machine_id" width={yAxisWidth} fontSize={11} interval={0} />
+            <Tooltip formatter={(v) => formatINR(v)} />
+            <Bar dataKey="waste_cost_inr" name="Waste cost" fill={COLORS.primary} radius={[0, 4, 4, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </Card>
   );
 }

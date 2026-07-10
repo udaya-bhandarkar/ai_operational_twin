@@ -96,6 +96,12 @@ body { margin: 0; font-family: system-ui, sans-serif; color: var(--c-text); back
 .card { background: var(--c-panel); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 12px; }
 .card__title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--c-deep); }
 .card__empty { font-size: 13px; color: #607071; padding: 12px 0; }
+.card__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
 
 /* Events table */
 .events-table { width: 100%; border-collapse: collapse; font-size: 13px; }
