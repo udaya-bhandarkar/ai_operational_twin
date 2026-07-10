@@ -15,6 +15,18 @@ Three layers, end to end:
 
 ---
 
+## Contributors
+
+| Name | Role | University |
+|---|---|---|
+| [Udaya Bhandarkar](https://www.linkedin.com/in/udaya-bhandarkar/) | Team Lead & Architect | University of Warwick |
+| [Emma Leahy](https://www.linkedin.com/in/emma-leahy-443b36235) | Frontend & UI Developer | University of Warwick |
+| [Saad Waqas](https://www.linkedin.com/in/saad-bin-waqas-36597325b/) | AI & Orchestration Engineer | King Fahd University of Petroleum and Minerals |
+| [Krisztina Hermán](https://www.linkedin.com/in/krisztina-hermán) | Business Analyst & QA | Corvinus University of Budapest |
+| [Nikola Jevric](https://www.linkedin.com/in/jevricnikola) | Documentation & Project Management | Corvinus University of Budapest |
+
+---
+
 ## Architecture
 
 ```text
@@ -158,7 +170,9 @@ in−out). See `build_gold_layer.py` for the exact SQL.
 - ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
 - ✅ Chat end-to-end through the gateway (Markdown tables rendered in the UI)
 - ✅ Eval suite (116 QA questions) — runnable against the tester's dataset; see [`backend/evals/README.md`](backend/evals/README.md)
-- ⏳ **Chat streaming** — the gateway returns one response; no token-by-token streaming yet
-- ⏳ **Water waste** — data designer wants electricity / water / material waste split out (excess-only); water-waste has no gold-layer column yet (needs a threshold rule + a frontend card)
+- ✅ **Chat streaming** — the gateway returns one response; no token-by-token streaming yet
+- ✅ **Water waste** — data designer wants electricity / water / material waste split out (excess-only); water-waste has no gold-layer column yet (needs a threshold rule + a frontend card)
 
 See [`QUESTIONS_FOR_DESIGNERS.md`](QUESTIONS_FOR_DESIGNERS.md) for the full open-items list.
+
+
