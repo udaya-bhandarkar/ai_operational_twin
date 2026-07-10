@@ -137,9 +137,9 @@ Components split into **feature** components (in `components/`, specific to this
 
 | Component | Data source | Notes |
 |---|---|---|
-| `KpiGrid` → `KpiCard` | `useKpis` | 4 cards: total / energy / material waste cost, efficiency ratio |
+| `KpiGrid` → `KpiCard` | `useKpis` | 6 cards: total / energy / material waste cost, efficiency ratio, carbon emissions, water cost (water cost pending backend support — see API contract) |
 | `WasteOverTimeChart` | `useWasteOverTime` | Recharts bar chart, ₹ over hourly buckets |
-| `WasteByMachineChart` | `useWasteByMachine` | Recharts horizontal ranking, sorted descending |
+| `WasteByMachineChart` | `useWasteByMachine` | Recharts horizontal ranking, sorted descending. Y-axis width and chart height adapt dynamically to machine-name length and count; scrolls internally past ~15 machines |
 | `TopEventsTable` | `useTopEvents` | Top-5 events; red total-waste column; status badges |
 | `ChatPanel` → `ChatMessage` | `useChat` | Message list, input, send-on-Enter, typing indicator |
 
@@ -171,7 +171,7 @@ The frontend is built against these endpoints. `view` is `ceo | factory | depart
 
 | Endpoint | Returns |
 |---|---|
-| `GET /api/kpis?view=` | `{ total_waste_cost_inr, energy_waste_cost_inr, material_waste_cost_inr, efficiency_ratio, deltas, as_of }` |
+| `GET /api/kpis?view=` | `{ total_waste_cost_inr, energy_waste_cost_inr, material_waste_cost_inr, efficiency_ratio, carbon_emissions_kg_co2, deltas, as_of }` (water cost field pending — see root `README.md` open items) |
 | `GET /api/waste-over-time?view=&range=24h` | `{ range, points: [{ bucket, waste_cost_inr }] }` |
 | `GET /api/waste-by-machine?view=` | `{ machines: [{ machine_id, waste_cost_inr }] }` (sorted desc) |
 | `GET /api/top-events?limit=5` | `{ events: [{ machine_id, timestamp, efficiency_ratio, energy_cost_inr, total_waste_inr, status }] }` |
@@ -204,7 +204,7 @@ All styling is in `src/index.css` using CSS custom properties for the brand pale
 --c-accent:  rgb(0, 122, 140);
 ```
 
-The layout is a CSS grid: top bar across the top, then a two-column body — dashboard on the left (KPI row, chart row, table), chat panel on the right. The body is locked to the viewport height so the page never scrolls; the chat and the left column scroll internally instead (`min-height: 0` on the flex/grid children is what allows this).
+The layout is a CSS grid: top bar across the top, then a two-column body — dashboard on the left (KPI row, chart row, table), chat panel on the right. The chat panel's height dynamically matches the dashboard column's measured content height via a `ResizeObserver` in `App.jsx`, rather than being locked to the viewport. The page scrolls normally when content exceeds the viewport, with a small bottom-padding buffer applied automatically (via an `app--needs-padding` class) on short or narrow viewports where content would otherwise touch the edge. Below `1100px` width, the chat panel stacks under the dashboard instead of sitting side-by-side.
 
 ---
 
@@ -229,3 +229,27 @@ The API returned an empty array. The `Card` wrapper shows "No data yet." for emp
 **Chat only replies with `(mock) You asked: ...`**
 
 That's the mock backend answering. Real agent responses require `VITE_USE_MOCKS=false` and the live `/api/chat` endpoint.
+
+---
+
+## Future Changes
+
+Identified during development but out of scope for the MVP — candidates for future enhancement. Listed here so the reasoning isn't lost and future work has clear starting points.
+
+**Mobile-responsive layout**
+The dashboard currently adapts down to a `1100px` breakpoint (chat panel stacks under the dashboard instead of sitting side-by-side), but true phone-width layouts haven't been tested or tuned. Worth doing because the target audience — senior executives and facility owners — are realistically checking metrics between meetings on a phone, not always at a desk. Would need its own breakpoint(s) below `1100px`, likely simplifying the KPI grid to a single column and revisiting chart sizing for narrow screens.
+
+**Login / authentication**
+There's currently no access control — anyone with the URL sees the dashboard, and the CEO / Factory Manager / Department Manager toggle is just a UI switch anyone can click, not tied to who's actually logged in. For a real deployment with genuine financial data, access should be gated, and the existing role toggle should map to an authenticated user's actual role rather than being self-selected. Needs a decision on auth approach (simple password gate vs. proper user accounts) before implementation.
+
+**Chat streaming**
+`/api/chat` currently returns one complete response rather than streaming tokens as they're generated, so replies appear all at once after a delay rather than word-by-word. Streaming would make the assistant feel more responsive, especially for longer answers, and is a common expectation for chat interfaces at this point. Requires both a backend change (streaming response support in the FastAPI gateway) and a frontend change (incrementally rendering chunks in `ChatPanel`/`ChatMessage`).
+
+**Frontend automated test suite**
+No automated tests currently exist on the frontend. Highest-value targets identified: formatters in `utils/format.js` (e.g. `formatINR`, `formatCO2`), `scopeParams()` in the API client, the view-toggle/scope logic, the mock/live switch (`VITE_USE_MOCKS`), and the `useChat` hook. Would use Vitest + React Testing Library. Matters most before any further refactors, since right now every layout/logic change is verified by hand.
+
+**Factory map visual**
+Explicitly deferred in the original project scope due to time constraints. The dashboard currently reflows the chart row to fill the space where a factory floor-plan/map view was originally planned. Would give senior management a spatial view of where waste is occurring, complementing the existing charts and tables.
+
+**API field-name alignment**
+A few frontend/backend field-name mismatches have surfaced during development (e.g. `{id, name}` vs `{facility_id, label}` for scope dropdowns) and were resolved case-by-case as found. Worth a dedicated pass once all endpoints are stable to confirm every response shape matches what `mocks/mockData.js` documents as the contract, so future backend changes don't silently break the frontend.
