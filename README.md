@@ -151,13 +151,14 @@ and computes operational costs + waste. Data keeps arriving as more sensor files
 | power_kw / water_liters | Resource consumption |
 | material_in_kg / material_out_kg / efficiency_ratio | Material throughput |
 | current_electricity_rate / current_water_rate | ERP rates (joined) |
-| operational_power_cost_inr / operational_water_cost_inr | Total resource cost |
+| operational_power_cost_inr / operational_water_cost_inr | Total resource cost (not waste) |
 | estimated_power_waste_cost_inr | **Excess** power cost (power over the 300 kW threshold) |
+| estimated_water_waste_cost_inr | **Excess** water cost (water over the 25 L threshold) |
 | material_waste_cost_inr | Material lost (`in − out`) × PET rate |
 | carbon_emissions_kg_co2 | Estimated carbon |
 
-Waste convention used across the stack: waste = **excess only** (power over threshold; material
-in−out). See `build_gold_layer.py` for the exact SQL.
+Waste convention used across the stack: total waste = **excess only**, summing power waste,
+water waste, and material waste. See `build_gold_layer.py` for the exact SQL.
 
 ---
 
@@ -168,7 +169,7 @@ in−out). See `build_gold_layer.py` for the exact SQL.
 - ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
 - ✅ Chat end-to-end through the gateway (Markdown tables rendered in the UI)
 - ✅ Eval suite (116 QA questions) — runnable against the tester's dataset; see [`backend/evals/README.md`](backend/evals/README.md)
+- ✅ Waste model — power, water, and material waste (all excess-only) summed into total waste
 - ⏳ **Chat streaming** — the gateway returns one complete response; no token-by-token streaming yet
-- ⏳ **Water waste** — a separate excess-only water-waste metric is not yet in the gold layer (needs a threshold rule)
 
 

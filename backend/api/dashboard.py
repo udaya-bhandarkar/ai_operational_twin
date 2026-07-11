@@ -1,13 +1,8 @@
 """Dashboard GET endpoints. Responses match frontend/src/mocks/mockData.js field-for-field.
 
-Waste convention: waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr.
-Confirmed by both designers: `energy_waste_cost_inr` = estimated_power_waste_cost_inr
-(EXCESS power waste, not total power cost). material_waste_cost_inr is excess by nature.
-
-NOTE (data designer): wastes should eventually be split further — electricity / WATER /
-material, all excess-only. Water waste has no column in the gold layer yet (the builder
-computes operational_water_cost_inr = total, not excess). Adding it needs a data-side
-change in build_gold_layer.py + a frontend card. Tracked as an open cross-team item.
+Waste convention (all excess-only): total waste = power waste + water waste + material waste,
+i.e. estimated_power_waste_cost_inr + estimated_water_waste_cost_inr + material_waste_cost_inr.
+The `operational_*_cost_inr` columns are TOTAL resource cost, not waste — never summed here.
 """
 from fastapi import APIRouter, Query
 
@@ -15,8 +10,10 @@ from api.db import GOLD, connect, max_timestamp, scope_where
 
 router = APIRouter(prefix="/api")
 
-# Per-row total waste (energy waste + material waste).
-_WASTE = "(estimated_power_waste_cost_inr + material_waste_cost_inr)"
+# Per-row total waste = power + water + material waste (all excess-only).
+_WASTE = (
+    "(estimated_power_waste_cost_inr + estimated_water_waste_cost_inr + material_waste_cost_inr)"
+)
 
 # Shared scope query params — accepted by every endpoint per the frontend contract.
 _View = Query(default="ceo")

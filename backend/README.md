@@ -181,15 +181,20 @@ All responses match `frontend/src/mocks/mockData.js` field-for-field.
 | GET | `/api/departments` | `{departments:[{department_id, label, facility_id}]}` |
 | POST | `/api/chat` | `{reply, thread_id}` — forwards to supervisor graph |
 
-**Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr`. Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
+**Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + estimated_water_waste_cost_inr + material_waste_cost_inr` (all excess-only). Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
 
 ### Scoping
 
 `view` needs no server-side logic — the dashboard sends the ids: factory scope sends `facility_id`, department scope sends `facility_id` + `department_id`, and CEO sends neither. The `scope_where` filter applies them as exact matches. `label` fields are derived from the id (no lookup table needed).
 
-### Known limitation — waste types
+### Waste model
 
-Waste is reported **excess-only**: `estimated_power_waste_cost_inr` (electricity over the 300 kW threshold) and `material_waste_cost_inr` (intake − output). A separate **water waste** metric is not yet available — the gold layer only carries `operational_water_cost_inr` (total water cost, not excess), so adding it would require an excess-water rule in `build_gold_layer.py`.
+Waste is reported **excess-only**, across three components summed into total waste:
+- `estimated_power_waste_cost_inr` — electricity over the 300 kW threshold
+- `estimated_water_waste_cost_inr` — water over the 25 L threshold
+- `material_waste_cost_inr` — material lost (intake − output) × PET rate
+
+The `operational_power_cost_inr` / `operational_water_cost_inr` columns are total resource cost, not waste, and are never summed into the waste total.
 
 ---
 
