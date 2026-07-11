@@ -53,7 +53,7 @@ OUTPUT_FILE = RAW_DATA_DIR / f"sensor_data_{session_time}.json"
 def generate_sensor_event(machine_id):
     hierarchy = MACHINES[machine_id]
     
-    power_kw = random.uniform(280.0, 310.0)
+    power_kw = random.uniform(280.0, 300.0)
     water_liters = random.uniform(15.0, 25.0) 
     is_choking = random.random() < 0.10
     
