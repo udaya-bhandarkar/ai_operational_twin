@@ -96,5 +96,24 @@ class Settings(BaseSettings):
     # Regex pattern to match allowed origins (e.g. r"https://.*\.vercel\.app" for Vercel).
     cors_origin_regex: str = ""
 
+    def provider(self) -> str:
+        """Provider implied by BACKEND_MODEL: 'anthropic', 'groq', or 'mistral'."""
+        prefix = self.backend_model.split(":", 1)[0] if ":" in self.backend_model else ""
+        return {"anthropic": "anthropic", "groq": "groq"}.get(prefix, "mistral")
+
+    def require_provider_key(self) -> None:
+        """Fail fast with a clear message if the key for BACKEND_MODEL's provider is missing.
+
+        Call at an entrypoint (API gateway / CLI startup) — not at import — so tooling that
+        only needs the settings object (tests, graph import) isn't forced to have a live key.
+        """
+        key_field = f"{self.provider()}_api_key"
+        if not getattr(self, key_field, ""):
+            raise RuntimeError(
+                f"Missing {key_field.upper()} for BACKEND_MODEL='{self.backend_model}'. "
+                f"Set {key_field.upper()} in backend/.env (or switch BACKEND_MODEL to a "
+                f"provider whose key you have set)."
+            )
+
 
 settings = Settings()

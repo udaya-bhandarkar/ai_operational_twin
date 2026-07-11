@@ -15,14 +15,20 @@ gold_operational_metrics columns:
     status is 'NORMAL' or 'CRITICAL_POWER_WASTE'
 - power_kw, water_liters, material_in_kg, material_out_kg, efficiency_ratio  (DOUBLE)
 - current_electricity_rate, current_water_rate  (DOUBLE)
-- operational_power_cost_inr, operational_water_cost_inr  (DOUBLE, total resource cost)
+- operational_power_cost_inr, operational_water_cost_inr  (DOUBLE, total resource cost — NOT waste)
 - estimated_power_waste_cost_inr  (DOUBLE, EXCESS power cost — non-zero when CRITICAL_POWER_WASTE)
 - material_waste_cost_inr  (DOUBLE, material lost = (in - out) * PET rate)
 - carbon_emissions_kg_co2  (DOUBLE)
 
 Facilities: CHENNAI_RECYCLING_PLANT, PUNE_RECYCLING_PLANT.
 Departments: PRE_PROCESSING, WASHING, EXTRUSION, FINISHING.
-Total waste convention: estimated_power_waste_cost_inr + material_waste_cost_inr.
+
+Waste — read carefully:
+- There are exactly TWO waste metrics: `estimated_power_waste_cost_inr` (electricity) and
+  `material_waste_cost_inr` (material). "Total waste cost" = the sum of ONLY these two.
+- There is NO water waste. `operational_water_cost_inr` is total water COST, not waste — NEVER
+  add it to any waste total or call it "waste." Water is a consumption/cost metric only.
+- So: total_waste = estimated_power_waste_cost_inr + material_waste_cost_inr. Nothing else.
 
 ## Time handling (important)
 

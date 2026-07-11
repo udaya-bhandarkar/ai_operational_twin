@@ -38,6 +38,17 @@ app.include_router(dashboard.router)
 app.include_router(chat.router)
 
 
+@app.on_event("startup")
+def _check_config() -> None:
+    # Fail fast with a clear message if the chat provider key is missing, rather than
+    # surfacing a cryptic 401 on the first /api/chat call. Dashboard endpoints need no key.
+    try:
+        settings.require_provider_key()
+    except RuntimeError as e:
+        import logging
+        logging.getLogger("api").warning("Chat disabled: %s", e)
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

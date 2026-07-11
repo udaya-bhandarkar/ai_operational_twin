@@ -381,6 +381,26 @@ To disable dev routing entirely: set `BACKEND_ENV=staging` in `.env`.
 
 ## Configuration
 
+### Environment variables
+
+All settings live in `config/settings.py` (Pydantic) and are read from `backend/.env`. Full reference:
+
+| Variable | Required | Default | Purpose |
+|---|---|---|---|
+| `BACKEND_MODEL` | yes (chat) | `anthropic:claude-opus-4-8` | Model that answers + grades. Provider is the prefix (`anthropic:` / `groq:` / none = Mistral) |
+| `ANTHROPIC_API_KEY` / `GROQ_API_KEY` / `MISTRAL_API_KEY` | one, matching `BACKEND_MODEL` | — | Provider key. Gateway logs a clear warning at startup if the matching one is missing |
+| `BACKEND_ENV` | no | `dev` | Loads `config/environments/<env>.yaml`; `dev` enables localhost CORS + budget-model routing |
+| `SUMMARIZATION_MODEL` | no | = `BACKEND_MODEL` | Cheaper model for summarization + dev cost routing |
+| `DUCKDB_PATH` | no | built gold DB path | Operational database file the agent + gateway read |
+| `MODEL_REQUESTS_PER_SECOND` | no | `2.0` | Throttle to stay under provider rate limits; `0` disables |
+| `CORS_ORIGINS` | no (prod) | — | Comma-separated allowed origins for a deployed frontend |
+| `CORS_ORIGIN_REGEX` | no | — | Regex for dynamic origins (e.g. Vercel preview URLs) |
+| `LANGSMITH_API_KEY` | no (evals) | — | Datasets + traces; required to run evals |
+| `LANGSMITH_TRACING` | no | `false` | Send traces to LangSmith |
+| `TAVILY_API_KEY` | no | — | Web search; degrades gracefully when unset |
+
+Only the provider key + `BACKEND_MODEL` are needed for chat; the dashboard needs neither.
+
 ### Environment-specific defaults
 
 `config/environments/dev.yaml`, `staging.yaml`, and `prod.yaml` define per-environment defaults. `config/settings.py` loads the yaml for `BACKEND_ENV` before reading `.env` — `.env` always wins, yaml provides sane baselines.

@@ -21,7 +21,6 @@ from langgraph.types import Command
 def run_with_hitl(graph, user_message: str, thread_id: str = "default") -> dict:
     # Inject InMemorySaver when running outside langgraph dev / Agent Server.
     if graph.checkpointer is None:
-        from langchain.agents import create_agent
         graph = graph.bound.compile(checkpointer=MemorySaver())
 
     config = {"configurable": {"thread_id": thread_id}}

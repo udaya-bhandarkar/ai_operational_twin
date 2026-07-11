@@ -42,4 +42,5 @@ def test_hitl_enabled_default():
 
 def test_duckdb_path_default():
     s = _TestSettings()
-    assert s.duckdb_path == "data/operational.duckdb"
+    # Default points at the built gold-layer DB (may be absolute or repo-relative).
+    assert s.duckdb_path.replace("\\", "/").endswith("data/database/operational_twin.db")

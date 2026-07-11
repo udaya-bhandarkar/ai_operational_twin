@@ -1,0 +1,49 @@
+name: Eval gate
+
+# Runs on a nightly schedule and can be triggered manually before releases.
+# NOT run on every push — evals call real LLMs and cost tokens.
+on:
+  workflow_dispatch:       # manual trigger only — run from GitHub Actions UI before releases
+    inputs:
+      dataset:
+        description: "Dataset to evaluate (leave blank to run all)"
+        required: false
+        default: ""
+
+defaults:
+  run:
+    working-directory: backend
+
+env:
+  LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+  LANGSMITH_TRACING: "true"
+  LANGSMITH_PROJECT: RAIC
+  LANGSMITH_ENDPOINT: https://api.smith.langchain.com
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  BACKEND_ENV: staging
+
+jobs:
+  eval-gate:
+    name: Eval regression gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "latest"
+
+      - name: Create venv
+        run: uv venv .venv --python 3.11
+
+      - name: Install deps
+        run: uv pip install -e ".[dev,all-providers,tavily]" --python .venv/bin/python
+
+      - name: Run eval gate
+        run: |
+          DATASET="${{ github.event.inputs.dataset }}"
+          if [ -n "$DATASET" ]; then
+            .venv/bin/python -m evals.run_evals --gate --dataset "$DATASET"
+          else
+            .venv/bin/python -m evals.run_evals --gate
+          fi
