@@ -160,16 +160,4 @@ and computes operational costs + waste. Data keeps arriving as more sensor files
 Waste convention used across the stack: total waste = **excess only**, summing power waste,
 water waste, and material waste. See `build_gold_layer.py` for the exact SQL.
 
----
-
-## Project status
-
-- ✅ Data pipeline → DuckDB gold layer
-- ✅ LangGraph agent backend (DuckDB + web tools, single reasoning loop) + FastAPI gateway
-- ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
-- ✅ Chat end-to-end through the gateway (Markdown tables rendered in the UI)
-- ✅ Eval suite (116 QA questions) — runnable against the tester's dataset; see [`backend/evals/README.md`](backend/evals/README.md)
-- ✅ Waste model — power, water, and material waste (all excess-only) summed into total waste
-- ⏳ **Chat streaming** — the gateway returns one complete response; no token-by-token streaming yet
-
 

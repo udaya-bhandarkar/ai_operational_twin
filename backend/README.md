@@ -544,7 +544,7 @@ Two workflow files:
 |---|---|
 | Manual (`workflow_dispatch`) | Run from GitHub Actions UI before releases; optionally pass a single `--dataset` name |
 
-The eval gate fails if average score across all evaluators drops below 70%. Running evals only on schedule/manually is standard practice in production — full E2E evals are too expensive to run on every commit. Requires GitHub repository secrets:
+Running evals only manually is standard practice — full E2E evals call real LLMs and are too expensive to run on every commit. The `--gate` flag is available to fail a run below a score threshold, but it is not wired into deployment. Requires GitHub repository secrets:
 
 | Secret | Purpose |
 |---|---|
