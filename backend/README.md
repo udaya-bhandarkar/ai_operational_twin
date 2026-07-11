@@ -183,30 +183,13 @@ All responses match `frontend/src/mocks/mockData.js` field-for-field.
 
 **Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + material_waste_cost_inr`. Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
 
-### Design decisions (resolved with designers)
+### Scoping
 
-All the original open items are now answered:
+`view` needs no server-side logic — the dashboard sends the ids: factory scope sends `facility_id`, department scope sends `facility_id` + `department_id`, and CEO sends neither. The `scope_where` filter applies them as exact matches. `label` fields are derived from the id (no lookup table needed).
 
-| # | Question | Resolution |
-|---|---|---|
-| 1 | `view` semantics | Dropdowns drive scoping — factory sends `facility_id`, department sends `facility_id`+`department_id`, ceo sends neither. No server-side `view` logic needed; the id filters do the work. |
-| 2 | `facilities` / `departments` shape | `{facility_id, label}` and `{department_id, label, facility_id}`. `label` derived from the id (no lookup table). |
-| 3 | KPI `deltas` | Frontend dropping the delta UI (no history). Field kept at `0.0` (non-breaking); real deltas become computable once data accumulates. |
-| 4 / 5 | `energy_waste_cost_inr` | = `estimated_power_waste_cost_inr` (**excess** power waste, not total cost). Confirmed both sides. |
-| — | Frontend `client.js` gaps | Frontend designer added `getFacilities`/`getDepartments` + sends `facility_id`/`department_id`. Done. |
+### Known limitation — waste types
 
-### Remaining open item — split waste types (cross-team)
-
-Data designer wants wastes reported **separately and excess-only**: electricity / **water** / material.
-- `estimated_power_waste_cost_inr` (electricity, excess) ✅ exists
-- `material_waste_cost_inr` (excess by nature) ✅ exists
-- **water waste ❌ does not exist** — the gold layer only has `operational_water_cost_inr` (total, not excess).
-
-Needs: (a) **data side** — add an excess-water-waste column in `build_gold_layer.py` (needs a waste threshold/rule like the 300 kW power one); (b) **frontend** — add a water-waste KPI card. Until both land, the API exposes electricity + material waste only.
-
-### Known blocker
-
-`/api/chat` returns `401 Unauthorized` when the provider key in `.env` is invalid/rotated. The dashboard endpoints need no key. Fix by setting a valid key for whatever `BACKEND_MODEL` points at (see [Troubleshooting](#troubleshooting)).
+Waste is reported **excess-only**: `estimated_power_waste_cost_inr` (electricity over the 300 kW threshold) and `material_waste_cost_inr` (intake − output). A separate **water waste** metric is not yet available — the gold layer only carries `operational_water_cost_inr` (total water cost, not excess), so adding it would require an excess-water rule in `build_gold_layer.py`.
 
 ---
 
@@ -544,26 +527,6 @@ The eval gate fails if average score across all evaluators drops below 70%. Runn
 | `ANTHROPIC_API_KEY` | Model calls during eval runs (swap for Groq/Mistral key if needed) |
 
 Set these in **Settings → Secrets and variables → Actions** on the repo.
-
----
-
-## Designer questions — all answered
-
-Original list is in `QUESTIONS_FOR_DESIGNERS.md` (repo root). Resolutions:
-
-**Frontend designer**
-1. Shapes — assumption confirmed; actual contract is the mock: `{facility_id, label}` / `{department_id, label, facility_id}`. ✅
-2. `view` — dropdowns pick facility (factory view) and facility→department (department view); client sends the ids. ✅
-3. `client.js` — designer added the missing fns + scope params. ✅
-4. `deltas` — being removed (no history); field kept neutral for now. ✅
-5. `energy_waste` — = wasted power (excess). ✅
-
-**Data designer**
-6. DB path — confirmed `data/database/operational_twin.db`. ✅
-7. Names — no lookup table; dashboard shows friendly labels (backend derives `label` from id). ✅
-8. Wastes — separate + excess-only. Electricity + material done; **water waste still needs a gold-layer column** (see [remaining open item](#remaining-open-item--split-waste-types-cross-team)). ⚠️
-9. Refresh — data keeps arriving (multiple sensor files). `as_of`/windows anchor on `MAX(timestamp)` — already correct. Rebuild the gold DB to ingest new files. ✅
-10. Existing queries — the gold-layer SQL in `build_gold_layer.py` is the source; gateway reads `gold_operational_metrics` directly. ✅
 
 ---
 

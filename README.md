@@ -57,9 +57,8 @@ ai_operational_twin/
 ├── data/
 │   ├── raw/                # Generated ERP csv + sensor json (inputs)
 │   └── database/           # Built DuckDB file (gitignored — rebuild locally)
-├── backend/                # Multi-agent LangGraph system + FastAPI gateway   → backend/README.md
+├── backend/                # LangGraph agent + FastAPI gateway                → backend/README.md
 ├── frontend/               # React + Vite dashboard                           → frontend/README.md
-├── QUESTIONS_FOR_DESIGNERS.md   # Cross-team contract Q&A (+ open items)
 └── README.md               # You are here
 ```
 
@@ -125,7 +124,6 @@ provider key in `backend/.env`. To develop the UI with no backend, set `VITE_USE
 | [`backend/README.md`](backend/README.md) | Agent, middleware, tools, HITL, evals/CI, the **API gateway** (endpoints, scope params, CORS), config, troubleshooting |
 | [`backend/evals/README.md`](backend/evals/README.md) | **Running the evals** — setup from a fresh clone, uploading the QA questions, and reading the results in LangSmith |
 | [`frontend/README.md`](frontend/README.md) | Components, hooks, the mock/live switch, view toggle, styling, connecting to the backend |
-| [`QUESTIONS_FOR_DESIGNERS.md`](QUESTIONS_FOR_DESIGNERS.md) | Contract decisions between frontend/backend/data + remaining open items |
 
 ---
 
@@ -170,9 +168,7 @@ in−out). See `build_gold_layer.py` for the exact SQL.
 - ✅ React dashboard wired to live endpoints (KPIs, charts, tables, scope dropdowns)
 - ✅ Chat end-to-end through the gateway (Markdown tables rendered in the UI)
 - ✅ Eval suite (116 QA questions) — runnable against the tester's dataset; see [`backend/evals/README.md`](backend/evals/README.md)
-- ✅ **Chat streaming** — the gateway returns one response; no token-by-token streaming yet
-- ✅ **Water waste** — data designer wants electricity / water / material waste split out (excess-only); water-waste has no gold-layer column yet (needs a threshold rule + a frontend card)
-
-See [`QUESTIONS_FOR_DESIGNERS.md`](QUESTIONS_FOR_DESIGNERS.md) for the full open-items list.
+- ⏳ **Chat streaming** — the gateway returns one complete response; no token-by-token streaming yet
+- ⏳ **Water waste** — a separate excess-only water-waste metric is not yet in the gold layer (needs a threshold rule)
 
 
