@@ -555,6 +555,64 @@ Set these in **Settings → Secrets and variables → Actions** on the repo.
 
 ---
 
+## Roadmap / next steps
+
+Features intentionally deferred for time. The architecture already accommodates each — notes
+below are the intended implementation path, not open research.
+
+### Conversation memory (multi-turn chat)
+
+Today each `/api/chat` call is answered in isolation — the gateway passes a `thread_id` (already
+wired from the frontend through `chat.py`) but `make_graph()` attaches no checkpointer, so there
+is nothing to persist/reload a thread. `langgraph dev` auto-injects one; the FastAPI gateway does
+not.
+
+**Setup:** pass a checkpointer when building the agent in `agents/supervisor/graph.py`:
+```python
+from langgraph.checkpoint.memory import InMemorySaver
+return create_agent(..., checkpointer=InMemorySaver())   # in-process; resets on restart
+```
+For durable threads across restarts, run under `langgraph up` (Postgres) or wire a Postgres
+saver. No frontend change needed — the `thread_id` round-trip already exists.
+
+### Show the SQL / citations
+
+Return the query the agent ran alongside the answer, so every number is traceable to a source —
+reinforces the "grounded, no hallucination" property. **Setup:** have the DuckDB tool record the
+executed SQL (e.g. onto run state or a returned field) and include it in the `/api/chat`
+response; render it under the chat bubble as a collapsible "Show query".
+
+### Streaming responses
+
+The gateway returns one complete response. To stream the final answer token-by-token: add a
+`/api/chat/stream` endpoint using `graph.astream_events(...)` wrapped in a FastAPI
+`StreamingResponse` (SSE), filtered to the final model call; the frontend reads the stream and
+appends chunks. ~half a day; the tool phase stays a spinner (only the answer streams).
+
+### API authentication
+
+Endpoints are currently open. For a single frontend, a shared **API key** is sufficient.
+**Setup:** add `API_KEY` to `settings.py` + `.env`; add a FastAPI dependency that checks an
+`X-API-Key` header (constant-time compare via `hmac.compare_digest`) and apply it to the `/api`
+routers (leave `/health` open). Enforce only when `API_KEY` is set, so dev/CI/evals are
+unaffected. The frontend then sends the header. Use HTTPS in production; note a browser-held key
+is only semi-secret (move to JWT + login if real per-user accounts are needed).
+
+### Deeper time-series data
+
+The current dataset is a single-day snapshot, so "this week / trend / vs yesterday" questions
+have no history to compute against. **Setup:** run `sensor_stream.py` across multiple days (or
+generate dated partitions) and rebuild the gold layer — the `sensor_data_*.json` wildcard and
+`MAX(timestamp)` windowing already handle multi-day data. Enables real KPI deltas (currently
+returned as `0.0`).
+
+### Additional MCP tools
+
+`tools/mcp_client.py` ships empty. Wiring an MCP server (filesystem, another database, an
+external API) would extend the agent's reach — see [MCP tools](#mcp-tools-toolsmcp_clientpy).
+
+---
+
 ## Architecture notes
 
 **`create_agent` is a LangGraph graph**
