@@ -78,6 +78,11 @@ class Settings(BaseSettings):
         pathlib.Path(__file__).resolve().parents[2] / "data" / "database" / "operational_twin.db"
     )
 
+    # Conversation checkpoints for the API gateway (thread memory + paused HITL approvals).
+    # SQLite file so threads survive restarts; ":memory:" for ephemeral. langgraph dev ignores
+    # this — its runtime injects its own checkpointer.
+    checkpoint_db: str = str(pathlib.Path(__file__).resolve().parents[1] / ".state" / "checkpoints.sqlite")
+
     hitl_enabled: bool = True
     eval_budget_usd: float = 5.0
 

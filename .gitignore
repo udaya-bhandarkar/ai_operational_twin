@@ -12,6 +12,9 @@ data/database/*.db
 # LangGraph dev runtime store
 .langgraph_api/
 
+# API gateway conversation checkpoints (CHECKPOINT_DB)
+backend/.state/
+
 # Archived raw-data snapshots (kept locally, not in the build)
 *.bak
 

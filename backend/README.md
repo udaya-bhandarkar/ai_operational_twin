@@ -102,7 +102,7 @@ backend/
 │   ├── app.py                  # FastAPI app + CORS + uvicorn entry (port 8000)
 │   ├── db.py                   # read-only DuckDB access + scope filter + snapshot-time anchor
 │   ├── dashboard.py            # 7 dashboard GET endpoints (match frontend mockData.js field-for-field)
-│   └── chat.py                 # POST /api/chat → supervisor graph (async ainvoke)
+│   └── chat.py                 # POST /api/chat + /api/chat/resume (HITL approvals) → agent graph
 │
 ├── db/
 │   └── connection.py           # hardened DuckDB connections (external access off) — shared by tools + API
@@ -181,7 +181,17 @@ All responses match `frontend/src/mocks/mockData.js` field-for-field.
 | GET | `/api/machines` | `{machines:[{machine_id, status}]}` |
 | GET | `/api/facilities` | `{facilities:[{facility_id, label}]}` |
 | GET | `/api/departments` | `{departments:[{department_id, label, facility_id}]}` |
-| POST | `/api/chat` | `{reply, thread_id}` — forwards to supervisor graph |
+| POST | `/api/chat` | `{reply, thread_id, status, approval}` — runs one turn of the agent graph |
+| POST | `/api/chat/resume` | same shape — answers a pending write approval |
+
+**Chat contract.** `/api/chat` takes `{message, thread_id?}`; reuse `thread_id` for follow-ups —
+threads are persisted by the gateway's checkpointer (see [Persistence](#persistence)). `status`
+is `"complete"` (answer in `reply`) or `"awaiting_approval"`: the agent wants to run a database
+write, `approval.actions` lists the pending tool calls, and `reply` holds a readable summary. The
+client then calls `/api/chat/resume` with `{thread_id, decisions: [{type: "approve"}]}` — one
+decision per action; `{type: "edit", args: {...}}` replaces the tool arguments,
+`{type: "reject", message?}` declines. A thread awaiting approval answers new messages with
+`409`; agent failures return a generic `500` (details only in the server log).
 
 **Scope params** — every dashboard GET accepts `view`, `facility_id`, `department_id` (all optional). `facility_id`/`department_id` apply as exact-match filters. Waste convention: `waste_cost = estimated_power_waste_cost_inr + estimated_water_waste_cost_inr + material_waste_cost_inr` (all excess-only). Windows anchor on `MAX(timestamp)` (data is a fixed snapshot, not live).
 
@@ -475,7 +485,19 @@ Provider prefix rules:
 
 ## Persistence
 
-`langgraph dev` uses an in-memory checkpointer — threads are lost on restart. `langgraph up` (requires Docker) provisions a Postgres container automatically; threads and HITL interrupt state survive process restarts.
+**API gateway** — `api/app.py` opens an `AsyncSqliteSaver` for the app's lifetime and compiles
+the graph with it (`build_graph(checkpointer=...)`). Conversation threads and paused HITL
+approvals survive restarts. Location: `CHECKPOINT_DB` (default `backend/.state/checkpoints.sqlite`,
+git-ignored); set `CHECKPOINT_DB=:memory:` for ephemeral threads.
+
+**`langgraph dev`** uses its own in-memory checkpointer — threads are lost on restart.
+`langgraph up` (requires Docker) provisions a Postgres container automatically. `make_graph()`
+(the `langgraph.json` entrypoint) therefore compiles *without* a checkpointer — the runtime
+rejects a custom one.
+
+**History compression.** The agent node (`history_delta` in `graph.py`) detects when
+`SummarizationMiddleware` rewrote the inner agent's history and replaces the outer, persisted
+history to match, so long threads are actually compressed rather than growing forever.
 
 LangGraph Store is auto-provisioned by the runtime alongside the checkpointer — InMemoryStore in `langgraph dev`, Postgres-backed in `langgraph up`. No code changes needed.
 
@@ -483,16 +505,17 @@ LangGraph Store is auto-provisioned by the runtime alongside the checkpointer �
 
 ## Human-in-the-Loop
 
-`HumanInTheLoopMiddleware` is on the agent, configured to interrupt only on `duckdb_execute` calls — read queries and web calls pass through without approval. Decision options: approve, edit, reject. The interrupt bubbles up through the agent's checkpointer automatically.
+`HumanInTheLoopMiddleware` is on the agent, configured to interrupt only on `duckdb_execute` calls — read queries and web calls pass through without approval. Decision options: approve, edit, reject. The interrupt bubbles up from the agent to the outer graph, which pauses with the thread checkpointed until a decision arrives.
 
-The CLI runner (`hitl/channels/cli.py`) handles the full interrupt → approve / edit / reject loop when running outside langgraph dev:
+Two channels answer approvals:
 
-```python
-from agents.supervisor.graph import make_graph
-from hitl.channels.cli import run_with_hitl
+- **API** — `/api/chat` returns `status: "awaiting_approval"`; `/api/chat/resume` delivers the
+  decisions (see [Endpoints](#endpoints)).
+- **CLI** — `hitl/channels/cli.py` runs the graph in a terminal and prompts per pending action:
 
-graph = make_graph()
-result = run_with_hitl(graph, "What is the latest on fusion energy?", thread_id="thread-1")
+```bash
+python -m hitl.channels.cli "Insert a test reading for machine X"   # one question
+python -m hitl.channels.cli                                          # interactive thread
 ```
 
 ---
@@ -591,21 +614,6 @@ Set these in **Settings → Secrets and variables → Actions** on the repo.
 
 Features intentionally deferred for time. The architecture already accommodates each — notes
 below are the intended implementation path, not open research.
-
-### Conversation memory (multi-turn chat)
-
-Today each `/api/chat` call is answered in isolation — the gateway passes a `thread_id` (already
-wired from the frontend through `chat.py`) but `make_graph()` attaches no checkpointer, so there
-is nothing to persist/reload a thread. `langgraph dev` auto-injects one; the FastAPI gateway does
-not.
-
-**Setup:** pass a checkpointer when building the agent in `agents/supervisor/graph.py`:
-```python
-from langgraph.checkpoint.memory import InMemorySaver
-return create_agent(..., checkpointer=InMemorySaver())   # in-process; resets on restart
-```
-For durable threads across restarts, run under `langgraph up` (Postgres) or wire a Postgres
-saver. No frontend change needed — the `thread_id` round-trip already exists.
 
 ### Show the SQL / citations
 

@@ -7,7 +7,11 @@ StateGraph). Ordered by severity. Each entry: where, what breaks, suggested fix.
 
 ## Correctness
 
-### B1. Agent node slices history by length — breaks when summarization fires
+### B1. Agent node slices history by length — breaks when summarization fires — ✅ FIXED
+_Fixed via `history_delta` in `graph.py`: append-only → return the new tail; rewritten →
+`RemoveMessage(REMOVE_ALL_MESSAGES)` + full new history. **Correction:** the originally
+proposed fix below (mount as subgraph) does NOT work — verified that a subgraph node returns
+its final state, not its removals, so the parent still keeps the old messages._
 - **Where:** `agents/supervisor/graph.py:213-216` (`agent_node`)
 - **What:** The `create_agent` graph is called as a plain function (`agent.ainvoke`) and the
   node returns `result["messages"][len(state["messages"]):]`, assuming the inner agent only
@@ -19,7 +23,12 @@ StateGraph). Ordered by severity. Each entry: where, what breaks, suggested fix.
   so both graphs share the `messages` channel and its `add_messages` reducer (which understands
   `RemoveMessage`). Remove the manual slicing.
 
-### B2. No checkpointer on the API path — no memory, HITL broken
+### B2. No checkpointer on the API path — no memory, HITL broken — ✅ FIXED
+_Fixed: `AsyncSqliteSaver` opened in the API lifespan (`CHECKPOINT_DB`), `build_graph
+(checkpointer=...)`, `/api/chat` returns `status: awaiting_approval`, new `/api/chat/resume`,
+409 on new messages while paused. Also fixed: `verify_attempts` persisted across turns once a
+checkpointer existed (guardrail now resets it per turn). Tests: `tests/test_graph.py`,
+`tests/test_api.py`._
 - **Where:** `agents/supervisor/graph.py:228` (`graph.compile()`), `api/chat.py`
 - **What:** `make_graph()` compiles without a checkpointer. `/api/chat` generates a
   `thread_id` but nothing persists, so every request starts a fresh conversation. When
@@ -54,7 +63,10 @@ _Fixed on branch `chore/remove-agents-md`: AGENTS.md removed (its 2 unique rules
   check to figures presented as retrieved values. (b) Put the correction in a separate state
   key (or a `SystemMessage`) consumed by the next agent call and cleared afterwards.
 
-### B5. CLI HITL fallback uses a non-existent attribute
+### B5. CLI HITL fallback uses a non-existent attribute — ✅ FIXED
+_Fixed: CLI rewritten — it was also broken by sync `stream` over async nodes and the old
+interrupt format. Now async, uses `build_graph(checkpointer=InMemorySaver())`, HITLRequest/
+decisions format, runnable as `python -m hitl.channels.cli`._
 - **Where:** `hitl/channels/cli.py:24` — `graph.bound.compile(...)`
 - **What:** `CompiledStateGraph` exposes `.builder`, not `.bound` (verify against installed
   langgraph). The fallback path for running without a checkpointer would raise
@@ -106,7 +118,8 @@ content types, HTML→text. Residual: DNS rebinding between check and connect. T
   redirects); stream with a byte cap. Extract text (trafilatura/html2text) instead of returning
   raw HTML.
 
-### S3. API has no auth, no request rate limit, raw 500s
+### S3. API has no auth, no request rate limit, raw 500s — ⚠️ PARTIAL
+_Chat errors now return a generic 500 (detail logged server-side). Auth + rate limit open._
 - **Where:** `api/chat.py`, `api/app.py`
 - **Fix:** API key or JWT dependency; per-client rate limit; exception handler returning a
   safe error body.
@@ -125,7 +138,7 @@ content types, HTML→text. Residual: DNS rebinding between check and connect. T
 - `evals/evaluators/contains.py`, `exact_match.py` are empty; `evals/JsonForQA.rtf` is clutter.
 - No lockfile (`uv.lock`); loose `>=` pins, so CI is not reproducible.
 - `.github/workflows/evals.yml` comment says nightly, but only `workflow_dispatch` is set.
-- `api/app.py` uses deprecated `@app.on_event` — move to `lifespan`.
+- ~~`api/app.py` uses deprecated `@app.on_event` — move to `lifespan`.~~ ✅ done
 - `CLAUDE.md` still says "architecture planning only, no code" — stale.
 - `docs/IMPROVEMENTS.md` 1.7 ("sync tools block the event loop") is likely wrong: LangChain runs
   sync tools via `run_in_executor` under `ainvoke`, and FastAPI runs `def` endpoints in a

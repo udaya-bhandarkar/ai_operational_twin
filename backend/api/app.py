@@ -7,13 +7,38 @@ Run:
 Frontend points at this via VITE_API_BASE=http://localhost:8000/api
 (CORS enabled below — no Vite proxy needed).
 """
+import logging
+import pathlib
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from api import chat, dashboard
 from config.settings import settings
 
-app = FastAPI(title="AI Operational Twin Gateway")
+logger = logging.getLogger("api")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Fail fast with a clear message if the chat provider key is missing, rather than
+    # surfacing a cryptic 401 on the first /api/chat call. Dashboard endpoints need no key.
+    try:
+        settings.require_provider_key()
+    except RuntimeError as e:
+        logger.warning("Chat disabled: %s", e)
+
+    # One checkpointer for the app's lifetime: persists chat threads and paused approvals.
+    if settings.checkpoint_db != ":memory:":
+        pathlib.Path(settings.checkpoint_db).parent.mkdir(parents=True, exist_ok=True)
+    async with AsyncSqliteSaver.from_conn_string(settings.checkpoint_db) as checkpointer:
+        app.state.checkpointer = checkpointer
+        yield
+
+
+app = FastAPI(title="AI Operational Twin Gateway", lifespan=lifespan)
 
 # CORS. Explicit origins come from CORS_ORIGINS (comma-separated) for deployed frontends.
 # Any localhost origin is allowed automatically in dev (Vite port varies: 5173, 5174, ...).
@@ -36,17 +61,6 @@ app.add_middleware(CORSMiddleware, **_cors_kwargs)
 
 app.include_router(dashboard.router)
 app.include_router(chat.router)
-
-
-@app.on_event("startup")
-def _check_config() -> None:
-    # Fail fast with a clear message if the chat provider key is missing, rather than
-    # surfacing a cryptic 401 on the first /api/chat call. Dashboard endpoints need no key.
-    try:
-        settings.require_provider_key()
-    except RuntimeError as e:
-        import logging
-        logging.getLogger("api").warning("Chat disabled: %s", e)
 
 
 @app.get("/health")
