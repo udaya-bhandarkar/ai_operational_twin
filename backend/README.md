@@ -104,6 +104,9 @@ backend/
 │   ├── dashboard.py            # 7 dashboard GET endpoints (match frontend mockData.js field-for-field)
 │   └── chat.py                 # POST /api/chat → supervisor graph (async ainvoke)
 │
+├── db/
+│   └── connection.py           # hardened DuckDB connections (external access off) — shared by tools + API
+│
 ├── config/
 │   ├── settings.py             # Pydantic Settings — yaml defaults + .env overrides
 │   └── environments/
@@ -239,15 +242,25 @@ double-summarisation of results. A single agent halves the calls and preserves t
 
 Defense-in-depth aligned with the OWASP Top 10 for LLM Applications:
 
-- **Text-to-SQL hardening** (`tools/duckdb.py`) — statements are classified read vs write by
-  **AST** (`sqlglot`), not first-word matching, so bypasses like
-  `WITH t AS (SELECT 1) DELETE FROM …` are caught. Read tools run on a `read_only=True`
-  connection (enforcement at the DB layer, not the string level); `duckdb_schema` allowlists
-  table names against the live catalog and parameterizes its metadata query; multi-statement
-  payloads are rejected.
+- **Text-to-SQL hardening** (`tools/duckdb.py`) — statements are classified by **AST**
+  (`sqlglot`) against **allowlists**, not first-word matching: a statement is a read only if it
+  is a known query type (SELECT/UNION/DESCRIBE/SHOW/…), a write only if it is known DML/DDL;
+  anything else (`COPY`, `ATTACH`, `INSTALL`, `SET`, `PRAGMA`, …) is refused. Bypasses like
+  `WITH t AS (SELECT 1) DELETE FROM …` are caught. `duckdb_schema` allowlists table names
+  against the live catalog and parameterizes its metadata query; multi-statement payloads are
+  rejected.
+- **Hardened DB connections** (`db/connection.py`) — every connection (agent tools and
+  dashboard) disables DuckDB external access and locks configuration, so SQL cannot read local
+  files (`read_text('.env')`), write them (`COPY … TO`), attach databases, or install
+  extensions. Read tools also use `read_only=True` — enforcement at the DB layer, not the
+  string level.
 - **Indirect prompt-injection defense** (`tools/web.py`) — web content is wrapped in
   `<<<EXTERNAL_CONTENT>>>` boundary markers labelled as untrusted data; marker-spoofing is
   stripped; the system prompt instructs the agent to treat it as data, never instructions.
+- **SSRF protection** (`tools/web.py`) — `web_fetch` accepts only http(s) URLs whose host
+  resolves exclusively to public IPs (loopback, private, link-local e.g. cloud metadata
+  `169.254.169.254`, reserved and multicast are refused), re-checked on every redirect hop.
+  Downloads are streamed with a 1 MB cap; only text content types are accepted.
 - **Numeric grounding** (verify node) — a deterministic hallucination check on the output.
 
 ---
@@ -263,7 +276,7 @@ Defense-in-depth aligned with the OWASP Top 10 for LLM Applications:
 Add it to .env and run: uv pip install -e ".[tavily]"
 ```
 
-`web_fetch` uses `httpx` and truncates responses at 8 000 chars to protect the context window. Both tools wrap returned content in untrusted-content boundary markers (see [Security](#security-agent-layer)).
+`web_fetch` uses `httpx`, reduces HTML to visible text (scripts/styles dropped), and truncates at 8 000 chars to protect the context window. It refuses non-public destinations (SSRF guard). Both tools wrap returned content in untrusted-content boundary markers (see [Security](#security-agent-layer)).
 
 ### DuckDB tools (`tools/duckdb.py`)
 
@@ -277,7 +290,7 @@ Five tools split by operation type:
 | `duckdb_query` | read | Execute SELECT; rejects mutations; capped at 100 rows |
 | `duckdb_execute` | write | Execute INSERT/UPDATE/DELETE/DROP/CREATE/ALTER; requires HITL approval |
 
-Read vs write is classified by parsing the SQL **AST** (`sqlglot`), not by matching the first keyword — so CTE-wrapped or otherwise disguised writes are still caught (see [Security](#security-agent-layer)). Read tools additionally run on a `read_only=True` connection, so a misclassified statement still cannot mutate the database.
+Read vs write is classified by parsing the SQL **AST** (`sqlglot`) against allowlists, not by matching the first keyword — so CTE-wrapped or otherwise disguised writes are still caught, and non-query statements (`COPY`, `ATTACH`, …) are refused (see [Security](#security-agent-layer)). All connections come from `db/connection.py` (external access disabled); read tools additionally use `read_only=True`, so a misclassified statement still cannot mutate the database.
 
 Database path: `DUCKDB_PATH` in `.env`. Default is the canonical gold-layer DB at the repo root: `data/database/operational_twin.db`, built by `src/data_pipeline/build_gold_layer.py` (run it once before starting the API — see root README). The API gateway reads the same DB.
 

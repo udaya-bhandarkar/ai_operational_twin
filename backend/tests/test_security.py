@@ -1,8 +1,11 @@
 """Unit tests for SQL classification, input guardrail, and grounding checks — no API calls."""
+import duckdb
+import pytest
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 from agents.supervisor.graph import extract_figures, guardrail, verify
-from tools.duckdb import classify_sql
+from config.settings import settings
+from tools.duckdb import classify_sql, duckdb_execute, duckdb_query
 
 
 # --- SQL AST classification (tools/duckdb.py) --------------------------------
@@ -38,6 +41,85 @@ def test_classify_empty_and_garbage():
     # classification only guards WRITES; syntax is enforced by DuckDB at execution,
     # and the read path runs on a read_only connection regardless.
     assert classify_sql("SELEC * FRM") != "write"
+
+
+def test_classify_query_shapes_are_read():
+    for stmt in (
+        "WITH t AS (SELECT 1) SELECT * FROM t",
+        "SELECT 1 UNION SELECT 2",
+        "FROM gold_operational_metrics",
+        "DESCRIBE gold_operational_metrics",
+        "SHOW TABLES",
+        "SUMMARIZE gold_operational_metrics",
+    ):
+        assert classify_sql(stmt) == "read", stmt
+
+
+@pytest.mark.parametrize(
+    "stmt",
+    [
+        "COPY gold_operational_metrics TO 'out.csv'",
+        "ATTACH 'other.db'",
+        "DETACH other",
+        "INSTALL httpfs",
+        "LOAD httpfs",
+        "SET enable_external_access = true",
+        "PRAGMA show_tables",
+        "USE other",
+        "CALL pragma_version()",
+        "VACUUM",
+    ],
+)
+def test_classify_non_query_statements_are_unsupported(stmt):
+    # Allowlist: these were classified "read" by the old denylist and ran via duckdb_query.
+    assert classify_sql(stmt) == "unsupported"
+
+
+# --- Hardened connections (db/connection.py) -----------------------------------
+
+@pytest.fixture
+def temp_db(tmp_path, monkeypatch):
+    path = tmp_path / "ops.db"
+    with duckdb.connect(str(path)) as conn:
+        conn.execute("CREATE TABLE t AS SELECT 1 AS a")
+    secret = tmp_path / "secret.txt"
+    secret.write_text("TOP-SECRET")
+    monkeypatch.setattr(settings, "duckdb_path", str(path))
+    return tmp_path
+
+
+def test_query_tool_reads_table(temp_db):
+    assert '"a": 1' in duckdb_query.invoke({"query": "SELECT a FROM t"})
+
+
+def test_query_tool_cannot_read_local_files(temp_db):
+    secret = (temp_db / "secret.txt").as_posix()
+    for query in (f"SELECT * FROM read_text('{secret}')", f"SELECT * FROM read_csv('{secret}')"):
+        out = duckdb_query.invoke({"query": query})
+        assert "TOP-SECRET" not in out
+        assert "Error" in out
+
+
+def test_query_tool_rejects_copy_and_attach(temp_db):
+    out_file = (temp_db / "dump.csv").as_posix()
+    assert "Rejected" in duckdb_query.invoke({"query": f"COPY t TO '{out_file}'"})
+    assert "Rejected" in duckdb_query.invoke({"query": "ATTACH 'x.db'"})
+    assert not (temp_db / "dump.csv").exists()
+
+
+def test_execute_tool_cannot_write_local_files(temp_db):
+    # COPY is refused by classification; external access is also disabled on write conns.
+    out_file = (temp_db / "dump.csv").as_posix()
+    assert "Rejected" in duckdb_execute.invoke({"statement": f"COPY t TO '{out_file}'"})
+    out = duckdb_execute.invoke(
+        {"statement": f"CREATE TABLE x AS SELECT * FROM read_text('{out_file}')"}
+    )
+    assert "Error" in out
+
+
+def test_execute_tool_runs_approved_write(temp_db):
+    assert "successfully" in duckdb_execute.invoke({"statement": "INSERT INTO t VALUES (2)"})
+    assert "[2 row(s)]" in duckdb_query.invoke({"query": "SELECT a FROM t"})
 
 
 # --- Input guardrail (graph node) ---------------------------------------------

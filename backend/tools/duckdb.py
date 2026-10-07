@@ -1,11 +1,14 @@
 """DuckDB tools with defense-in-depth against SQL injection and write-bypass.
 
 Security model (aligned with the OWASP Top 10 for LLM Applications):
-1. AST classification (sqlglot) — statements are classified read vs write by parsing,
-   not by keyword sniffing. Catches bypasses like `WITH t AS (SELECT 1) DELETE FROM x`,
+1. AST classification (sqlglot) with ALLOWLISTS — a statement is a "read" only if its AST is
+   a known query type (SELECT, UNION, DESCRIBE, ...), and a "write" only if it is known DML/DDL.
+   Everything else (COPY, ATTACH, INSTALL, SET, PRAGMA, unparsed commands) is "unsupported"
+   and refused by both tools. Catches bypasses like `WITH t AS (SELECT 1) DELETE FROM x`,
    which starts with "with" and would pass a first-word check.
-2. Read-only connections — `duckdb_query` runs on a connection opened with
-   `read_only=True`, so even a misclassified statement cannot mutate the database.
+2. Hardened connections (db/connection.py) — read tools use `read_only=True`, and every
+   connection disables external access, so even a misclassified statement can neither
+   mutate the database nor read/write local files.
 3. Parameterized metadata queries + identifier allowlisting — `duckdb_schema` binds the
    table name as a parameter and only samples tables that actually exist in the catalog,
    so a crafted "table name" cannot smuggle SQL.
@@ -13,14 +16,25 @@ Security model (aligned with the OWASP Top 10 for LLM Applications):
 """
 import json
 
-import duckdb
 import sqlglot
 from langchain_core.tools import tool
 from sqlglot import exp
 
-from config.settings import settings
+from db.connection import read_only_connection, write_connection
 
-# Statement AST types that mutate data or schema.
+# Statement AST types that only read. Allowlist, not denylist: anything sqlglot cannot
+# positively identify as a query is refused rather than assumed safe.
+_READ_EXPRESSIONS = (
+    exp.Select,  # includes CTE-wrapped SELECTs and DuckDB's FROM-first syntax
+    exp.SetOperation,  # UNION / INTERSECT / EXCEPT
+    exp.Describe,
+    exp.Show,
+    exp.Pivot,
+    exp.Summarize,
+    exp.Values,
+)
+
+# Statement AST types that mutate data or schema — the only statements duckdb_execute runs.
 _WRITE_EXPRESSIONS = (
     exp.Insert,
     exp.Update,
@@ -32,18 +46,25 @@ _WRITE_EXPRESSIONS = (
     exp.Merge,
 )
 
+_UNSUPPORTED = (
+    "statement type not allowed. Only queries (SELECT, DESCRIBE, SHOW, ...) and data/schema "
+    "changes (INSERT, UPDATE, DELETE, CREATE, ...) are supported — not COPY, ATTACH, INSTALL, "
+    "SET, PRAGMA or similar."
+)
+
 
 def _read_conn():
     """Read-only connection — the hard enforcement layer for query tools."""
-    return duckdb.connect(settings.duckdb_path, read_only=True)
+    return read_only_connection()
 
 
 def _write_conn():
-    return duckdb.connect(settings.duckdb_path)
+    return write_connection()
 
 
 def classify_sql(query: str) -> str:
-    """Classify a SQL string as 'read', 'write', 'multi', 'empty', or 'invalid: <err>'.
+    """Classify a SQL string as 'read', 'write', 'unsupported', 'multi', 'empty', or
+    'invalid: <err>'.
 
     Uses sqlglot's AST rather than keyword matching, so CTE-wrapped writes and other
     first-word bypasses are classified correctly.
@@ -58,7 +79,13 @@ def classify_sql(query: str) -> str:
         return "empty"
     if len(statements) > 1:
         return "multi"
-    return "write" if isinstance(statements[0], _WRITE_EXPRESSIONS) else "read"
+    statement = statements[0]
+    if isinstance(statement, _WRITE_EXPRESSIONS):
+        return "write"
+    if isinstance(statement, _READ_EXPRESSIONS):
+        # Defensive: a query must not contain a mutation anywhere in its tree.
+        return "write" if statement.find(*_WRITE_EXPRESSIONS) else "read"
+    return "unsupported"
 
 
 @tool
@@ -119,6 +146,8 @@ def duckdb_query_checker(query: str) -> str:
         return "INVALID — multiple statements are not allowed; send one statement at a time."
     if kind.startswith("invalid"):
         return f"INVALID — {kind[9:]}"
+    if kind == "unsupported":
+        return "INVALID — " + _UNSUPPORTED
 
     if kind == "read":
         # EXPLAIN on the read-only connection validates against the live catalog.
@@ -143,6 +172,8 @@ def duckdb_query(query: str) -> str:
         )
     if kind == "multi":
         return "[duckdb_query] Rejected — send one statement at a time."
+    if kind == "unsupported":
+        return "[duckdb_query] Rejected — " + _UNSUPPORTED
     if kind == "empty" or kind.startswith("invalid"):
         return f"[duckdb_query] Rejected — {kind}."
     try:
@@ -175,6 +206,8 @@ def duckdb_execute(statement: str) -> str:
         )
     if kind == "multi":
         return "[duckdb_execute] Rejected — send one statement at a time."
+    if kind == "unsupported":
+        return "[duckdb_execute] Rejected — " + _UNSUPPORTED
     if kind == "empty" or kind.startswith("invalid"):
         return f"[duckdb_execute] Rejected — {kind}."
     try:

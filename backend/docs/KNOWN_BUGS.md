@@ -83,7 +83,9 @@ _Fixed on branch `chore/remove-agents-md`: AGENTS.md removed (its 2 unique rules
 
 ## Security
 
-### S1. DuckDB "reads" can read/write the local filesystem
+### S1. DuckDB "reads" can read/write the local filesystem — ✅ FIXED
+_Fixed: `db/connection.py` (external access off + config locked on every connection),
+allowlist classification in `tools/duckdb.py`. Tests in `tests/test_security.py`._
 - **Where:** `tools/duckdb.py` (`classify_sql`, `_read_conn`)
 - **What:** `SELECT * FROM read_text('.env')` is a valid read — passes AST classification and
   runs on the read-only connection. `COPY ... TO`, `ATTACH`, `INSTALL`/`LOAD` likely parse as
@@ -93,7 +95,10 @@ _Fixed on branch `chore/remove-agents-md`: AGENTS.md removed (its 2 unique rules
   Switch classification to an allowlist (only `Select` / `Union` / CTE-over-`Select`) instead
   of a write denylist. Add tests for each bypass.
 
-### S2. SSRF in `web_fetch`
+### S2. SSRF in `web_fetch` — ✅ FIXED
+_Fixed in `tools/web.py`: public-IP check per redirect hop, streamed 1 MB cap, text-only
+content types, HTML→text. Residual: DNS rebinding between check and connect. Tests in
+`tests/test_web.py`._
 - **Where:** `tools/web.py:57-69`
 - **What:** Fetches any URL — `localhost`, `169.254.169.254`, internal hosts. Body is fully
   read before the 8k truncation.

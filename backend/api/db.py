@@ -14,9 +14,7 @@ Scope params (shared by every endpoint):
 """
 from contextlib import contextmanager
 
-import duckdb
-
-from config.settings import settings
+from db.connection import read_only_connection
 
 GOLD = "gold_operational_metrics"
 
@@ -24,7 +22,7 @@ GOLD = "gold_operational_metrics"
 @contextmanager
 def connect():
     """Open a short-lived read-only connection to the operational DB."""
-    conn = duckdb.connect(settings.duckdb_path, read_only=True)
+    conn = read_only_connection()
     try:
         yield conn
     finally:
