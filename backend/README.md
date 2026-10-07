@@ -97,7 +97,6 @@ backend/
 ├── langgraph.json              # Graph entrypoint (points to make_graph factory)
 ├── pyproject.toml              # Dependencies
 ├── .env.example                # Environment variable template
-├── AGENTS.md                   # Supervisor memory: routing rules, write-safety, response style
 │
 ├── api/                        # FastAPI gateway — frontend (React dashboard) ↔ backend
 │   ├── app.py                  # FastAPI app + CORS + uvicorn entry (port 8000)
@@ -114,7 +113,7 @@ backend/
 │
 ├── agents/
 │   └── supervisor/             # Single agent: DuckDB + web tools, one reasoning loop
-│       ├── graph.py            # make_graph() — all tools + full middleware stack + HITL
+│       ├── graph.py            # make_graph() — StateGraph: guardrail → agent → verify (+ HITL)
 │       └── prompts/system.txt  # role + gold-table schema + tool rules + answer formatting
 │
 ├── tools/
@@ -125,7 +124,7 @@ backend/
 ├── middleware/
 │   ├── pii.py                  # PIIMiddleware — API key blocking (input + output)
 │   ├── retry.py                # ModelRetryMiddleware, ModelCallLimitMiddleware, ToolCallLimitMiddleware
-│   ├── context.py              # MemoryMiddleware (AGENTS.md) + AnthropicPromptCachingMiddleware
+│   ├── caching.py              # AnthropicPromptCachingMiddleware
 │   ├── summarization.py        # SummarizationMiddleware — compress history at 80% token threshold
 │   └── dynamic_model.py        # @wrap_model_call dev_cost_router — budget model in dev
 │
@@ -200,21 +199,33 @@ The `operational_power_cost_inr` / `operational_water_cost_inr` columns are tota
 
 ## Agent
 
-One `create_agent` (from `langchain.agents`) with every tool attached directly — the DuckDB
-tools and the web tools — running a single reasoning loop. `create_agent` builds a LangGraph
-`StateGraph` internally, so `langgraph dev` serves it directly via the `make_graph` factory in
+A custom LangGraph `StateGraph` wraps the LangChain agent, placing **deterministic** validation
+nodes around the **agentic** core. This is the documented reason to use a hand-built `StateGraph`
+rather than `create_agent` alone — mixing fixed steps (guardrails, verification) with an agent
+node. `langgraph dev` and the API gateway both load it via the `make_graph` factory in
 `langgraph.json`.
 
 ```
-agent  (create_agent, full middleware stack + HITL)
-  ├── duckdb_query          (read — no HITL)
-  ├── duckdb_query_checker  (validate before a write)
-  ├── duckdb_list_tables    (explore other tables — rarely needed)
-  ├── duckdb_schema         (explore other tables — rarely needed)
-  ├── duckdb_execute        (write — HITL interrupt: approve / edit / reject)
-  ├── web_search            (Tavily)
-  └── web_fetch             (httpx)
+START → guardrail → agent → verify → END
+          │           ▲       │
+          └→ END       └───────┘   (one bounded retry if figures aren't grounded)
 ```
+
+- **guardrail** (deterministic) — input validation before any model call: rejects empty /
+  oversized input and attempts to spoof the web tools' untrusted-content markers. Un-promptable.
+- **agent** (agentic) — `create_agent` with the full middleware stack + all tools:
+  ```
+  agent  (full middleware stack + HITL)
+    ├── duckdb_query          (read — no HITL)
+    ├── duckdb_query_checker  (validate before a write)
+    ├── duckdb_list_tables / duckdb_schema  (explore other tables — rarely needed)
+    ├── duckdb_execute        (write — HITL interrupt: approve / edit / reject)
+    └── web_search / web_fetch
+  ```
+- **verify** (deterministic) — numeric grounding check: money-like figures in the final answer
+  must appear in this turn's tool results. An LLM can claim any number; one that is in no tool
+  output was not read from the database. Ungrounded figures trigger **one** corrective retry,
+  then the answer is surfaced (never looped forever).
 
 `HumanInTheLoopMiddleware` interrupts only on `duckdb_execute` (writes); reads and web calls
 pass through. The agent's system prompt carries the `gold_operational_metrics` schema, so it
@@ -223,6 +234,21 @@ writes SQL directly instead of spending calls on `list_tables`/`schema` for the 
 **Why one agent, not a supervisor + sub-agents:** see the architecture note at the top. Nesting
 sub-agents-as-tools doubled model calls (each sub-agent is its own reasoning loop) and caused
 double-summarisation of results. A single agent halves the calls and preserves table output.
+
+### Security (agent-layer)
+
+Defense-in-depth aligned with the OWASP Top 10 for LLM Applications:
+
+- **Text-to-SQL hardening** (`tools/duckdb.py`) — statements are classified read vs write by
+  **AST** (`sqlglot`), not first-word matching, so bypasses like
+  `WITH t AS (SELECT 1) DELETE FROM …` are caught. Read tools run on a `read_only=True`
+  connection (enforcement at the DB layer, not the string level); `duckdb_schema` allowlists
+  table names against the live catalog and parameterizes its metadata query; multi-statement
+  payloads are rejected.
+- **Indirect prompt-injection defense** (`tools/web.py`) — web content is wrapped in
+  `<<<EXTERNAL_CONTENT>>>` boundary markers labelled as untrusted data; marker-spoofing is
+  stripped; the system prompt instructs the agent to treat it as data, never instructions.
+- **Numeric grounding** (verify node) — a deterministic hallucination check on the output.
 
 ---
 
@@ -237,7 +263,7 @@ double-summarisation of results. A single agent halves the calls and preserves t
 Add it to .env and run: uv pip install -e ".[tavily]"
 ```
 
-`web_fetch` uses `httpx` and truncates responses at 8 000 chars to protect the context window.
+`web_fetch` uses `httpx` and truncates responses at 8 000 chars to protect the context window. Both tools wrap returned content in untrusted-content boundary markers (see [Security](#security-agent-layer)).
 
 ### DuckDB tools (`tools/duckdb.py`)
 
@@ -251,7 +277,7 @@ Five tools split by operation type:
 | `duckdb_query` | read | Execute SELECT; rejects mutations; capped at 100 rows |
 | `duckdb_execute` | write | Execute INSERT/UPDATE/DELETE/DROP/CREATE/ALTER; requires HITL approval |
 
-The checker returns `"OK — read query"` or `"OK — write query"` so the agent knows which execution tool to call next. `duckdb_query` hard-rejects mutation keywords. `duckdb_execute` hard-rejects SELECT.
+Read vs write is classified by parsing the SQL **AST** (`sqlglot`), not by matching the first keyword — so CTE-wrapped or otherwise disguised writes are still caught (see [Security](#security-agent-layer)). Read tools additionally run on a `read_only=True` connection, so a misclassified statement still cannot mutate the database.
 
 Database path: `DUCKDB_PATH` in `.env`. Default is the canonical gold-layer DB at the repo root: `data/database/operational_twin.db`, built by `src/data_pipeline/build_gold_layer.py` (run it once before starting the API — see root README). The API gateway reads the same DB.
 
@@ -294,7 +320,6 @@ PIIMiddleware (api_key block)              — outermost
 ModelCallLimitMiddleware (15 calls)
 ToolCallLimit (duckdb_execute=3, web_search=5)
 ModelRetryMiddleware (rate-limit-aware)
-MemoryMiddleware (AGENTS.md)              — injects memory into system prompt
 SummarizationMiddleware (80%, keep 6)     — compress history before model call
 dev_cost_router                           — swaps model per env
 RateLimitMiddleware                       — paces model calls under provider RPM
@@ -339,18 +364,12 @@ Paired with the retry middleware's rate-limit-aware backoff (below), a multi-ste
 completes on a free tier instead of failing with 429 — at the cost of latency (calls are
 serialized at the configured rate). Raise the rate on paid tiers / Anthropic for faster chat.
 
-### Memory (`middleware/context.py`)
+### Agent instructions (`agents/supervisor/prompts/system.txt`)
 
-`MemoryMiddleware` from `deepagents.middleware` loads `AGENTS.md` into the system prompt on each run via `FilesystemBackend` (real disk paths). Teaches the agent write-safety rules and response style.
-
-`FilesystemBackend` is created at module level (not inside `make_graph()`) so its `Path.resolve()` call runs synchronously at import time, not inside the async ASGI event loop.
-
-Add more sources by passing additional paths:
-
-```python
-from middleware.context import get_memory_middleware
-get_memory_middleware("./AGENTS.md", "./docs/operational-playbook.md")
-```
+All agent instructions — role, gold-table schema, tool rules, write safety, answer formatting —
+live in one file, loaded once at import. (An earlier `AGENTS.md` + deepagents `MemoryMiddleware`
+duplicated most of these rules and injected ~1k tokens of unrelated memory guidelines per model
+call; removed.)
 
 ### Summarization (`middleware/summarization.py`)
 
@@ -658,7 +677,3 @@ Passed `checkpointer=` to `create_agent` while also running via `langgraph dev`.
 **Graph import slow (>5s warning in logs)**
 
 `create_agent(...)` called at module level. Move it inside `_get_agent()` with a `global` so it only runs on first use.
-
-**`LangChainDeprecationWarning: FilesystemBackend virtual_mode default will change`**
-
-Pass `virtual_mode=False` explicitly to `FilesystemBackend`. The default is changing in deepagents 0.6.0. `virtual_mode=False` is correct here — no virtual path routing is used, sources are real disk paths relative to `root_dir`.
