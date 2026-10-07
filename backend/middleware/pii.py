@@ -2,14 +2,14 @@ from langchain.agents.middleware import PIIMiddleware
 
 
 def get_pii_middleware() -> list:
-    """PII middleware for the supervisor agent.
+    """PII middleware for the agent.
 
     Blocks API key patterns on input and output.
     langchain>=1.3.2 required for apply_to_output support.
 
     Email middleware intentionally omitted — redacting emails in inputs breaks
-    legitimate use cases (e.g. "draft an email to x@y.com"), and the ops agent
-    may need to return emails from database queries.
+    legitimate use cases (e.g. "draft an email to x@y.com"), and the agent may need to
+    return emails from tool results.
     """
     return [
         PIIMiddleware(

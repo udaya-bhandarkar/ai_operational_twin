@@ -40,7 +40,6 @@ def test_hitl_enabled_default():
     assert s.hitl_enabled is True
 
 
-def test_duckdb_path_default():
+def test_sql_tools_disabled_by_default():
     s = _TestSettings()
-    # Default points at the built gold-layer DB (may be absolute or repo-relative).
-    assert s.duckdb_path.replace("\\", "/").endswith("data/database/operational_twin.db")
+    assert s.duckdb_path == ""

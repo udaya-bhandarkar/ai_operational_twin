@@ -1,11 +1,11 @@
-"""FastAPI gateway entrypoint.
+"""FastAPI gateway entrypoint — HTTP access to the agent graph.
 
 Run:
     python -m api.app                     # serves on http://localhost:8000
     uvicorn api.app:app --reload --port 8000
 
-Frontend points at this via VITE_API_BASE=http://localhost:8000/api
-(CORS enabled below — no Vite proxy needed).
+Endpoints: POST /api/chat, POST /api/chat/resume (see api/chat.py), GET /health.
+CORS is configured below for browser clients.
 """
 import logging
 import pathlib
@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
-from api import chat, dashboard
+from api import chat
 from config.settings import settings
 
 logger = logging.getLogger("api")
@@ -24,7 +24,7 @@ logger = logging.getLogger("api")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Fail fast with a clear message if the chat provider key is missing, rather than
-    # surfacing a cryptic 401 on the first /api/chat call. Dashboard endpoints need no key.
+    # surfacing a cryptic 401 on the first /api/chat call.
     try:
         settings.require_provider_key()
     except RuntimeError as e:
@@ -40,7 +40,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="AI Operational Twin Gateway", lifespan=lifespan)
 
-# CORS. Explicit origins come from CORS_ORIGINS (comma-separated) for deployed frontends.
+# CORS. Explicit origins come from CORS_ORIGINS (comma-separated) for deployed web clients.
 # Any localhost origin is allowed automatically in dev (Vite port varies: 5173, 5174, ...).
 # CORS_ORIGIN_REGEX allows pattern matching for platforms like Vercel that generate unique
 # preview URLs per deploy (e.g. https://.*\.vercel\.app).
@@ -59,7 +59,6 @@ if "allow_origins" not in _cors_kwargs and "allow_origin_regex" not in _cors_kwa
     _cors_kwargs["allow_origins"] = []
 app.add_middleware(CORSMiddleware, **_cors_kwargs)
 
-app.include_router(dashboard.router)
 app.include_router(chat.router)
 
 

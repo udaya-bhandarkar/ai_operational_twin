@@ -5,7 +5,7 @@ agent pauses on a write (HumanInTheLoopMiddleware), prompts for approve / edit /
 pending action before resuming.
 
 Usage:
-    python -m hitl.channels.cli "What is the total waste cost today?"
+    python -m hitl.channels.cli "What is the capital of France?"
     python -m hitl.channels.cli            # interactive: one thread, multiple questions
 
 The graph has async nodes (and async-only middleware), so everything runs on asyncio.
@@ -96,7 +96,7 @@ async def _main(question: str | None) -> None:
 
 
 if __name__ == "__main__":
-    # Answers contain ₹; Windows consoles default to cp1252, which cannot print it.
+    # Answers may contain non-ASCII (₹, €, emoji); Windows consoles default to cp1252.
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("question", nargs="?", help="ask once and exit (omit for interactive)")

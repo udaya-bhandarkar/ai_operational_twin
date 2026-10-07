@@ -50,51 +50,24 @@ def get_model_retry() -> ModelRetryMiddleware:
     )
 
 
-def get_supervisor_limits() -> list:
-    """Call limits for the supervisor agent.
+def get_call_limits() -> list:
+    """Per-run call budgets for the agent.
 
-    run_limit=10: supervisor is a routing agent — it should never need more than
-    a handful of model calls per run (analyse → route → synthesise).
-    10 is a generous ceiling that stops infinite loops without restricting normal use.
-    """
-    return [
-        ModelCallLimitMiddleware(run_limit=10, exit_behavior="end"),
-    ]
+    ModelCallLimit run_limit=15: multi-step tool work (e.g. list_tables → schema → query)
+    needs a model call per step; 15 covers realistic workflows and stops runaway loops.
 
+    ToolCallLimit on duckdb_execute run_limit=3: prevents the same write firing repeatedly if
+    the agent loops.
 
-def get_ops_limits() -> list:
-    """Call limits for the ops agent.
+    ToolCallLimit on web_search run_limit=5: search APIs charge per call; 5 is enough for
+    thorough research without runaway spend.
 
-    ModelCallLimit run_limit=15: ops agent runs multiple tool steps
-    (list_tables → schema → checker → query/execute), each requiring a model call.
-    15 covers realistic multi-step DB workflows.
-
-    ToolCallLimit on duckdb_execute run_limit=3: prevents the same write statement
-    firing repeatedly if the agent loops. exit_behavior="continue" blocks the tool
-    call and tells the model it hit the limit — model can then decide to stop cleanly.
+    exit_behavior="continue" on tool limits blocks the call and tells the model it hit the
+    limit, so it can finish from what it already has. Limits on tools that are not attached
+    (e.g. SQL tools with no database configured) are inert.
     """
     return [
         ModelCallLimitMiddleware(run_limit=15, exit_behavior="end"),
-        ToolCallLimitMiddleware(
-            tool_name="duckdb_execute",
-            run_limit=3,
-            exit_behavior="continue",
-        ),
-    ]
-
-
-def get_research_limits() -> list:
-    """Call limits for the research agent.
-
-    ToolCallLimit on web_search run_limit=5: Tavily charges per search.
-    5 searches per run is enough for thorough research without runaway spend.
-    exit_behavior="continue" blocks further searches and lets the model synthesise
-    from what it already found.
-    """
-    return [
-        ToolCallLimitMiddleware(
-            tool_name="web_search",
-            run_limit=5,
-            exit_behavior="continue",
-        ),
+        ToolCallLimitMiddleware(tool_name="duckdb_execute", run_limit=3, exit_behavior="continue"),
+        ToolCallLimitMiddleware(tool_name="web_search", run_limit=5, exit_behavior="continue"),
     ]

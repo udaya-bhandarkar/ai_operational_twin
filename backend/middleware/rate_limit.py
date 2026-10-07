@@ -1,13 +1,13 @@
 """Proactive model-call rate limiting — the "waiting system".
 
-A single agent turn (especially a DB question routed to the ops agent) fans out into many
-model calls in quick succession: list tables -> get schema -> write SQL -> run query ->
-summarise. On a rate-limited provider (Mistral free tier ~1 req/s) that burst trips HTTP 429.
+A single agent turn fans out into many model calls in quick succession (e.g. list tables ->
+get schema -> write SQL -> run query -> summarise). On a rate-limited provider (Mistral free
+tier ~1 req/s) that burst trips HTTP 429.
 
 This middleware paces calls *before* they happen: it blocks (sleeps) until a token is free,
 so calls are spread under the provider limit instead of failing and retrying. The limiter is
-a single module-level instance shared across every agent (supervisor + ops + research), so
-pacing is global — the supervisor's calls and the ops agent's calls draw from one budget.
+a single module-level instance, so pacing is global across concurrent requests (and across
+agents, if more are added).
 
 Complements ModelRetryMiddleware: throttling prevents most 429s up front; retry still covers
 genuinely transient failures.

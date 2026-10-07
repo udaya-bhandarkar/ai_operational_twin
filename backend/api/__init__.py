@@ -1,1 +1,1 @@
-"""FastAPI gateway serving the dashboard (DuckDB gold layer) and chat (supervisor graph)."""
+"""FastAPI gateway — HTTP access to the agent graph (chat + HITL approvals)."""

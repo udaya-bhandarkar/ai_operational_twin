@@ -3,8 +3,12 @@
 Usage:
     python -m evals.run_evals              # run evals, print results
     python -m evals.run_evals --gate       # exit 1 if avg score < PASS_THRESHOLD
-    python -m evals.run_evals --dataset supervisor-v1  # run single dataset
+    python -m evals.run_evals --dataset general-v1  # run single dataset
+
+Datasets are the `evals/datasets/<name>.jsonl` files, uploaded to LangSmith under `<name>` by
+scripts/upload_datasets.py.
 """
+import pathlib
 import asyncio
 import logging
 import sys
@@ -75,10 +79,10 @@ def _eval_configs(only_dataset: str | None = None) -> list[dict]:
     # return SKIPPED / score=None for placeholder examples and are excluded from the gate average.
     evaluators = [string_contains_evaluator, relevance_evaluator, correctness_evaluator]
 
+    datasets_dir = pathlib.Path(__file__).parent / "datasets"
     configs = [
-        {"dataset": "supervisor-v1", "evaluators": evaluators, "prefix": "supervisor"},
-        {"dataset": "research-v1",   "evaluators": evaluators, "prefix": "research"},
-        {"dataset": "ops-v1",        "evaluators": evaluators, "prefix": "ops"},
+        {"dataset": p.stem, "evaluators": evaluators, "prefix": p.stem}
+        for p in sorted(datasets_dir.glob("*.jsonl"))
     ]
     if only_dataset:
         configs = [c for c in configs if c["dataset"] == only_dataset]

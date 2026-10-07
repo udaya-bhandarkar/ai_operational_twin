@@ -1,5 +1,6 @@
 """Upload evaluation datasets to LangSmith.
 
+Every `evals/datasets/<name>.jsonl` becomes the LangSmith dataset `<name>`.
 Run once before CI evals — datasets persist in LangSmith between runs.
 
 Usage:
@@ -11,13 +12,11 @@ import sys
 
 from langsmith import Client
 
-DATASETS_DIR = pathlib.Path(__file__).parent.parent / "evals" / "datasets" / "v1"
+DATASETS_DIR = pathlib.Path(__file__).parent.parent / "evals" / "datasets"
 
-DATASET_FILES: dict[str, pathlib.Path] = {
-    "supervisor-v1": DATASETS_DIR / "supervisor.jsonl",
-    "research-v1":   DATASETS_DIR / "research.jsonl",
-    "ops-v1":        DATASETS_DIR / "ops.jsonl",
-}
+
+def dataset_files() -> dict[str, pathlib.Path]:
+    return {p.stem: p for p in sorted(DATASETS_DIR.glob("*.jsonl"))}
 
 
 def _load(path: pathlib.Path) -> list[dict]:
@@ -31,7 +30,7 @@ def upload(client: Client, name: str, path: pathlib.Path) -> None:
         dataset = client.read_dataset(dataset_name=name)
         print(f"  '{name}' already exists in LangSmith — adding examples.")
     except Exception:
-        dataset = client.create_dataset(name, description=f"AI Operational Twin — {name}")
+        dataset = client.create_dataset(name, description=f"Agent eval dataset — {name}")
         print(f"  Created dataset '{name}'.")
 
     client.create_examples(
@@ -44,17 +43,15 @@ def upload(client: Client, name: str, path: pathlib.Path) -> None:
 
 
 def main() -> None:
+    files = dataset_files()
+    if not files:
+        print(f"No *.jsonl datasets in {DATASETS_DIR} — nothing to upload.", file=sys.stderr)
+        sys.exit(1)
     client = Client()
-    errors = 0
-    for name, path in DATASET_FILES.items():
-        if not path.exists():
-            print(f"  WARN: {path} not found — skipping '{name}'.", file=sys.stderr)
-            errors += 1
-            continue
+    for name, path in files.items():
         print(f"Uploading '{name}'...")
         upload(client, name, path)
     print("Done.")
-    sys.exit(errors)
 
 
 if __name__ == "__main__":

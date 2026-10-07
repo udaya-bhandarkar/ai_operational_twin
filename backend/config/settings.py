@@ -72,11 +72,9 @@ class Settings(BaseSettings):
     langsmith_tracing: bool = False
 
     tavily_api_key: str = ""
-    # Canonical operational DB built by src/data_pipeline/build_gold_layer.py at repo root.
-    # settings.py = backend/config/settings.py → parents[2] = repo root.
-    duckdb_path: str = str(
-        pathlib.Path(__file__).resolve().parents[2] / "data" / "database" / "operational_twin.db"
-    )
+    # Optional DuckDB database the agent can query (and, with approval, write). Empty disables
+    # the SQL tools entirely; the agent discovers the schema at runtime.
+    duckdb_path: str = ""
 
     # Conversation checkpoints for the API gateway (thread memory + paused HITL approvals).
     # SQLite file so threads survive restarts; ":memory:" for ephemeral. langgraph dev ignores

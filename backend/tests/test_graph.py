@@ -7,11 +7,26 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph.message import REMOVE_ALL_MESSAGES
 from langgraph.types import Command
 
-from agents.supervisor.graph import build_graph, guardrail, history_delta
+from agents.supervisor.graph import _toolset, build_graph, guardrail, history_delta
+from config.settings import settings
 from tests.conftest import table_rows
 from tests.fakes import scripted_model, tool_call
 
 CONFIG = {"configurable": {"thread_id": "t1"}}
+
+
+# --- configuration-driven toolset ------------------------------------------------
+
+def test_sql_tools_only_when_database_configured(monkeypatch):
+    monkeypatch.setattr(settings, "duckdb_path", "")
+    tools, prompt = _toolset()
+    assert {t.name for t in tools} == {"web_search", "web_fetch"}
+    assert "SQL database" not in prompt
+
+    monkeypatch.setattr(settings, "duckdb_path", "some.db")
+    tools, prompt = _toolset()
+    assert {"duckdb_query", "duckdb_execute"} <= {t.name for t in tools}
+    assert "SQL database" in prompt
 
 
 # --- history_delta (B1) --------------------------------------------------------

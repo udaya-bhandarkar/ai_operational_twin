@@ -11,12 +11,12 @@ from tools.duckdb import classify_sql, duckdb_execute, duckdb_query
 # --- SQL AST classification (tools/duckdb.py) --------------------------------
 
 def test_classify_plain_select_is_read():
-    assert classify_sql("SELECT * FROM gold_operational_metrics") == "read"
+    assert classify_sql("SELECT * FROM orders") == "read"
 
 
 def test_classify_cte_wrapped_delete_is_write():
     # The first-word bypass this replaces: starts with WITH, mutates anyway.
-    assert classify_sql("WITH t AS (SELECT 1) DELETE FROM gold_operational_metrics") == "write"
+    assert classify_sql("WITH t AS (SELECT 1) DELETE FROM orders") == "write"
 
 
 def test_classify_mutations_are_write():
@@ -47,10 +47,10 @@ def test_classify_query_shapes_are_read():
     for stmt in (
         "WITH t AS (SELECT 1) SELECT * FROM t",
         "SELECT 1 UNION SELECT 2",
-        "FROM gold_operational_metrics",
-        "DESCRIBE gold_operational_metrics",
+        "FROM orders",
+        "DESCRIBE orders",
         "SHOW TABLES",
-        "SUMMARIZE gold_operational_metrics",
+        "SUMMARIZE orders",
     ):
         assert classify_sql(stmt) == "read", stmt
 
@@ -58,7 +58,7 @@ def test_classify_query_shapes_are_read():
 @pytest.mark.parametrize(
     "stmt",
     [
-        "COPY gold_operational_metrics TO 'out.csv'",
+        "COPY orders TO 'out.csv'",
         "ATTACH 'other.db'",
         "DETACH other",
         "INSTALL httpfs",
@@ -129,7 +129,7 @@ def _state(text: str) -> dict:
 
 
 def test_guardrail_passes_normal_question():
-    out = guardrail(_state("What is the total waste cost today?"))
+    out = guardrail(_state("What is the capital of France?"))
     assert out["rejected"] is False
 
 
@@ -159,9 +159,9 @@ def test_extract_figures_parses_currency_and_skips_percent():
 def test_verify_passes_grounded_answer():
     state = {
         "messages": [
-            HumanMessage(content="total waste?"),
+            HumanMessage(content="total revenue?"),
             ToolMessage(content='{"total": 47858.18}', tool_call_id="1"),
-            AIMessage(content="Total waste is ₹47,858.18."),
+            AIMessage(content="Total revenue is $47,858.18."),
         ],
         "verify_attempts": 0,
     }
@@ -171,9 +171,9 @@ def test_verify_passes_grounded_answer():
 def test_verify_flags_ungrounded_figure_once():
     state = {
         "messages": [
-            HumanMessage(content="total waste?"),
+            HumanMessage(content="total revenue?"),
             ToolMessage(content='{"total": 47858.18}', tool_call_id="1"),
-            AIMessage(content="Total waste is ₹99,999.99."),
+            AIMessage(content="Total revenue is $99,999.99."),
         ],
         "verify_attempts": 0,
     }

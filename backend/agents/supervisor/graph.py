@@ -9,11 +9,14 @@ custom StateGraph instead of create_agent alone):
 
 - guardrail (deterministic): input validation — rejects empty/oversized input and attempts to
   spoof the external-content boundary markers used by the web tools.
-- agent (agentic): the existing create_agent with the full middleware stack (PII, limits,
-  retry, memory, summarization, cost routing, rate limiting, HITL, prompt caching).
-- verify (deterministic): numeric grounding check — money-like figures in the final answer
-  must appear in this turn's tool results. Ungrounded figures trigger ONE corrective retry;
-  a persistent failure is surfaced rather than looped forever.
+- agent (agentic): create_agent with the full middleware stack (PII, limits, retry,
+  summarization, cost routing, rate limiting, HITL, prompt caching).
+- verify (deterministic): numeric grounding check — figures in the final answer must appear in
+  this turn's tool results. Ungrounded figures trigger ONE corrective retry; a persistent
+  failure is surfaced rather than looped forever.
+
+Tools are assembled from configuration: web tools always; the SQL toolset (and its prompt
+section) only when DUCKDB_PATH points at a database.
 """
 import pathlib
 import re
@@ -29,7 +32,7 @@ from middleware.caching import get_prompt_caching_middleware
 from middleware.dynamic_model import dev_cost_router
 from middleware.pii import get_pii_middleware
 from middleware.rate_limit import get_rate_limit_middleware
-from middleware.retry import get_model_retry, get_ops_limits, get_research_limits
+from middleware.retry import get_call_limits, get_model_retry
 from middleware.summarization import get_summarization_middleware
 from tools.duckdb import (
     duckdb_execute,
@@ -40,25 +43,27 @@ from tools.duckdb import (
 )
 from tools.web import web_fetch, web_search
 
-_system_prompt = (pathlib.Path(__file__).parent / "prompts" / "system.txt").read_text()
+_PROMPTS = pathlib.Path(__file__).parent / "prompts"
 
-# Single agent: DB tools + web tools attached directly (no nested sub-agents). One reasoning
-# loop instead of supervisor->sub-agent->tools, which roughly halves model calls per turn.
-_tools = [
-    duckdb_query,
-    duckdb_query_checker,
-    duckdb_list_tables,
-    duckdb_schema,
-    duckdb_execute,
-    web_search,
-    web_fetch,
-]
+_WEB_TOOLS = [web_search, web_fetch]
+_SQL_TOOLS = [duckdb_query, duckdb_query_checker, duckdb_list_tables, duckdb_schema, duckdb_execute]
 
 _MAX_INPUT_CHARS = 4000
 _BOUNDARY_MARKERS = ("<<<EXTERNAL_CONTENT>>>", "<<<END_EXTERNAL_CONTENT>>>")
-# Figures the answer may legitimately contain without appearing in tool output:
-# the waste thresholds baked into the data model (300 kW power, 25 L water).
-_KNOWN_CONSTANTS = {300.0, 25.0}
+
+
+def _toolset() -> tuple[list, str]:
+    """Tools + system prompt for the current configuration.
+
+    Single agent with every tool attached directly (no nested sub-agents): one reasoning loop
+    instead of supervisor -> sub-agent -> tools, roughly halving model calls per turn.
+    """
+    tools = list(_WEB_TOOLS)
+    prompt = (_PROMPTS / "system.txt").read_text(encoding="utf-8")
+    if settings.duckdb_path:
+        tools += _SQL_TOOLS
+        prompt += (_PROMPTS / "sql.txt").read_text(encoding="utf-8")
+    return tools, prompt
 
 
 class AgentState(MessagesState):
@@ -67,7 +72,7 @@ class AgentState(MessagesState):
 
 
 def _build_agent(model=None):
-    """The agentic core — unchanged middleware stack from the pre-graph architecture.
+    """The agentic core: create_agent with the configured tools and the middleware stack.
 
     `model` overrides settings.backend_model (a model string or chat-model instance) — used by
     tests to run the full graph against a scripted fake model.
@@ -82,10 +87,10 @@ def _build_agent(model=None):
     HumanInTheLoopMiddleware   — interrupts on duckdb_execute (writes) for approval
     AnthropicPromptCaching     — innermost; injects cache_control just before model call
     """
+    tools, system_prompt = _toolset()
     middleware = (
         get_pii_middleware()
-        + get_ops_limits()
-        + get_research_limits()
+        + get_call_limits()
         + [get_model_retry()]
         + [get_summarization_middleware()]
         + [dev_cost_router]
@@ -104,8 +109,8 @@ def _build_agent(model=None):
     )
     return create_agent(
         model=model or settings.backend_model,
-        tools=_tools,
-        system_prompt=_system_prompt,
+        tools=tools,
+        system_prompt=system_prompt,
         middleware=middleware,
     )
 
@@ -140,7 +145,7 @@ _NUMBER_RE = re.compile(r"(?<![\w.])(\d{1,3}(?:,\d{3})+|\d+)(\.\d+)?(?!\s*%)(?![
 
 
 def extract_figures(text: str) -> set[float]:
-    """Money-like figures in a message: magnitude >= 10, percentages excluded."""
+    """Significant figures in a message: magnitude >= 10, percentages excluded."""
     figures = set()
     for whole, frac in _NUMBER_RE.findall(text):
         try:
@@ -156,7 +161,7 @@ def verify(state: AgentState) -> dict:
     """Numeric grounding check: figures in the answer must exist in this turn's tool results.
 
     Deterministic hallucination detector — an LLM can claim anything, but a number that
-    doesn't appear in any tool output was not read from the database.
+    doesn't appear in any tool output was not read from a tool.
     """
     messages = state["messages"]
     answer = messages[-1]
@@ -164,7 +169,7 @@ def verify(state: AgentState) -> dict:
         return {}
 
     # Tool outputs + the user's own question form the grounding corpus for this turn.
-    corpus_figures: set[float] = set(_KNOWN_CONSTANTS)
+    corpus_figures: set[float] = set()
     saw_tool_output = False
     for m in reversed(messages[:-1]):
         if isinstance(m, HumanMessage):
@@ -190,8 +195,8 @@ def verify(state: AgentState) -> dict:
     correction = HumanMessage(
         content=(
             "[automated grounding check] These figures in your answer do not appear in the "
-            f"tool results: {ungrounded}. Re-run the query and answer again using only "
-            "figures read directly from the database."
+            f"tool results: {ungrounded}. Re-check with your tools and answer again using only "
+            "figures taken directly from tool output."
         )
     )
     return {"messages": [correction], "verify_attempts": state.get("verify_attempts", 0) + 1}

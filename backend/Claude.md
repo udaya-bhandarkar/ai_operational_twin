@@ -1,48 +1,24 @@
 # CLAUDE.md
 
-You are helping design a brand-new multi-agent LLM system using LangChain. 
+General-purpose AI agent built with LangGraph + LangChain. Portfolio project: the goal is a
+well-engineered agent that demonstrates current, production-grade LangGraph features.
 
-## Current phase
-Architecture planning only.
-Do not write implementation code.
+## Working rules
+- Work on branch `v2`. Never modify, merge into, or open PRs against `main`.
+- Backend only (`backend/`). API changes are fine; do not touch `frontend/`.
+- Keep it general — no domain-specific tools, prompts or data. MVP material lives in
+  `docs/archive/mvp/` and is reference only.
 
-## Goal
-Design a clean, production-ready architecture for a multi-agent LLM system with:
-- supervisor/orchestrator
-- specialist subagents
-- tool usage
-- human-in-the-loop approvals
-- provider abstraction
-- persistent state/checkpointing
-- evaluations
-- CI/CD workflows
+## Where things are
+- `README.md` — architecture, tools, security, API contract, configuration.
+- `docs/IMPROVEMENTS.md` — roadmap (what to build next and why).
+- `docs/KNOWN_BUGS.md` — open bugs / risks; mark items fixed when resolved.
 
-## Desired qualities
-- modular
-- testable
-- easy to extend
-- clear boundaries
-- safe tool execution
-- reproducible evaluations
-- clean deployment path
-
-## Output required
-1. System overview
-2. Component breakdown
-3. Folder structure
-4. Agent responsibilities
-5. Tool boundaries
-6. State/memory design
-7. Evaluation plan
-8. CI/CD plan
-9. Risks and tradeoffs
-10. ADR-style decisions
-
-## Constraints
-- No implementation code yet
-- No monolithic files
-- No hidden coupling
-- No assumptions about old code unless explicitly stated in the docs
-
-## Important
-If something is missing, ask for it or mark it as an assumption.
+## Engineering conventions
+- Every behavior change gets tests. Tests must not call real APIs: use
+  `tests/fakes.py` (`ScriptedChatModel`) to drive the real graph.
+- Run `ruff check .` and `pytest` before committing.
+- Verify library behavior against the installed version (or docs) before relying on it.
+- Security-sensitive tools (SQL, web fetch) keep their defense-in-depth layers; extend tests
+  when touching them.
+- Update README / KNOWN_BUGS / IMPROVEMENTS in the same change as the code.

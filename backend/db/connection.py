@@ -1,6 +1,6 @@
 """Shared DuckDB connection factory — one hardened configuration for every connection.
 
-Both the agent's DuckDB tools and the dashboard API open connections through here.
+Every DuckDB connection in the process should be opened through here.
 
 Why one shared config: DuckDB refuses to open a second connection to the same file with a
 different configuration while another is open ("Can't open a connection to same database
